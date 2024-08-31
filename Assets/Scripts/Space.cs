@@ -13,6 +13,8 @@ public class Space : MonoBehaviour
     public GameObject next_space;
     public GameObject next_space2;
 
+    
+
     //格子是否有棋
     public (bool exist, GameObject chess) Chessed()
     {
