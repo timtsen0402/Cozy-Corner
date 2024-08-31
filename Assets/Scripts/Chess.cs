@@ -11,6 +11,16 @@ using static ToolSingleton;
 
 public class Chess : MonoBehaviour
 {
+    public enum PieceColor
+    {
+        Blue,
+        Red,
+        Green,
+        Yellow
+    }
+    [SerializeField]
+    private PieceColor color;
+
     public bool isClickable = false;
     public GameObject home_space;
     public GameObject start_space;
@@ -29,9 +39,10 @@ public class Chess : MonoBehaviour
         if (isClickable)
             OnClick();
         currentPosition = CheckSelfPos();
+
+        // not in appropriate position
         if (!new int[] { 6, 7, 8, 9 }.Contains(currentPosition.layer))
         {
-
             transform.position = home_space.GetComponent<Space>().actual_position;
             transform.rotation = Quaternion.Euler(new Vector3(270f, 0f, 0f));
         }
