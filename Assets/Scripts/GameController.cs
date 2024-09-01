@@ -50,11 +50,15 @@ public class GameController : MonoBehaviour
     // public static bool isNextRoll = false;
     public static int rollCount = 0;
 
-    public GameObject team_human;
+    public static int humanPlayers;
+    public static int AIPlayers;
 
     private void Start()
     {
         Loading();
+        humanPlayers = PlayerPrefs.GetInt("HumanPlayers");
+        AIPlayers = PlayerPrefs.GetInt("ComputerPlayers");
+
         hint.text = "Roll";
         StartCoroutine(GameLoop());
         Time.timeScale = 2;
@@ -76,16 +80,49 @@ public class GameController : MonoBehaviour
 
     IEnumerator PlayerTurn(int playerIndex)
     {
-        // if (playerIndex == 1)
-        // {
-        //     // 人類玩家的回合，等待輸入
-        //     yield return StartCoroutine(HumanPlayerTurn());
-        // }
-        // else
-        // {
-        // AI玩家的回合
-        yield return StartCoroutine(AIPlayerTurn());
-        // }
+        switch (humanPlayers)
+        {
+            case 0:
+                yield return StartCoroutine(AIPlayerTurn());
+                break;
+            case 1:
+                if (playerIndex == 1)
+                {
+                    // 人類玩家的回合，等待輸入
+                    yield return StartCoroutine(HumanPlayerTurn());
+                }
+                else
+                {
+                    yield return StartCoroutine(AIPlayerTurn());
+                }
+                break;
+            case 2:
+                if (playerIndex == 1 || playerIndex == 2)
+                {
+                    // 人類玩家的回合，等待輸入
+                    yield return StartCoroutine(HumanPlayerTurn());
+                }
+                else
+                {
+                    yield return StartCoroutine(AIPlayerTurn());
+                }
+                break;
+            case 3:
+                if (playerIndex == 1 || playerIndex == 2 || playerIndex == 3)
+                {
+                    // 人類玩家的回合，等待輸入
+                    yield return StartCoroutine(HumanPlayerTurn());
+                }
+                else
+                {
+                    yield return StartCoroutine(AIPlayerTurn());
+                }
+                break;
+            case 4:
+                yield return StartCoroutine(HumanPlayerTurn());
+                break;
+
+        }
     }
 
     IEnumerator HumanPlayerTurn()
@@ -110,7 +147,7 @@ public class GameController : MonoBehaviour
                 rollCount++;
                 yield return StartCoroutine(HumanPlayerTurn());
             }
-            if (StopDetermination().dice_result == 6)
+            if (GetLatestDiceResult() == 6)
             {
                 yield return StartCoroutine(HumanPlayerTurn());
 
@@ -130,7 +167,7 @@ public class GameController : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         //若骰6則可以再一次
-        if (StopDetermination().dice_result == 6)
+        if (GetLatestDiceResult() == 6)
             yield return StartCoroutine(HumanPlayerTurn());
         else
             yield return null;
@@ -155,7 +192,7 @@ public class GameController : MonoBehaviour
                 rollCount++;
                 yield return StartCoroutine(AIPlayerTurn());
             }
-            if (StopDetermination().dice_result == 6)
+            if (GetLatestDiceResult() == 6)
             {
                 yield return StartCoroutine(AIPlayerTurn());
 
@@ -173,7 +210,7 @@ public class GameController : MonoBehaviour
 
         availableChess = null;
 
-        if (StopDetermination().dice_result == 6)
+        if (GetLatestDiceResult() == 6)
             yield return StartCoroutine(AIPlayerTurn());
         else
             yield return null;

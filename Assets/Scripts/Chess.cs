@@ -74,7 +74,7 @@ public class Chess : MonoBehaviour
     }
     public IEnumerator MoveChess()
     {
-        int steps = StopDetermination().dice_result;
+        int steps = GetLatestDiceResult();
 
         for (int i = 0; i < steps; i++)
         {

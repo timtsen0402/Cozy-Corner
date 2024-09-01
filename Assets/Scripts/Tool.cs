@@ -93,7 +93,7 @@ public static class Tool
             //踢掉不能選的
             if (chess.GetComponent<Chess>().currentPosition.layer == 6)//Home
             {
-                if (StopDetermination().dice_result != 6 || chesses.Contains(space_start.Chessed().chess))
+                if (GetLatestDiceResult() != 6 || chesses.Contains(space_start.Chessed().chess))
                 {
                     continue;
                 }
@@ -103,7 +103,7 @@ public static class Tool
                 //路徑上沒棋
                 //到的點有pos
                 //到的點非己方
-                if (!isMovePossible(chess, StopDetermination().dice_result)) continue;
+                if (!isMovePossible(chess, GetLatestDiceResult())) continue;
             }
             chess.GetComponent<Chess>().isClickable = true;
         }
@@ -120,7 +120,7 @@ public static class Tool
             //踢掉不能選的
             if (chess.GetComponent<Chess>().currentPosition.layer == 6)//Home
             {
-                if (StopDetermination().dice_result != 6 || chesses.Contains(space_start.Chessed().chess))
+                if (GetLatestDiceResult() != 6 || chesses.Contains(space_start.Chessed().chess))
                 {
                     continue;
                 }
@@ -130,7 +130,7 @@ public static class Tool
                 //路徑上沒棋
                 //到的點有pos
                 //到的點非己方
-                if (!isMovePossible(chess, StopDetermination().dice_result)) continue;
+                if (!isMovePossible(chess, GetLatestDiceResult())) continue;
             }
             clickableChessPieces.Add(chess);
         }

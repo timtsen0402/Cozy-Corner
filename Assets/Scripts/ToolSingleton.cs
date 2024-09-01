@@ -34,7 +34,7 @@ public class ToolSingleton : MonoBehaviour
     {
         Chess chessPiece = chess.GetComponent<Chess>();
 
-        int steps = StopDetermination().dice_result;
+        int steps = GetLatestDiceResult();
         for (int i = 0; i < steps; i++)
         {
             Space currentSpace = chessPiece.CheckSelfPos().GetComponent<Space>();

@@ -1,44 +1,66 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class PlayerSelectionManager : MonoBehaviour
 {
-    public Slider humanPlayersSlider;
-    public Slider computerPlayersSlider;
-    public Button startGameButton;
+    [SerializeField] private Text humanPlayersText;
+    [SerializeField] private Text computerPlayersText;
+    [SerializeField] private Button startGameButton;
 
     private void Start()
     {
-        SetupSliders();
-        UpdatePlayerCounts();
+        humanPlayersText.text = "1";
+        computerPlayersText.text = "3";
         startGameButton.onClick.AddListener(StartGame);
     }
 
-    private void SetupSliders()
+    private void Update()
     {
-        humanPlayersSlider.onValueChanged.AddListener(delegate { UpdatePlayerCounts(); });
-        computerPlayersSlider.onValueChanged.AddListener(delegate { UpdatePlayerCounts(); });
+        SetPlayerNumber();
+
     }
 
-    private void UpdatePlayerCounts()
+    void SetPlayerNumber()
     {
-        int humanPlayers = Mathf.RoundToInt(humanPlayersSlider.value);
-        int computerPlayers = Mathf.RoundToInt(computerPlayersSlider.value);
-
-        int totalPlayers = humanPlayers + computerPlayers;
-        startGameButton.interactable = (totalPlayers > 1 && totalPlayers <= 4);
+        switch (humanPlayersText.text)
+        {
+            case "0":
+                computerPlayersText.text = "4";
+                break;
+            case "1":
+                computerPlayersText.text = "3";
+                break;
+            case "2":
+                computerPlayersText.text = "2";
+                break;
+            case "3":
+                computerPlayersText.text = "1";
+                break;
+            case "4":
+                computerPlayersText.text = "0";
+                break;
+            default:
+                computerPlayersText.text = "0";
+                break;
+        }
     }
 
-    private void StartGame()
+    void StartGame()
     {
-        int humanPlayers = Mathf.RoundToInt(humanPlayersSlider.value);
-        int computerPlayers = Mathf.RoundToInt(computerPlayersSlider.value);
+        if (int.TryParse(humanPlayersText.text, out int humanPlayers) &&
+            int.TryParse(computerPlayersText.text, out int computerPlayers))
+        {
+            PlayerPrefs.SetInt("HumanPlayers", humanPlayers);
+            PlayerPrefs.SetInt("ComputerPlayers", computerPlayers);
+            PlayerPrefs.Save();
 
-        PlayerPrefs.SetInt("HumanPlayers", humanPlayers);
-        PlayerPrefs.SetInt("ComputerPlayers", computerPlayers);
-        PlayerPrefs.Save();
-
-        SceneManager.LoadScene("Game Scene");
+            SceneManager.LoadScene("Game Scene");
+        }
+        else
+        {
+            Debug.LogError("無法解析玩家數量，無法開始遊戲！");
+        }
     }
 }
