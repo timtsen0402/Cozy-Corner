@@ -5,7 +5,6 @@ using System.Linq;
 using DG.Tweening;
 
 using static GameController;
-using static Rotate;
 using Unity.VisualScripting;
 
 
@@ -16,35 +15,35 @@ public static class Tool
         return team.transform.Cast<Transform>()
             .All(child =>
             {
-                Chess chess = child.GetComponent<Chess>();
-                return chess != null && chess.CheckSelfPos() != null && chess.CheckSelfPos().layer == targetLayer;
+                LudoPiece piece = child.GetComponent<LudoPiece>();
+                return piece != null && piece.CheckSelfPos() != null && piece.CheckSelfPos().layer == targetLayer;
             });
     }
-    public static GameObject[] TurnToTeam(int number)
+    public static List<LudoPiece> TurnToTeam(int number)
     {
         switch (number)
         {
             case 1:
-                return new GameObject[] { chessO1, chessO2, chessO3, chessO4 };
+                return LudoPieceManager.Instance.GetPiecesByColor(LudoPiece.PieceColor.Orange);
             case 2:
-                return new GameObject[] { chessG1, chessG2, chessG3, chessG4 };
+                return LudoPieceManager.Instance.GetPiecesByColor(LudoPiece.PieceColor.Green);
             case 3:
-                return new GameObject[] { chessB1, chessB2, chessB3, chessB4 };
+                return LudoPieceManager.Instance.GetPiecesByColor(LudoPiece.PieceColor.Blue);
             case 4:
-                return new GameObject[] { chessR1, chessR2, chessR3, chessR4 };
+                return LudoPieceManager.Instance.GetPiecesByColor(LudoPiece.PieceColor.Red);
             default:
-                return null;
+                return new List<LudoPiece>();
         }
     }
 
     public static bool isNextSpaceEmpty(GameObject space)
     {
-        return !space.GetComponent<Space>().next_space.GetComponent<Space>().Chessed().exist;
+        return !space.GetComponent<Space>().next_space.GetComponent<Space>().Pieced().exist;
     }
     //前提為棋不在home
-    public static bool isMovePossible(GameObject chess, int steps)
+    public static bool isMovePossible(GameObject piece, int steps)
     {
-        Chess chessPiece = chess.GetComponent<Chess>();
+        LudoPiece chessPiece = piece.GetComponent<LudoPiece>();
         GameObject currentSpace = chessPiece.currentPosition;
 
         for (int i = 0; i < steps; i++)
@@ -69,12 +68,12 @@ public static class Tool
             Space spaceNext = currentSpace.GetComponent<Space>();
 
             //如果路徑上有其他棋則動不了
-            if (spaceNext.Chessed().exist && i != steps - 1)
+            if (spaceNext.Pieced().exist && i != steps - 1)
             {
                 return false;
             }
             // 最後一步為己方也動不了
-            if (i == steps - 1 && TurnToTeam(currentPlayerTurn).Contains(spaceNext.Chessed().chess))
+            if (i == steps - 1 && TurnToTeam(currentPlayerTurn).Contains(spaceNext.Pieced().piece))
             {
                 return false;
             }
@@ -82,18 +81,18 @@ public static class Tool
 
         return true; // 移動路徑上沒有阻礙
     }
-    public static void SelectClickableChess(GameObject[] chesses)
+    public static void SelectClickableChess(List<LudoPiece> chesses)
     {
         //for every chesses
-        foreach (GameObject chess in chesses)
+        foreach (LudoPiece piece in chesses)
         {
             //chess.GetComponent<Rigidbody>().isKinematic = true;
-            Space space_start = chess.GetComponent<Chess>().start_space.GetComponent<Space>();
+            Space space_start = piece.GetComponent<LudoPiece>().start_space.GetComponent<Space>();
 
             //踢掉不能選的
-            if (chess.GetComponent<Chess>().currentPosition.layer == 6)//Home
+            if (piece.GetComponent<LudoPiece>().currentPosition.layer == 6)//Home
             {
-                if (GetLatestDiceResult() != 6 || chesses.Contains(space_start.Chessed().chess))
+                if (DiceManager.Instance.GetTotalDiceResult() != 6 || chesses.Contains(space_start.Pieced().piece))
                 {
                     continue;
                 }
@@ -103,24 +102,24 @@ public static class Tool
                 //路徑上沒棋
                 //到的點有pos
                 //到的點非己方
-                if (!isMovePossible(chess, GetLatestDiceResult())) continue;
+                if (!isMovePossible(piece.gameObject, DiceManager.Instance.GetTotalDiceResult())) continue;
             }
-            chess.GetComponent<Chess>().isClickable = true;
+            piece.GetComponent<LudoPiece>().isClickable = true;
         }
     }
-    public static List<GameObject> SelectAvailableChess(GameObject[] chesses)
+    public static List<LudoPiece> SelectAvailableChess(List<LudoPiece> pieces)
     {
-        List<GameObject> clickableChessPieces = new List<GameObject>();
+        List<LudoPiece> clickableChessPieces = new List<LudoPiece>();
         //踢掉不能選的
-        foreach (GameObject chess in chesses)
+        foreach (LudoPiece piece in pieces)
         {
-            //chess.GetComponent<Rigidbody>().isKinematic = true;
-            Space space_start = chess.GetComponent<Chess>().start_space.GetComponent<Space>();
+
+            Space space_start = piece.start_space.GetComponent<Space>();
 
             //踢掉不能選的
-            if (chess.GetComponent<Chess>().currentPosition.layer == 6)//Home
+            if (piece.currentPosition.layer == 6)//Home
             {
-                if (GetLatestDiceResult() != 6 || chesses.Contains(space_start.Chessed().chess))
+                if (DiceManager.Instance.GetTotalDiceResult() != 6 || pieces.Contains(space_start.Pieced().piece))
                 {
                     continue;
                 }
@@ -130,31 +129,31 @@ public static class Tool
                 //路徑上沒棋
                 //到的點有pos
                 //到的點非己方
-                if (!isMovePossible(chess, GetLatestDiceResult())) continue;
+                if (!isMovePossible(piece.gameObject, DiceManager.Instance.GetTotalDiceResult())) continue;
             }
-            clickableChessPieces.Add(chess);
+            clickableChessPieces.Add(piece);
         }
         return clickableChessPieces;
     }
     public static bool isGameOver()
     {
 
-        if (TurnToTeam(1).All(chess => chess.GetComponent<Chess>().CheckSelfPos().layer == 9))
+        if (TurnToTeam(1).All(piece => piece.GetComponent<LudoPiece>().CheckSelfPos().layer == 9))
         {
             Debug.Log($"Winner is team 1");
             return true;
         }
-        else if (TurnToTeam(2).All(chess => chess.GetComponent<Chess>().CheckSelfPos().layer == 9))
+        else if (TurnToTeam(2).All(piece => piece.GetComponent<LudoPiece>().CheckSelfPos().layer == 9))
         {
             Debug.Log($"Winner is team 2");
             return true;
         }
-        else if (TurnToTeam(3).All(chess => chess.GetComponent<Chess>().CheckSelfPos().layer == 9))
+        else if (TurnToTeam(3).All(piece => piece.GetComponent<LudoPiece>().CheckSelfPos().layer == 9))
         {
             Debug.Log($"Winner is team 3");
             return true;
         }
-        else if (TurnToTeam(4).All(chess => chess.GetComponent<Chess>().CheckSelfPos().layer == 9))
+        else if (TurnToTeam(4).All(piece => piece.GetComponent<LudoPiece>().CheckSelfPos().layer == 9))
         {
             Debug.Log($"Winner is team 4");
             return true;
@@ -164,16 +163,16 @@ public static class Tool
             return false;
         }
     }
-    public static bool isTripleThrowScenario(GameObject[] chesses)
+    public static bool isTripleThrowScenario(List<LudoPiece> pieces)
     {
-        int chessAtHome = chesses.Count(chess => chess.GetComponent<Chess>().currentPosition.layer == 6);
-        bool chessAtEnd4 = chesses.Any(chess => chess.GetComponent<Chess>().currentPosition.tag == "End4");
-        bool chessAtEnd3 = chesses.Any(chess => chess.GetComponent<Chess>().currentPosition.tag == "End3");
-        bool chessAtEnd2 = chesses.Any(chess => chess.GetComponent<Chess>().currentPosition.tag == "End2");
-        bool chessAtEnd1 = chesses.Any(chess => chess.GetComponent<Chess>().currentPosition.tag == "End1");
+        int chessAtHome = pieces.Count(piece => piece.GetComponent<LudoPiece>().currentPosition.layer == 6);
+        bool chessAtEnd4 = pieces.Any(piece => piece.GetComponent<LudoPiece>().currentPosition.tag == "End4");
+        bool chessAtEnd3 = pieces.Any(piece => piece.GetComponent<LudoPiece>().currentPosition.tag == "End3");
+        bool chessAtEnd2 = pieces.Any(piece => piece.GetComponent<LudoPiece>().currentPosition.tag == "End2");
+        bool chessAtEnd1 = pieces.Any(piece => piece.GetComponent<LudoPiece>().currentPosition.tag == "End1");
 
         //全在家或是vxxx或是vvxx或是vvvx而且其他都在家
-        if (chesses.All(chess => chess.GetComponent<Chess>().CheckSelfPos().layer == 6) ||
+        if (pieces.All(piece => piece.GetComponent<LudoPiece>().CheckSelfPos().layer == 6) ||
         chessAtHome == 3 && chessAtEnd4 ||
         chessAtHome == 2 && chessAtEnd4 && chessAtEnd3 ||
         chessAtHome == 1 && chessAtEnd4 && chessAtEnd3 && chessAtEnd2)

@@ -5,21 +5,21 @@ using System.Linq;
 using UnityEngine;
 using DG.Tweening;
 using static GameController;
-using static Rotate;
+using static Dice;
 using static Tool;
 using static ToolSingleton;
 
-public class Chess : MonoBehaviour
+public class LudoPiece : MonoBehaviour
 {
     public enum PieceColor
     {
+        Orange,
+        Green,
         Blue,
         Red,
-        Green,
-        Yellow
     }
     [SerializeField]
-    private PieceColor color;
+    public PieceColor color;
 
     public bool isClickable = false;
     public GameObject home_space;
@@ -47,6 +47,10 @@ public class Chess : MonoBehaviour
             transform.rotation = Quaternion.Euler(new Vector3(270f, 0f, 0f));
         }
     }
+    public void ResetToHome()
+    {
+        transform.position = home_space.GetComponent<Space>().actual_position;
+    }
 
     public GameObject CheckSelfPos()
     {
@@ -66,15 +70,14 @@ public class Chess : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit) && hit.collider.gameObject == gameObject)
             {
-                print("move");
-                StartCoroutine(MoveChess());
-                selectedChess = gameObject;
+                StartCoroutine(MovePiece());
+                // selectedPiece = gameObject;
             }
         }
     }
-    public IEnumerator MoveChess()
+    public IEnumerator MovePiece()
     {
-        int steps = GetLatestDiceResult();
+        int steps = DiceManager.Instance.GetTotalDiceResult();
 
         for (int i = 0; i < steps; i++)
         {
@@ -92,7 +95,7 @@ public class Chess : MonoBehaviour
                 if (currentSpace.gameObject.layer == 6) // Home
                 {
                     nextPosition = start_space.GetComponent<Space>().actual_position;
-                    yield return StartCoroutine(Instance.MoveToPosition(gameObject, nextPosition));
+                    yield return StartCoroutine(Instance.MoveToPosition(this, nextPosition));
                     break;
                 }
                 //終點前
@@ -106,13 +109,13 @@ public class Chess : MonoBehaviour
                 nextPosition = currentSpace.next_space.GetComponent<Space>().actual_position;
             }
 
-            yield return StartCoroutine(Instance.MoveToPosition(gameObject, nextPosition));
+            yield return StartCoroutine(Instance.MoveToPosition(this, nextPosition));
 
             // 短暂暂停，让玩家能看清每一步的移动
             yield return new WaitForSeconds(0.1f);
         }
 
-        isChessMoved = true;
+        isPieceMoved = true;
 
     }
 

@@ -2,29 +2,30 @@ using System.Collections;
 using UnityEngine;
 using static GameController;
 
-public class Rotate : MonoBehaviour
+public class Dice : MonoBehaviour
 {
-    public static Rigidbody rb;
-    public static Vector3 rotatingPos = new Vector3(-20f, 7f, 0);
-    public static Vector3 rotatingSpeed = new Vector3(2f, 3f, 2f);
-    public static int dice_result;
+    public Rigidbody rb;
+    public Vector3 rotatingPos = new Vector3(-20f, 7f, 0);
+    public Vector3 rotatingSpeed = new Vector3(2f, 3f, 2f);
+    public int dice_result;
 
-    public float velocityThreshold = 0.01f;
-    public float angularVelocityThreshold = 0.01f;
-    public float settleTime = 0.5f;
-    private bool isCheckingForSettle = false;
-    private bool hasSettled = false;
+    float velocityThreshold = 0.01f;
+    float angularVelocityThreshold = 0.01f;
+    float settleTime = 0.5f;
+    bool isCheckingForSettle = false;
+    bool hasSettled = false;
 
     private void Start()
     {
         rb = gameObject.GetComponent<Rigidbody>();
+        rotatingPos = new Vector3(-20f, 7f, 0);
     }
 
     void Update()
     {
         if (gameObject.transform.position.y < -10f)
         {
-            gameObject.transform.position = rotatingPos;
+            ResetPosition();
         }
 
         if (!isCheckingForSettle)
@@ -33,6 +34,12 @@ public class Rotate : MonoBehaviour
         }
     }
 
+    public void ResetPosition()
+    {
+        gameObject.transform.position = rotatingPos;
+    }
+
+    // is dice moving or not
     private bool IsDiceSettled()
     {
         return rb.velocity.magnitude < velocityThreshold &&
@@ -60,9 +67,7 @@ public class Rotate : MonoBehaviour
 
         hasSettled = true;
         isCheckingForSettle = false;
-        Debug.Log("骰子已停止運動！");
-
-        // 骰子停止後，更新結果
+        // Debug.Log("骰子已停止運動！");
         UpdateDiceResult();
     }
 
@@ -75,7 +80,7 @@ public class Rotate : MonoBehaviour
         }
     }
 
-    public static int GetDiceResult(string result)
+    public int GetDiceResult(string result)
     {
         switch (result)
         {
@@ -89,19 +94,26 @@ public class Rotate : MonoBehaviour
         }
     }
 
-    public static (bool isStop, int dice_result) StopDetermination()
+    public bool isStop()
     {
-        Rotate rotateScript = FindObjectOfType<Rotate>();
-        return (rotateScript.hasSettled, dice_result);
+        return hasSettled;
     }
-    public static int GetLatestDiceResult()
+    public int GetLatestDiceResult()
     {
-        Rotate rotateScript = FindObjectOfType<Rotate>();
-        if (rotateScript != null && rotateScript.hasSettled)
+        if (hasSettled)
         {
-            rotateScript.UpdateDiceResult();
+            UpdateDiceResult();
         }
         return dice_result;
+    }
+    void OnMouseDrag()
+    {
+        transform.position = rotatingPos;
+        transform.Rotate(rotatingSpeed);
+        isDiceThrown = true;
+        isPieceMoved = false;
+        hasSettled = false;  // 重置停止狀態
+        // IsDiceMoving = true;
     }
     private void OnDrawGizmos()
     {
@@ -109,12 +121,5 @@ public class Rotate : MonoBehaviour
         Gizmos.DrawRay(transform.position, Vector3.up);
     }
 
-    void OnMouseDrag()
-    {
-        transform.position = rotatingPos;
-        transform.Rotate(rotatingSpeed);
-        isDiceThrown = true;
-        isChessMoved = false;
-        hasSettled = false;  // 重置停止狀態
-    }
+
 }

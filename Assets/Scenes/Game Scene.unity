@@ -270,9 +270,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae7a49b52e7530c468a782a2f31fbe61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  velocityThreshold: 0.01
-  angularVelocityThreshold: 0.01
-  settleTime: 0.5
+  rb: {fileID: 0}
+  rotatingPos: {x: -20, y: 7, z: 0}
+  rotatingSpeed: {x: 2, y: 3, z: 2}
+  dice_result: 0
 --- !u!54 &204634968
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -370,7 +371,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: feed13ea652d8e34e921073fba1835f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color: 0
+  color: 3
   isClickable: 0
   home_space: {fileID: 5741353394309961399}
   start_space: {fileID: 5249822942679927262}
@@ -584,7 +585,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: d5b12d03fc80db04dac814a30557e769, type: 2}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Name
-      value: Chess (2)
+      value: Piece (2)
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Layer
@@ -783,7 +784,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 143fdbb093ec73a4c8d85e85deaa42c4, type: 2}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Name
-      value: Chess (1)
+      value: Piece (1)
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Layer
@@ -857,7 +858,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: feed13ea652d8e34e921073fba1835f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color: 0
+  color: 3
   isClickable: 0
   home_space: {fileID: 1902543482342667297}
   start_space: {fileID: 5249822942679927262}
@@ -1003,7 +1004,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 143fdbb093ec73a4c8d85e85deaa42c4, type: 2}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Name
-      value: Chess (4)
+      value: Piece (4)
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Layer
@@ -1049,6 +1050,8 @@ GameObject:
   - component: {fileID: 809700870}
   - component: {fileID: 809700871}
   - component: {fileID: 809700872}
+  - component: {fileID: 809700873}
+  - component: {fileID: 809700874}
   m_Layer: 0
   m_Name: GameCenter
   m_TagString: Untagged
@@ -1097,6 +1100,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64c67adc72a33c345a2b985a3237dbbd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &809700873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 809700868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0dbd7577b14ea943b247a86d1cec50e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dices:
+  - {fileID: 204634966}
+--- !u!114 &809700874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 809700868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e0951253491f7b41932769c7f536b60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &898454667 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
@@ -1136,7 +1165,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: feed13ea652d8e34e921073fba1835f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color: 0
+  color: 1
   isClickable: 0
   home_space: {fileID: 6993371699679637346}
   start_space: {fileID: 5485615705078925354}
@@ -1361,7 +1390,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 143fdbb093ec73a4c8d85e85deaa42c4, type: 2}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Name
-      value: Chess (2)
+      value: Piece (2)
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Layer
@@ -1430,7 +1459,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: feed13ea652d8e34e921073fba1835f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color: 0
+  color: 2
   isClickable: 0
   home_space: {fileID: 7447348485702831001}
   start_space: {fileID: 1805330097171463298}
@@ -1946,7 +1975,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: feed13ea652d8e34e921073fba1835f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color: 0
+  color: 3
   isClickable: 0
   home_space: {fileID: 7300127391793591138}
   start_space: {fileID: 5249822942679927262}
@@ -2092,7 +2121,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: c161da4b8cdf1ba4da44c01fe1076029, type: 2}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Name
-      value: Chess (2)
+      value: Piece (2)
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Layer
@@ -2288,7 +2317,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1218344053}
   m_Layer: 10
-  m_Name: Chesses
+  m_Name: Pieces
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2537,7 +2566,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: feed13ea652d8e34e921073fba1835f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color: 0
+  color: 2
   isClickable: 0
   home_space: {fileID: 462172565174279105}
   start_space: {fileID: 1805330097171463298}
@@ -2688,7 +2717,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: d5b12d03fc80db04dac814a30557e769, type: 2}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Name
-      value: Chess (3)
+      value: Piece (3)
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Layer
@@ -2788,7 +2817,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: d5b12d03fc80db04dac814a30557e769, type: 2}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Name
-      value: Chess (4)
+      value: Piece (4)
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Layer
@@ -2888,7 +2917,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 0f28954b32727b74c89f539ac0d462ac, type: 2}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Name
-      value: Chess (2)
+      value: Piece (2)
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Layer
@@ -2993,7 +3022,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: c161da4b8cdf1ba4da44c01fe1076029, type: 2}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Name
-      value: Chess (4)
+      value: Piece (4)
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Layer
@@ -3261,7 +3290,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: c161da4b8cdf1ba4da44c01fe1076029, type: 2}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Name
-      value: Chess (3)
+      value: Piece (3)
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Layer
@@ -3383,7 +3412,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: feed13ea652d8e34e921073fba1835f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color: 0
+  color: 3
   isClickable: 0
   home_space: {fileID: 7528473588704342241}
   start_space: {fileID: 5249822942679927262}
@@ -3498,7 +3527,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: feed13ea652d8e34e921073fba1835f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color: 0
+  color: 1
   isClickable: 0
   home_space: {fileID: 6857511250315111614}
   start_space: {fileID: 5485615705078925354}
@@ -3644,7 +3673,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: d5b12d03fc80db04dac814a30557e769, type: 2}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Name
-      value: Chess (1)
+      value: Piece (1)
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Layer
@@ -3847,7 +3876,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 0f28954b32727b74c89f539ac0d462ac, type: 2}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Name
-      value: Chess (4)
+      value: Piece (4)
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Layer
@@ -3916,7 +3945,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: feed13ea652d8e34e921073fba1835f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color: 0
+  color: 2
   isClickable: 0
   home_space: {fileID: 4811010988022335970}
   start_space: {fileID: 1805330097171463298}
@@ -4062,7 +4091,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 143fdbb093ec73a4c8d85e85deaa42c4, type: 2}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Name
-      value: Chess (3)
+      value: Piece (3)
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Layer
@@ -4162,7 +4191,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 0f28954b32727b74c89f539ac0d462ac, type: 2}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Name
-      value: Chess (1)
+      value: Piece (1)
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Layer
@@ -4262,7 +4291,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 0f28954b32727b74c89f539ac0d462ac, type: 2}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Name
-      value: Chess (3)
+      value: Piece (3)
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Layer
@@ -4331,7 +4360,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: feed13ea652d8e34e921073fba1835f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color: 0
+  color: 1
   isClickable: 0
   home_space: {fileID: 4704967952282387086}
   start_space: {fileID: 5485615705078925354}
@@ -4477,7 +4506,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: c161da4b8cdf1ba4da44c01fe1076029, type: 2}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Name
-      value: Chess (1)
+      value: Piece (1)
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_Layer
@@ -4546,7 +4575,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: feed13ea652d8e34e921073fba1835f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color: 0
+  color: 2
   isClickable: 0
   home_space: {fileID: 3643784571153019711}
   start_space: {fileID: 1805330097171463298}
@@ -4661,7 +4690,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: feed13ea652d8e34e921073fba1835f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color: 0
+  color: 1
   isClickable: 0
   home_space: {fileID: 5538181987639990226}
   start_space: {fileID: 5485615705078925354}
@@ -5435,7 +5464,7 @@ GameObject:
   m_Component:
   - component: {fileID: 543450652821471461}
   m_Layer: 11
-  m_Name: dice
+  m_Name: Dice
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11262,7 +11291,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7680783375044574563}
   m_Layer: 0
-  m_Name: ludoBoard 1
+  m_Name: LudoBoard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

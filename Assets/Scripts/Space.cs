@@ -14,12 +14,12 @@ public class Space : MonoBehaviour
     public GameObject next_space2;
 
     //格子是否有棋
-    public (bool exist, GameObject chess) Chessed()
+    public (bool exist, LudoPiece piece) Pieced()
     {
         Vector3 abovePosition = actual_position + Vector3.up * 3f;
         RaycastHit hit;
         if (Physics.Raycast(abovePosition, Vector3.down, out hit, 3f) && hit.collider.gameObject.layer == 10) //Chess
-            return (true, hit.collider.gameObject);
+            return (true, hit.collider.gameObject.GetComponent<LudoPiece>());
         return (false, null);
     }
 }

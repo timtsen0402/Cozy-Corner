@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 using DG.Tweening;
-using static Rotate;
+using static Dice;
 using static Tool;
 using static GameController;
 
@@ -25,16 +25,16 @@ public class ToolSingleton : MonoBehaviour
         }
     }
 
-    public IEnumerator MoveToPosition(GameObject chess, Vector3 targetPosition, float speed = 0.1f)
+    public IEnumerator MoveToPosition(LudoPiece piece, Vector3 targetPosition, float speed = 0.1f)
     {
-        Tween moveTween = chess.transform.DOMove(targetPosition, speed).SetEase(Ease.OutQuad);
+        Tween moveTween = piece.transform.DOMove(targetPosition, speed).SetEase(Ease.OutQuad);
         yield return moveTween.WaitForCompletion();
     }
-    public IEnumerator AIMoveChess(GameObject chess)
+    public IEnumerator AIMoveChess(LudoPiece piece)
     {
-        Chess chessPiece = chess.GetComponent<Chess>();
+        LudoPiece chessPiece = piece.GetComponent<LudoPiece>();
 
-        int steps = GetLatestDiceResult();
+        int steps = DiceManager.Instance.GetTotalDiceResult();
         for (int i = 0; i < steps; i++)
         {
             Space currentSpace = chessPiece.CheckSelfPos().GetComponent<Space>();
@@ -51,7 +51,7 @@ public class ToolSingleton : MonoBehaviour
                 if (chessPiece.CheckSelfPos().layer == 6)//Home
                 {
                     nextPosition = chessPiece.start_space.GetComponent<Space>().actual_position;
-                    yield return MoveToPosition(chess, nextPosition);
+                    yield return MoveToPosition(piece, nextPosition);
                     break;
                 }
                 else if (chessPiece.CheckSelfPos().layer == 8)//Path
@@ -71,12 +71,12 @@ public class ToolSingleton : MonoBehaviour
                 // Vector3 next_pos = currentSpace.next_space.GetComponent<Space>().actual_position;
                 // chessPiece.transform.position = next_pos;
             }
-            yield return MoveToPosition(chess, nextPosition);
+            yield return MoveToPosition(piece, nextPosition);
 
             // 短暂暂停，让玩家能看清每一步的移动
             yield return new WaitForSeconds(0.1f);
 
         }
-        isChessMoved = true;
+        isPieceMoved = true;
     }
 }
