@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using static GameController;
 
 public class Dice : MonoBehaviour
 {
@@ -110,8 +109,8 @@ public class Dice : MonoBehaviour
     {
         transform.position = rotatingPos;
         transform.Rotate(rotatingSpeed);
-        isDiceThrown = true;
-        isPieceMoved = false;
+        GameManager.Instance.IsDiceThrown = true;
+        GameManager.Instance.IsPieceMoved = false;
         hasSettled = false;  // 重置停止狀態
         // IsDiceMoving = true;
     }
@@ -119,6 +118,10 @@ public class Dice : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawRay(transform.position, Vector3.up);
+    }
+    void OnCollisionEnter(Collision collision)
+    {
+        //AudioManager.Instance.PlaySFX("DiceRoll");
     }
 
 

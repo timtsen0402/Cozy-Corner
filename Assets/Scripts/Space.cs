@@ -4,22 +4,45 @@ using UnityEngine;
 
 public class Space : MonoBehaviour
 {
-    //格子之實際位置
-    public Vector3 actual_position;
-    //是否開啟下一個格子
-    public bool useNext_space = true;
-    public bool useNext_space2 = false;
-    //下一個格子的GameObject
-    public GameObject next_space;
-    public GameObject next_space2;
 
-    //格子是否有棋
-    public (bool exist, LudoPiece piece) Pieced()
+    [field: SerializeField]
+    public Vector3 ActualPosition { get; private set; }
+    [field: SerializeField]
+    public bool UseNextSpace { get; private set; }
+    [field: SerializeField]
+    public bool UseNextSpace2 { get; private set; }
+    [field: SerializeField]
+    public Space NextSpace { get; private set; }
+    [field: SerializeField]
+    public Space NextSpace2 { get; private set; }
+
+    private Vector3 abovePosition;
+
+    public LudoPiece CurrentPiece
     {
-        Vector3 abovePosition = actual_position + Vector3.up * 3f;
+        get
+        {
+            return PieceInCurrentSpace();
+        }
+    }
+
+    private void Start()
+    {
+        abovePosition = ActualPosition + Vector3.up * 3f;
+    }
+
+    private LudoPiece PieceInCurrentSpace()
+    {
         RaycastHit hit;
-        if (Physics.Raycast(abovePosition, Vector3.down, out hit, 3f) && hit.collider.gameObject.layer == 10) //Chess
-            return (true, hit.collider.gameObject.GetComponent<LudoPiece>());
-        return (false, null);
+        if (Physics.Raycast(abovePosition, Vector3.down, out hit, 3f, LayerMask.GetMask("Piece")))
+        {
+            return hit.collider.gameObject.GetComponent<LudoPiece>();
+        }
+        return null;
+    }
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawRay(abovePosition, Vector3.down);
     }
 }

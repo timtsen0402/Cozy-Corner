@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using System.Linq;
+using DG.Tweening;
 
 public class LudoPieceManager : MonoBehaviour
 {
@@ -22,6 +24,10 @@ public class LudoPieceManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    private void Start()
+    {
+        CollectAllPieces();
+    }
 
     private void InitializePieceDictionary()
     {
@@ -30,11 +36,6 @@ public class LudoPieceManager : MonoBehaviour
         {
             piecesByColor[color] = new List<LudoPiece>();
         }
-    }
-
-    private void Start()
-    {
-        CollectAllPieces();
     }
 
     private void CollectAllPieces()
@@ -48,15 +49,21 @@ public class LudoPieceManager : MonoBehaviour
 
     public void AddPiece(LudoPiece piece)
     {
-        if (!piecesByColor[piece.color].Contains(piece))
+        if (!piecesByColor[piece.Color].Contains(piece))
         {
-            piecesByColor[piece.color].Add(piece);
+            piecesByColor[piece.Color].Add(piece);
         }
+    }
+    #region Get
+    public List<LudoPiece> GetAllPieces()
+    {
+        return piecesByColor.Values.SelectMany(list => list).ToList();
     }
 
     public List<LudoPiece> GetPiecesByColor(LudoPiece.PieceColor color)
     {
-        return piecesByColor[color];
+        var pieces = GetAllPieces().Where(p => p.Color == color).ToList();
+        return pieces;
     }
 
     public LudoPiece GetPiece(LudoPiece.PieceColor color, int index)
@@ -66,18 +73,11 @@ public class LudoPieceManager : MonoBehaviour
         {
             return pieces[index];
         }
-        Debug.LogWarning($"Piece index {index} for color {color} is out of range.");
         return null;
     }
+    #endregion Get
 
-    public void SetPiecesClickable(LudoPiece.PieceColor color, bool clickable)
-    {
-        foreach (var piece in piecesByColor[color])
-        {
-            piece.isClickable = clickable;
-        }
-    }
-
+    #region Reset
     public void ResetPieces(LudoPiece.PieceColor color)
     {
         foreach (var piece in piecesByColor[color])
@@ -96,16 +96,72 @@ public class LudoPieceManager : MonoBehaviour
             }
         }
     }
+    #endregion Reset
 
-    public int GetPieceCount(LudoPiece.PieceColor color)
+    #region Move
+    public IEnumerator MoveToPosition(LudoPiece piece, Vector3 targetPosition, float speed = 0.1f)
     {
-        return piecesByColor[color].Count;
+        Tween moveTween = piece.transform.DOMove(targetPosition, speed).SetEase(Ease.OutQuad);
+        AudioManager.Instance.PlaySFX("PieceWalk");
+        yield return moveTween.WaitForCompletion();
     }
 
-    public List<LudoPiece> GetAllPieces()
+    public IEnumerator AIMovePiece(LudoPiece piece)
     {
-        return piecesByColor.Values.SelectMany(list => list).ToList();
-    }
+        piece.IsMoving = true;
+        int steps = DiceManager.Instance.GetTotalDiceResult();
+        for (int i = 0; i < steps; i++)
+        {
+            Space currentSpace = piece.CheckCurrentSpace();
 
-    // 其他可能需要的方法...
+            if (currentSpace.NextSpace == null)
+            {
+                break;
+            }
+
+            Vector3 nextPosition;
+
+            if (currentSpace.NextSpace == piece.StartSpace)
+            {
+                if (piece.CheckCurrentSpace().gameObject.layer == 6)//Home
+                {
+                    nextPosition = piece.StartSpace.ActualPosition;
+                    yield return MoveToPosition(piece, nextPosition);
+                    break;
+                }
+                else if (piece.CheckCurrentSpace().gameObject.layer == 8)//Path
+                {
+                    nextPosition = currentSpace.NextSpace2.ActualPosition;
+
+                }
+                else
+                {
+                    nextPosition = currentSpace.NextSpace.ActualPosition;
+                }
+            }
+            else
+            {
+                nextPosition = currentSpace.NextSpace.ActualPosition;
+            }
+            yield return MoveToPosition(piece, nextPosition);
+
+            // 短暂暂停，让玩家能看清每一步的移动
+            yield return new WaitForSeconds(0.1f);
+
+        }
+        piece.IsMoving = false;
+        GameManager.Instance.IsPieceMoved = true;
+    }
+    #endregion Move
+
+    #region Debug
+    public void LogAllPieces()
+    {
+        Debug.Log($"Total pieces: {GetAllPieces().Count}");
+        foreach (var piece in GetAllPieces())
+        {
+            Debug.Log($"Piece: {piece.name}, Color: {piece.Color}");
+        }
+    }
+    #endregion Debug
 }

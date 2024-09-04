@@ -38,30 +38,8 @@ public class DiceManager : MonoBehaviour
         return false;
     }
 
-    public int GetTotalDiceResult()
-    {
-        int total = 0;
-        foreach (var dice in dices)
-        {
-            total += dice.GetLatestDiceResult();
-        }
-        return total;
-    }
 
-    public static int GetDiceResult(string result)
-    {
-        switch (result)
-        {
-            case "surface1": return 1;
-            case "surface2": return 2;
-            case "surface3": return 3;
-            case "surface4": return 4;
-            case "surface5": return 5;
-            case "surface6": return 6;
-            default: return 0;
-        }
-    }
-
+    #region Get
     // 新增方法：獲取指定索引的骰子
     public Dice GetDice(int index)
     {
@@ -72,7 +50,11 @@ public class DiceManager : MonoBehaviour
         Debug.LogWarning($"Dice index {index} is out of range.");
         return null;
     }
-
+    // 新增方法：獲取骰子數量
+    public int GetDiceCount()
+    {
+        return dices.Count;
+    }
     // 新增方法：獲取指定骰子的結果
     public int GetDiceResult(int index)
     {
@@ -80,6 +62,18 @@ public class DiceManager : MonoBehaviour
         return dice != null ? dice.GetLatestDiceResult() : 0;
     }
 
+    public int GetTotalDiceResult()
+    {
+        int total = 0;
+        foreach (var dice in dices)
+        {
+            total += dice.GetLatestDiceResult();
+        }
+        return total;
+    }
+    #endregion Get
+
+    #region Reset
     // 新增方法：重置指定骰子的位置
     public void ResetDicePosition(int index)
     {
@@ -98,10 +92,31 @@ public class DiceManager : MonoBehaviour
             dice.ResetPosition();
         }
     }
+    #endregion Reset
 
-    // 新增方法：獲取骰子數量
-    public int GetDiceCount()
+
+
+    #region Roll
+    public IEnumerator AIRollDice(params Dice[] dices)
     {
-        return dices.Count;
+        float elapsedTime = 0f;
+        float diceRollDuration = Random.Range(1.5f, 3.5f);
+
+        foreach (var dice in dices)
+        {
+            dice.transform.rotation = Quaternion.Euler(Random.Range(0f, 90f), Random.Range(0f, 90f), Random.Range(0f, 90f));
+        }
+
+        while (elapsedTime < diceRollDuration)
+        {
+            foreach (var dice in dices)
+            {
+                dice.ResetPosition();
+                dice.transform.Rotate(dice.rotatingSpeed);
+            }
+            elapsedTime += 0.01f;
+            yield return null;
+        }
     }
+    #endregion Roll
 }
