@@ -74,15 +74,12 @@ public class LudoPiece : MonoBehaviour
     {
         if (IsMoving)
         {
-            // 給被撞物體一個力
-            Rigidbody targetRb = collision.gameObject.GetComponent<Rigidbody>();
-            if (targetRb != null)
+            if (collision.transform.gameObject.GetComponent<LudoPiece>() != null)
             {
-                Vector3 direction = (collision.transform.position - transform.position).normalized;
-
-                // 對被碰撞物體施加力
-                targetRb.AddForce(direction * 5f, ForceMode.Impulse);
+                LudoPiece piece = collision.transform.gameObject.GetComponent<LudoPiece>();
+                piece.ResetToHome();
                 AudioManager.Instance.PlaySFX("Kick");
+                //ParticleEffectManager.Instance.PlayEffect("fire", collision.transform.position);
             }
         }
     }

@@ -4,7 +4,7 @@ using UnityEngine;
 public class Dice : MonoBehaviour
 {
     public Rigidbody rb;
-    public Vector3 rotatingPos = new Vector3(-20f, 7f, 0);
+    public Vector3 rotatingPos = new Vector3(-24f, 7f, 0);
     public Vector3 rotatingSpeed = new Vector3(2f, 3f, 2f);
     public int dice_result;
 
@@ -17,7 +17,7 @@ public class Dice : MonoBehaviour
     private void Start()
     {
         rb = gameObject.GetComponent<Rigidbody>();
-        rotatingPos = new Vector3(-20f, 7f, 0);
+        rotatingPos = new Vector3(-24f, 7f, 0);
     }
 
     void Update()
@@ -121,7 +121,7 @@ public class Dice : MonoBehaviour
     }
     void OnCollisionEnter(Collision collision)
     {
-        //AudioManager.Instance.PlaySFX("DiceRoll");
+        // AudioManager.Instance.PlaySFX("DiceRoll");
     }
 
 
