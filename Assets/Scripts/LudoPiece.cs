@@ -74,7 +74,8 @@ public class LudoPiece : MonoBehaviour
     {
         if (IsMoving)
         {
-            if (collision.transform.gameObject.GetComponent<LudoPiece>() != null)
+            LudoPiece collisionPiece = collision.transform.gameObject.GetComponent<LudoPiece>();
+            if (collisionPiece != null && !LudoPieceManager.Instance.GetPiecesByColor(Color).Contains(collisionPiece))
             {
                 LudoPiece piece = collision.transform.gameObject.GetComponent<LudoPiece>();
                 piece.ResetToHome();
@@ -112,6 +113,11 @@ public class LudoPiece : MonoBehaviour
     }
     private IEnumerator MovePiece()
     {
+        foreach (LudoPiece piece in LudoPieceManager.Instance.GetPiecesByColor(Color))
+        {
+            piece.IsClickable = false;
+        }
+        IsMoving = true;
         int steps = DiceManager.Instance.GetTotalDiceResult();
 
         for (int i = 0; i < steps; i++)
@@ -151,7 +157,7 @@ public class LudoPiece : MonoBehaviour
         }
 
         GameManager.Instance.IsPieceMoved = true;
-
+        IsMoving = false;
     }
 
 

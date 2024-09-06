@@ -22,7 +22,7 @@ public class CamController : MonoBehaviour
 
     void Start()
     {
-        transform.position = new Vector3(Target.transform.position.x, Target.transform.position.y + 27f, Target.transform.position.z + 31f);
+        transform.position = new Vector3(Target.transform.position.x, Target.transform.position.y + 25f, Target.transform.position.z + 33f);
         transform.rotation = new Quaternion(60f, 180f, 0, 0);
         offset = transform.position - Target.transform.position;
     }

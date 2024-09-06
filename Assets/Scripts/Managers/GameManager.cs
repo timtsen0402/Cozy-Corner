@@ -43,11 +43,9 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        Loading();
         HumanPlayers = PlayerPrefs.GetInt("HumanPlayers");
         AIPlayers = PlayerPrefs.GetInt("ComputerPlayers");
 
-        hintText.text = "Roll";
         StartCoroutine(GameLoop());
         Time.timeScale = 2;
         AudioManager.Instance.PlayBgmRandomly();
@@ -103,11 +101,6 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitUntil(() => IsPieceMoved);
 
-        foreach (LudoPiece piece in allPieces)
-        {
-            piece.GetComponent<LudoPiece>().IsClickable = false;
-        }
-
         yield return new WaitForSeconds(1f);
 
         //若骰6則可以再一次
@@ -160,26 +153,13 @@ public class GameManager : MonoBehaviour
             yield return null;
     }
 
-    private void UpdateUI()
-    {
-        turnText.text = $"Player : {CurrentPlayerTurn}";
-        hintText.text = $"Dice : {DiceManager.Instance.GetTotalDiceResult()}";
-    }
-
-    private void Update()
-    {
-        UpdateUI();
-    }
     public void ChangeTurn()
     {
         CurrentPlayerTurn = (CurrentPlayerTurn % NumberOfPlayers) + 1;
+        BackGroundManager.Instance.SetUpTurnFlag();
         RollCount = 0;
     }
-    void Loading()
-    {
-        hintText = GameObject.Find("Hint").GetComponent<Text>();
-        turnText = GameObject.Find("Turn").GetComponent<Text>();
-    }
+
     bool isGameOver()
     {
 

@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using System.Collections;
+using UnityEngine.UIElements;
 
 public class AudioManager : MonoBehaviour
 {
@@ -13,11 +14,14 @@ public class AudioManager : MonoBehaviour
         public string name;
         public AudioClip clip;
         [Range(0f, 1f)]
-        public float volume = 1f;
+        public float volume = 0f;
     }
 
     public Sound[] bgmSounds;
     public Sound[] sfxSounds;
+    [field: SerializeField]
+    public float fadeSecondsBGM { get; private set; }
+
 
     private AudioSource bgmSource;
     private AudioSource sfxSource;
@@ -50,6 +54,7 @@ public class AudioManager : MonoBehaviour
             soundDictionary[s.name] = s;
         }
     }
+
 
     // 這裡我們將添加播放音樂和音效的方法
 
@@ -106,6 +111,7 @@ public class AudioManager : MonoBehaviour
         bgmSource.clip = s.clip;
         bgmSource.volume = s.volume;
         bgmSource.Play();
+        FadeBGM(fadeSecondsBGM, 1f);
 
         // 設置在這首音樂結束時播放下一首
         StartCoroutine(WaitForMusicEnd());
@@ -114,6 +120,7 @@ public class AudioManager : MonoBehaviour
     private IEnumerator WaitForMusicEnd()
     {
         yield return new WaitUntil(() => !bgmSource.isPlaying);
+        FadeBGM(fadeSecondsBGM, 0f);
         PlayBgmRandomly();
     }
     public List<string> GetAllBGMNames()

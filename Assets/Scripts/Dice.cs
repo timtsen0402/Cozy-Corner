@@ -1,5 +1,7 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class Dice : MonoBehaviour
 {
@@ -13,6 +15,7 @@ public class Dice : MonoBehaviour
     float settleTime = 0.5f;
     bool isCheckingForSettle = false;
     bool hasSettled = false;
+    bool isRollFinished = false;
 
     private void Start()
     {
@@ -67,7 +70,9 @@ public class Dice : MonoBehaviour
         hasSettled = true;
         isCheckingForSettle = false;
         // Debug.Log("骰子已停止運動！");
+
         UpdateDiceResult();
+        isRollFinished = true;
     }
 
     private void UpdateDiceResult()
@@ -107,12 +112,21 @@ public class Dice : MonoBehaviour
     }
     void OnMouseDrag()
     {
-        transform.position = rotatingPos;
-        transform.Rotate(rotatingSpeed);
-        GameManager.Instance.IsDiceThrown = true;
-        GameManager.Instance.IsPieceMoved = false;
-        hasSettled = false;  // 重置停止狀態
-        // IsDiceMoving = true;
+        List<LudoPiece> allColorPieces = Tool.TurnToTeam(GameManager.Instance.CurrentPlayerTurn);
+        bool isAllUnclickable = allColorPieces.All(piece => !piece.IsClickable);
+        // 若為人類玩家 且停止 且任何棋是不可被點擊的狀態
+        if (GameManager.Instance.CurrentPlayerTurn <= GameManager.Instance.HumanPlayers && isRollFinished && isAllUnclickable)
+        {
+            transform.position = rotatingPos;
+            transform.Rotate(rotatingSpeed);
+            GameManager.Instance.IsDiceThrown = true;
+            GameManager.Instance.IsPieceMoved = false;
+            hasSettled = false;
+        }
+    }
+    void OnMouseUp()
+    {
+        isRollFinished = false;
     }
     private void OnDrawGizmos()
     {
