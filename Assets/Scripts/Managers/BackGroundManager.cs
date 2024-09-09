@@ -75,7 +75,6 @@ public class BackGroundManager : MonoBehaviour
             {
                 // 獲取點擊物體的名稱
                 string objectName = hit.collider.gameObject.name;
-                Debug.Log(objectName);
                 // Debug.Log(objectName);
                 switch (objectName)
                 {

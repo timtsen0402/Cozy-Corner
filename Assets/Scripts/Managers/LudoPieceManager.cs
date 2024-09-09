@@ -61,6 +61,19 @@ public class LudoPieceManager : MonoBehaviour
     }
     #region Get
 
+    public LudoPiece SelectPiece(AIStrategies.Difficulty difficulty, List<LudoPiece> availablePieces)
+    {
+        var strategy = AIStrategies.GetStrategy(difficulty);
+        return strategy(availablePieces);
+    }
+
+    public List<LudoPiece> GetNearestPiecesToFinishByColor(List<LudoPiece> pieces)
+    {
+        return pieces
+           .OrderBy(piece => piece.GetDistanceToTheEnd())
+           .ToList();
+    }
+    //sortedList1.Sort();
     public int GetColorKillCount(LudoPiece.PieceColor color)
     {
         List<LudoPiece> colorPieces = GetPiecesByColor(color);

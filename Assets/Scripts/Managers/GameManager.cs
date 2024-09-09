@@ -21,11 +21,6 @@ public class GameManager : MonoBehaviour
     public bool IsPieceMoved { get; set; }
     public int RollCount { get; set; }
 
-    public int HumanPlayers { get; private set; }
-    public int AIPlayers { get; private set; }
-
-
-
     private void Awake()
     {
         if (Instance == null)
@@ -41,12 +36,8 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        HumanPlayers = PlayerPrefs.GetInt("HumanPlayers");
-        AIPlayers = PlayerPrefs.GetInt("ComputerPlayers");
-
         StartCoroutine(GameLoop());
         Time.timeScale = 3;
-
     }
 
     IEnumerator GameLoop()
@@ -65,7 +56,7 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator PlayerTurn(int playerIndex)
     {
-        return playerIndex <= HumanPlayers ? HumanPlayerTurn() : AIPlayerTurn();
+        return playerIndex <= GameStartManager.Instance.HumanPlayers ? HumanPlayerTurn() : AIPlayerTurn();
     }
 
 
@@ -140,7 +131,8 @@ public class GameManager : MonoBehaviour
             yield break;
 
         }
-        LudoPiece selectedPiece = AIStrategies.RandomSelect(availablePieces);
+        LudoPiece selectedPiece;
+        selectedPiece = LudoPieceManager.Instance.SelectPiece(AIStrategies.Difficulty.Dumb, availablePieces);
 
         if (selectedPiece != null)
         {

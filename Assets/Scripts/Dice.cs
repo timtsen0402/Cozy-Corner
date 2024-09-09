@@ -115,7 +115,7 @@ public class Dice : MonoBehaviour
         List<LudoPiece> allColorPieces = Tool.TurnToTeam(GameManager.Instance.CurrentPlayerTurn);
         bool isAllUnclickable = allColorPieces.All(piece => !piece.IsClickable);
         // 若為人類玩家 且停止 且任何棋是不可被點擊的狀態
-        if (GameManager.Instance.CurrentPlayerTurn <= GameManager.Instance.HumanPlayers && isRollFinished && isAllUnclickable)
+        if (GameManager.Instance.CurrentPlayerTurn <= GameStartManager.Instance.HumanPlayers && isRollFinished && isAllUnclickable)
         {
             rb.useGravity = false;
             transform.position = rotatingPos;

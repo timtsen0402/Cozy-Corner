@@ -32,6 +32,7 @@ public class LudoPiece : MonoBehaviour
 
     void Start()
     {
+
         rb = GetComponent<Rigidbody>();
         IsMoving = false;
         rend = gameObject.GetComponent<Renderer>();
@@ -98,6 +99,31 @@ public class LudoPiece : MonoBehaviour
         {
             return CurrentSpace;
         }
+    }
+    public int GetDistanceToTheEnd()
+    {
+        Space currentSpace = CurrentSpace;
+        int count = 0;
+        while (currentSpace != null)
+        {
+            if (!currentSpace.UseNextSpace) //end
+            {
+                return count;
+            }
+
+            count++;
+
+            // 檢查是否需要轉換到 next_space2
+            if (currentSpace.NextSpace == StartSpace && currentSpace.UseNextSpace2)
+            {
+                currentSpace = currentSpace.NextSpace2;
+            }
+            else
+            {
+                currentSpace = currentSpace.NextSpace;
+            }
+        }
+        return count;
     }
     public void OnClick()
     {

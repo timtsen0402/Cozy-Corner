@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using DG.Tweening;
+using TMPro;
 
 public class GameStartManager : MonoBehaviour
 {
@@ -14,6 +15,11 @@ public class GameStartManager : MonoBehaviour
     public float transitionDuration = 2f;
     public CamController cc; // 遊戲開始時需要顯示的物件
     public GameObject canvas;
+
+    public int HumanPlayers { get; private set; } = 0;
+    public int AIPlayers { get; private set; } = 4;
+
+    private const int TotalPlayers = 4;
 
     public bool gameStarted { get; private set; } = false;
 
@@ -62,6 +68,44 @@ public class GameStartManager : MonoBehaviour
         canvas.SetActive(false);
         StartCoroutine(StartGameSequence());
 
+    }
+
+    public void CyclePlayerCounts(TextMeshProUGUI buttonText)
+    {
+        HumanPlayers = (HumanPlayers + 1) % (TotalPlayers + 1);
+        AIPlayers = TotalPlayers - HumanPlayers;
+        buttonText.text = $"H:{HumanPlayers} | C:{AIPlayers}";
+    }
+
+    public void ChangeAlgorithm(TextMeshProUGUI buttonText)
+    {
+        if (buttonText.text == AIStrategies.Difficulty.Dumb.ToString())
+        {
+            buttonText.text = AIStrategies.Difficulty.Peaceful.ToString();
+        }
+        else if (buttonText.text == AIStrategies.Difficulty.Peaceful.ToString())
+        {
+            buttonText.text = AIStrategies.Difficulty.Aggressive.ToString();
+        }
+        else
+        {
+            buttonText.text = AIStrategies.Difficulty.Dumb.ToString();
+        }
+    }
+
+    public void AddPlayerNum(TextMeshPro textComponent)
+    {
+        if (textComponent == null) return;
+
+        if (int.TryParse(textComponent.text, out int number) && number < 4)
+        {
+            number++;
+            textComponent.text = number.ToString();
+        }
+        else
+        {
+            return;
+        }
     }
 
     IEnumerator StartGameSequence()
