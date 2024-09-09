@@ -24,6 +24,7 @@ public class LudoPiece : MonoBehaviour
     public Space CurrentSpace { get; private set; }
     public bool IsClickable { get; set; }
     public bool IsMoving { get; set; }
+    public int killCount { get; private set; }
 
     Rigidbody rb;
     Renderer rend;
@@ -80,6 +81,7 @@ public class LudoPiece : MonoBehaviour
                 LudoPiece piece = collision.transform.gameObject.GetComponent<LudoPiece>();
                 piece.ResetToHome();
                 AudioManager.Instance.PlaySFX("Kick");
+                killCount++;
                 //ParticleEffectManager.Instance.PlayEffect("fire", collision.transform.position);
             }
         }

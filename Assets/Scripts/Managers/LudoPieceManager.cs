@@ -7,16 +7,18 @@ using DG.Tweening;
 public class LudoPieceManager : MonoBehaviour
 {
     public static LudoPieceManager Instance { get; private set; }
-
+    public List<LudoPiece.PieceColor> UnfinishedColors { get; set; }
+    public List<LudoPiece.PieceColor> FinishedColors { get; set; }
     // 使用字典來按顏色存儲棋子
     private Dictionary<LudoPiece.PieceColor, List<LudoPiece>> piecesByColor;
+
 
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(gameObject);
             InitializePieceDictionary();
             CollectAllPieces();
         }
@@ -24,6 +26,11 @@ public class LudoPieceManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        UnfinishedColors = System.Enum.GetValues(typeof(LudoPiece.PieceColor))
+                                    .Cast<LudoPiece.PieceColor>()
+                                    .ToList();
+        FinishedColors = new List<LudoPiece.PieceColor>();
     }
 
 
@@ -53,6 +60,41 @@ public class LudoPieceManager : MonoBehaviour
         }
     }
     #region Get
+
+    public int GetColorKillCount(LudoPiece.PieceColor color)
+    {
+        List<LudoPiece> colorPieces = GetPiecesByColor(color);
+        int totalKillCount = 0;
+        foreach (LudoPiece piece in colorPieces)
+        {
+            totalKillCount += piece.killCount;
+        }
+        return totalKillCount;
+    }
+
+    public string GetHexCode(LudoPiece.PieceColor color)
+    {
+        switch (color)
+        {
+            case LudoPiece.PieceColor.Orange:
+                return "#FF8C00";
+            case LudoPiece.PieceColor.Green:
+                return "#228B22";
+            case LudoPiece.PieceColor.Blue:
+                return "#1E90FF";
+            case LudoPiece.PieceColor.Red:
+                return "#CD5C5C";
+            default:
+                return "#FFFFFF"; // white
+        }
+    }
+    public bool isCertainColorTeamEnd(LudoPiece.PieceColor color)
+    {
+        List<LudoPiece> certainColorPieces = GetPiecesByColor(color);
+        if (!certainColorPieces.All(piece => piece.CheckCurrentSpace().gameObject.layer == 9)) return false;
+        return true;
+
+    }
     public List<LudoPiece> GetAllPieces()
     {
         var allPieces = piecesByColor.Values.SelectMany(list => list).ToList();

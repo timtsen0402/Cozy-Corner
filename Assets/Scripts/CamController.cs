@@ -22,15 +22,16 @@ public class CamController : MonoBehaviour
 
     void Start()
     {
-        transform.position = new Vector3(Target.transform.position.x, Target.transform.position.y + 25f, Target.transform.position.z + 33f);
-        transform.rotation = new Quaternion(60f, 180f, 0, 0);
         offset = transform.position - Target.transform.position;
     }
 
-    void Update()
+    void LateUpdate()
     {
         transform.position = Target.transform.position + offset;
-        transform.LookAt(Target.transform.position);
+
+
+        transform.LookAt(new Vector3(Target.transform.position.x, Target.transform.position.y + 6f, Target.transform.position.z));
+
 
 
         offset = Scrollview(offset, scrollSpeed, minDistance, maxDistance);

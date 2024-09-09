@@ -21,7 +21,7 @@ public class ParticleEffectManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(gameObject);
             InitializePools();
         }
         else

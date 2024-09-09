@@ -14,6 +14,7 @@ public class DiceManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            //DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -100,11 +101,13 @@ public class DiceManager : MonoBehaviour
     public IEnumerator AIRollDice(params Dice[] dices)
     {
         float elapsedTime = 0f;
-        float diceRollDuration = Random.Range(1.5f, 3.5f);
+        float diceRollDuration = Random.Range(2f, 3.5f);
 
         foreach (var dice in dices)
         {
-            dice.transform.rotation = Quaternion.Euler(Random.Range(0f, 90f), Random.Range(0f, 90f), Random.Range(0f, 90f));
+            // dice.rb.useGravity = false;
+            float randomRange = Random.Range(0f, 90f);
+            dice.transform.rotation = Quaternion.Euler(randomRange, randomRange, randomRange);
         }
 
         while (elapsedTime < diceRollDuration)
@@ -117,6 +120,10 @@ public class DiceManager : MonoBehaviour
             elapsedTime += 0.01f;
             yield return null;
         }
+        // foreach (var dice in dices)
+        // {
+        //     dice.rb.useGravity = true;
+        // }
     }
     #endregion Roll
 }

@@ -5,6 +5,31 @@ using System.Linq;
 
 public static class Tool
 {
+    public static LudoPiece.PieceColor TurnToColor(int number)
+    {
+        LudoPiece.PieceColor color;
+
+        switch (number)
+        {
+            case 1:
+                color = LudoPiece.PieceColor.Orange;
+                break;
+            case 2:
+                color = LudoPiece.PieceColor.Green;
+                break;
+            case 3:
+                color = LudoPiece.PieceColor.Blue;
+                break;
+            case 4:
+                color = LudoPiece.PieceColor.Red;
+                break;
+            default:
+                throw new System.ArgumentException("Invalid player number", nameof(number));
+        }
+
+        return color;
+
+    }
     public static List<LudoPiece> TurnToTeam(int number)
     {
         LudoPiece.PieceColor color;

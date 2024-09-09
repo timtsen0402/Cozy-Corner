@@ -6,8 +6,8 @@ using System.Linq;
 public class Dice : MonoBehaviour
 {
     public Rigidbody rb;
-    public Vector3 rotatingPos = new Vector3(-24f, 7f, 0);
-    public Vector3 rotatingSpeed = new Vector3(2f, 3f, 2f);
+    public Vector3 rotatingPos = new Vector3(0, 7f, 25f);
+    public Vector3 rotatingSpeed = new Vector3(5f, 5f, 5f);
     public int dice_result;
 
     float velocityThreshold = 0.01f;
@@ -20,7 +20,7 @@ public class Dice : MonoBehaviour
     private void Start()
     {
         rb = gameObject.GetComponent<Rigidbody>();
-        rotatingPos = new Vector3(-24f, 7f, 0);
+        rotatingPos = new Vector3(0, 7f, 25f);
     }
 
     void Update()
@@ -117,6 +117,7 @@ public class Dice : MonoBehaviour
         // 若為人類玩家 且停止 且任何棋是不可被點擊的狀態
         if (GameManager.Instance.CurrentPlayerTurn <= GameManager.Instance.HumanPlayers && isRollFinished && isAllUnclickable)
         {
+            rb.useGravity = false;
             transform.position = rotatingPos;
             transform.Rotate(rotatingSpeed);
             GameManager.Instance.IsDiceThrown = true;
@@ -126,6 +127,7 @@ public class Dice : MonoBehaviour
     }
     void OnMouseUp()
     {
+        rb.useGravity = true;
         isRollFinished = false;
     }
     private void OnDrawGizmos()

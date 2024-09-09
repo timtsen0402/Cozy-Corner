@@ -10,10 +10,6 @@ public class GameManager : MonoBehaviour
 {
 
     public static GameManager Instance { get; private set; }
-
-    [SerializeField] private Text hintText;
-    [SerializeField] private Text turnText;
-
     public int NumberOfPlayers { get; private set; } = 4;
     public int CurrentPlayerTurn { get; private set; } = 1;
 
@@ -28,12 +24,14 @@ public class GameManager : MonoBehaviour
     public int HumanPlayers { get; private set; }
     public int AIPlayers { get; private set; }
 
+
+
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -47,17 +45,21 @@ public class GameManager : MonoBehaviour
         AIPlayers = PlayerPrefs.GetInt("ComputerPlayers");
 
         StartCoroutine(GameLoop());
-        Time.timeScale = 2;
-        AudioManager.Instance.PlayBgmRandomly();
+        Time.timeScale = 3;
+
     }
 
     IEnumerator GameLoop()
     {
         while (!isGameOver())
         {
-            yield return StartCoroutine(PlayerTurn(CurrentPlayerTurn));
+            // hasn't already end
+            if (!LudoPieceManager.Instance.isCertainColorTeamEnd(TurnToColor(CurrentPlayerTurn)))
+            {
+                yield return StartCoroutine(PlayerTurn(CurrentPlayerTurn));
+            }
             ChangeTurn();
-            yield return new WaitForSeconds(delayBetweenTurns);
+            // yield return new WaitForSeconds(delayBetweenTurns);
         }
     }
 
@@ -160,32 +162,23 @@ public class GameManager : MonoBehaviour
         RollCount = 0;
     }
 
+    // 有3隊都達到終點時才算遊戲結束
     bool isGameOver()
     {
-
-        if (TurnToTeam(1).All(piece => piece.CheckCurrentSpace().gameObject.layer == 9))
+        foreach (LudoPiece.PieceColor color in LudoPieceManager.Instance.UnfinishedColors.ToList())
         {
-            Debug.Log($"Winner is team 1");
+            if (LudoPieceManager.Instance.isCertainColorTeamEnd(color))
+            {
+                LudoPieceManager.Instance.FinishedColors.Add(color);
+                LudoPieceManager.Instance.UnfinishedColors.Remove(color);
+                AudioManager.Instance.PlaySFX("Finish");
+            }
+        }
+        if (LudoPieceManager.Instance.FinishedColors.Count >= 3)
+        {
+            CurrentPlayerTurn = 0;
             return true;
         }
-        else if (TurnToTeam(2).All(piece => piece.CheckCurrentSpace().gameObject.layer == 9))
-        {
-            Debug.Log($"Winner is team 2");
-            return true;
-        }
-        else if (TurnToTeam(3).All(piece => piece.CheckCurrentSpace().gameObject.layer == 9))
-        {
-            Debug.Log($"Winner is team 3");
-            return true;
-        }
-        else if (TurnToTeam(4).All(piece => piece.CheckCurrentSpace().gameObject.layer == 9))
-        {
-            Debug.Log($"Winner is team 4");
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 }
