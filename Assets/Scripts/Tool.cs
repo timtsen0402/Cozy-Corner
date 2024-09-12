@@ -5,54 +5,21 @@ using System.Linq;
 
 public static class Tool
 {
-    public static LudoPiece.PieceColor TurnToColor(int number)
+    public static Team TurnToTeam(int turn)
     {
-        LudoPiece.PieceColor color;
-
-        switch (number)
+        switch (turn)
         {
             case 1:
-                color = LudoPiece.PieceColor.Orange;
-                break;
+                return Team.Orange;
             case 2:
-                color = LudoPiece.PieceColor.Green;
-                break;
+                return Team.Green;
             case 3:
-                color = LudoPiece.PieceColor.Blue;
-                break;
+                return Team.Blue;
             case 4:
-                color = LudoPiece.PieceColor.Red;
-                break;
+                return Team.Red;
             default:
-                throw new System.ArgumentException("Invalid player number", nameof(number));
+                return null;
         }
-
-        return color;
-
-    }
-    public static List<LudoPiece> TurnToTeam(int number)
-    {
-        LudoPiece.PieceColor color;
-
-        switch (number)
-        {
-            case 1:
-                color = LudoPiece.PieceColor.Orange;
-                break;
-            case 2:
-                color = LudoPiece.PieceColor.Green;
-                break;
-            case 3:
-                color = LudoPiece.PieceColor.Blue;
-                break;
-            case 4:
-                color = LudoPiece.PieceColor.Red;
-                break;
-            default:
-                throw new System.ArgumentException("Invalid player number", nameof(number));
-        }
-
-        return LudoPieceManager.Instance.GetPiecesByColor(color);
     }
 
     //前提為棋不在home
@@ -70,7 +37,7 @@ public static class Tool
             }
 
             // 檢查是否需要轉換到 next_space2
-            if (currentSpace.NextSpace == piece.StartSpace && currentSpace.UseNextSpace2)
+            if (currentSpace.NextSpace == piece.startSpace && currentSpace.UseNextSpace2)
             {
                 currentSpace = currentSpace.NextSpace2;
             }
@@ -87,7 +54,7 @@ public static class Tool
                 return false;
             }
             // 最後一步為己方也動不了
-            if (i == steps - 1 && TurnToTeam(GameManager.Instance.CurrentPlayerTurn).Contains(spaceNext.CurrentPiece))
+            if (i == steps - 1 && TurnToTeam(GameManager.Instance.CurrentPlayerTurn).GetAllPieces().Contains(spaceNext.CurrentPiece))
             {
                 return false;
             }
@@ -99,7 +66,7 @@ public static class Tool
     {
         foreach (LudoPiece piece in pieces)
         {
-            Space space_start = piece.StartSpace;
+            Space space_start = piece.startSpace;
 
             //踢掉不能選的
             if (piece.CurrentSpace.gameObject.layer == 6)//Home
@@ -128,7 +95,7 @@ public static class Tool
             //踢掉不能選的
             if (piece.CurrentSpace.gameObject.layer == 6)//Home
             {
-                if (DiceManager.Instance.GetTotalDiceResult() != 6 || pieces.Contains(piece.StartSpace.CurrentPiece))
+                if (DiceManager.Instance.GetTotalDiceResult() != 6 || pieces.Contains(piece.startSpace.CurrentPiece))
                 {
                     continue;
                 }

@@ -45,7 +45,7 @@ public class AIStrategies : MonoBehaviour
         if (pieces.Count == 1) return pieces[0];
 
         // if movable chesses number is 2,3 or 4
-        List<LudoPiece> nearestPieces = LudoPieceManager.Instance.GetNearestPiecesToFinishByColor(pieces);
+        List<LudoPiece> nearestPieces = LudoPieceManager.Instance.GetNearestPiecesToFinish(pieces);
         return nearestPieces[0];
     }
 
@@ -57,7 +57,7 @@ public class AIStrategies : MonoBehaviour
 
         int steps = DiceManager.Instance.GetTotalDiceResult();
         // if movable chesses number is 2,3 or 4
-        List<LudoPiece> nearestPieces = LudoPieceManager.Instance.GetNearestPiecesToFinishByColor(pieces);
+        List<LudoPiece> nearestPieces = LudoPieceManager.Instance.GetNearestPiecesToFinish(pieces);
         foreach (LudoPiece piece in nearestPieces)
         {
             Space currentSpace = piece.CurrentSpace;
@@ -67,7 +67,7 @@ public class AIStrategies : MonoBehaviour
                 currentSpace = currentSpace.NextSpace;
                 Space spaceNext = currentSpace;
                 // 1.kick
-                if (i == steps - 1 && spaceNext.CurrentPiece != null && !Tool.TurnToTeam(GameManager.Instance.CurrentPlayerTurn).Contains(spaceNext.CurrentPiece))
+                if (i == steps - 1 && spaceNext.CurrentPiece != null && !Tool.TurnToTeam(GameManager.Instance.CurrentPlayerTurn).GetAllPieces().Contains(spaceNext.CurrentPiece))
                 {
                     return piece;
                 }

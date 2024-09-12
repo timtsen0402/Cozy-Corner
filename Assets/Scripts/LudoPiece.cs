@@ -8,19 +8,12 @@ using static Tool;
 
 public class LudoPiece : MonoBehaviour
 {
-    public enum PieceColor
-    {
-        Orange,
-        Green,
-        Blue,
-        Red,
-    }
+
+    public Team myTeam { get; private set; }
     [field: SerializeField]
-    public PieceColor Color { get; private set; }
-    [field: SerializeField]
-    public Space HomeSpace { get; private set; }
-    [field: SerializeField]
-    public Space StartSpace { get; private set; }
+    public Space homeSpace { get; private set; }
+    public Space startSpace { get; private set; }
+
     public Space CurrentSpace { get; private set; }
     public bool IsClickable { get; set; }
     public bool IsMoving { get; set; }
@@ -30,6 +23,12 @@ public class LudoPiece : MonoBehaviour
     Renderer rend;
     Color originalColor;
 
+    void Awake()
+    {
+        myTeam = GetComponentInParent<Team>();
+        startSpace = myTeam.StartSpace;
+    }
+
     void Start()
     {
 
@@ -37,7 +36,7 @@ public class LudoPiece : MonoBehaviour
         IsMoving = false;
         rend = gameObject.GetComponent<Renderer>();
         originalColor = rend.material.color;
-        transform.position = HomeSpace.ActualPosition;
+        transform.position = homeSpace.ActualPosition;
         transform.rotation = Quaternion.Euler(new Vector3(270f, 0f, 0f));
     }
 
@@ -53,7 +52,7 @@ public class LudoPiece : MonoBehaviour
     }
     public void ResetToHome()
     {
-        transform.position = HomeSpace.ActualPosition;
+        transform.position = homeSpace.ActualPosition;
         transform.rotation = Quaternion.Euler(new Vector3(270f, 0f, 0f));
         if (!rb.isKinematic) rb.velocity = Vector3.zero;
     }
@@ -77,7 +76,7 @@ public class LudoPiece : MonoBehaviour
         if (IsMoving)
         {
             LudoPiece collisionPiece = collision.transform.gameObject.GetComponent<LudoPiece>();
-            if (collisionPiece != null && !LudoPieceManager.Instance.GetPiecesByColor(Color).Contains(collisionPiece))
+            if (collisionPiece != null && !myTeam.GetAllPieces().Contains(collisionPiece))
             {
                 LudoPiece piece = collision.transform.gameObject.GetComponent<LudoPiece>();
                 piece.ResetToHome();
@@ -114,7 +113,7 @@ public class LudoPiece : MonoBehaviour
             count++;
 
             // 檢查是否需要轉換到 next_space2
-            if (currentSpace.NextSpace == StartSpace && currentSpace.UseNextSpace2)
+            if (currentSpace.NextSpace == startSpace && currentSpace.UseNextSpace2)
             {
                 currentSpace = currentSpace.NextSpace2;
             }
@@ -141,7 +140,7 @@ public class LudoPiece : MonoBehaviour
     }
     private IEnumerator MovePiece()
     {
-        foreach (LudoPiece piece in LudoPieceManager.Instance.GetPiecesByColor(Color))
+        foreach (LudoPiece piece in myTeam.GetAllPieces())
         {
             piece.IsClickable = false;
         }
@@ -159,11 +158,11 @@ public class LudoPiece : MonoBehaviour
 
             Vector3 nextPosition;
 
-            if (currentSpace.NextSpace == StartSpace)
+            if (currentSpace.NextSpace == startSpace)
             {
                 if (currentSpace.gameObject.layer == 6) // Home
                 {
-                    nextPosition = StartSpace.ActualPosition;
+                    nextPosition = startSpace.ActualPosition;
                     yield return StartCoroutine(LudoPieceManager.Instance.MoveToPosition(this, nextPosition));
                     break;
                 }

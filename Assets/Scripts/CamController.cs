@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using DG.Tweening;
 
 public class CamController : MonoBehaviour
 {
@@ -78,4 +79,16 @@ public class CamController : MonoBehaviour
             offset = transform.position - Target.transform.position;
         }
     }
+    // public void CamMoveToSomewhere(Vector3 pos, Quaternion rot, float second)
+    // {
+    //     StartCoroutine(Move(pos, rot, second));
+
+    // }
+    // IEnumerator Move(Vector3 pos, Quaternion rot, float second)
+    // {
+    //     Sequence cameraSequence = DOTween.Sequence();
+    //     cameraSequence.Append(Camera.main.transform.DOMove(pos, second));
+    //     cameraSequence.Join(Camera.main.transform.DORotate(rot.eulerAngles, second));
+    //     yield return cameraSequence.WaitForCompletion();
+    // }
 }

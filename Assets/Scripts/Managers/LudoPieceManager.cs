@@ -7,10 +7,10 @@ using DG.Tweening;
 public class LudoPieceManager : MonoBehaviour
 {
     public static LudoPieceManager Instance { get; private set; }
-    public List<LudoPiece.PieceColor> UnfinishedColors { get; set; }
-    public List<LudoPiece.PieceColor> FinishedColors { get; set; }
+    public List<Team> UnfinishedTeams { get; set; }
+    public List<Team> FinishedTeams { get; set; }
     // 使用字典來按顏色存儲棋子
-    private Dictionary<LudoPiece.PieceColor, List<LudoPiece>> piecesByColor;
+    private Dictionary<Team, List<LudoPiece>> piecesByTeam;
 
 
     private void Awake()
@@ -20,45 +20,46 @@ public class LudoPieceManager : MonoBehaviour
             Instance = this;
             //DontDestroyOnLoad(gameObject);
             InitializePieceDictionary();
-            CollectAllPieces();
+            // CollectAllPieces();
         }
         else
         {
             Destroy(gameObject);
         }
 
-        UnfinishedColors = System.Enum.GetValues(typeof(LudoPiece.PieceColor))
-                                    .Cast<LudoPiece.PieceColor>()
-                                    .ToList();
-        FinishedColors = new List<LudoPiece.PieceColor>();
+        UnfinishedTeams = new List<Team>(Team.AllTeams);
+        FinishedTeams = new List<Team>();
     }
 
 
     private void InitializePieceDictionary()
     {
-        piecesByColor = new Dictionary<LudoPiece.PieceColor, List<LudoPiece>>();
-        foreach (LudoPiece.PieceColor color in System.Enum.GetValues(typeof(LudoPiece.PieceColor)))
+        piecesByTeam = new Dictionary<Team, List<LudoPiece>>();
+        foreach (Team team in Team.AllTeams)
         {
-            piecesByColor[color] = new List<LudoPiece>();
+            piecesByTeam[team] = new List<LudoPiece>();
         }
     }
 
-    private void CollectAllPieces()
-    {
-        LudoPiece[] allPieces = FindObjectsOfType<LudoPiece>();
-        foreach (LudoPiece piece in allPieces)
-        {
-            AddPiece(piece);
-        }
-    }
+    // private void CollectAllPieces()
+    // {
+    //     LudoPiece[] allPieces = FindObjectsOfType<LudoPiece>();
+    //     foreach (LudoPiece piece in allPieces)
+    //     {
+    //         AddPiece(piece);
+    //     }
+    // }
 
-    public void AddPiece(LudoPiece piece)
-    {
-        if (!piecesByColor[piece.Color].Contains(piece))
-        {
-            piecesByColor[piece.Color].Add(piece);
-        }
-    }
+    // public void AddPiece(LudoPiece piece)
+    // {
+    //     if (piecesByTeam.TryGetValue(piece.myTeam, out List<LudoPiece> teamPieces))
+    //     {
+    //         if (!teamPieces.Contains(piece))
+    //         {
+    //             teamPieces.Add(piece);
+    //         }
+    //     }
+    // }
     #region Get
 
     public LudoPiece SelectPiece(AIStrategies.Difficulty difficulty, List<LudoPiece> availablePieces)
@@ -67,90 +68,18 @@ public class LudoPieceManager : MonoBehaviour
         return strategy(availablePieces);
     }
 
-    public List<LudoPiece> GetNearestPiecesToFinishByColor(List<LudoPiece> pieces)
+    public List<LudoPiece> GetNearestPiecesToFinish(List<LudoPiece> pieces)
     {
         return pieces
            .OrderBy(piece => piece.GetDistanceToTheEnd())
            .ToList();
     }
-    //sortedList1.Sort();
-    public int GetColorKillCount(LudoPiece.PieceColor color)
-    {
-        List<LudoPiece> colorPieces = GetPiecesByColor(color);
-        int totalKillCount = 0;
-        foreach (LudoPiece piece in colorPieces)
-        {
-            totalKillCount += piece.killCount;
-        }
-        return totalKillCount;
-    }
 
-    public string GetHexCode(LudoPiece.PieceColor color)
+    public string GetHexCode(Team team)
     {
-        switch (color)
-        {
-            case LudoPiece.PieceColor.Orange:
-                return "#FF8C00";
-            case LudoPiece.PieceColor.Green:
-                return "#228B22";
-            case LudoPiece.PieceColor.Blue:
-                return "#1E90FF";
-            case LudoPiece.PieceColor.Red:
-                return "#CD5C5C";
-            default:
-                return "#FFFFFF"; // white
-        }
-    }
-    public bool isCertainColorTeamEnd(LudoPiece.PieceColor color)
-    {
-        List<LudoPiece> certainColorPieces = GetPiecesByColor(color);
-        if (!certainColorPieces.All(piece => piece.CheckCurrentSpace().gameObject.layer == 9)) return false;
-        return true;
-
-    }
-    public List<LudoPiece> GetAllPieces()
-    {
-        var allPieces = piecesByColor.Values.SelectMany(list => list).ToList();
-        return allPieces;
-    }
-
-    public List<LudoPiece> GetPiecesByColor(LudoPiece.PieceColor color)
-    {
-        var pieces = GetAllPieces().Where(p => p.Color == color).ToList();
-        return pieces;
-    }
-
-    public LudoPiece GetPiece(LudoPiece.PieceColor color, int index)
-    {
-        List<LudoPiece> pieces = piecesByColor[color];
-        if (index >= 0 && index < pieces.Count)
-        {
-            return pieces[index];
-        }
-        return null;
+        return team.HexCode;
     }
     #endregion Get
-
-    #region Reset
-    public void ResetPieces(LudoPiece.PieceColor color)
-    {
-        foreach (var piece in piecesByColor[color])
-        {
-            piece.ResetToHome();
-        }
-    }
-
-    public void ResetAllPieces()
-    {
-        foreach (var pieceList in piecesByColor.Values)
-        {
-            foreach (var piece in pieceList)
-            {
-                piece.ResetToHome();
-            }
-        }
-    }
-    #endregion Reset
 
     #region Move
     public IEnumerator MoveToPosition(LudoPiece piece, Vector3 targetPosition, float speed = 0.1f)
@@ -176,11 +105,11 @@ public class LudoPieceManager : MonoBehaviour
 
             Vector3 nextPosition;
 
-            if (currentSpace.NextSpace == piece.StartSpace)
+            if (currentSpace.NextSpace == piece.startSpace)
             {
                 if (piece.CheckCurrentSpace().gameObject.layer == 6)//Home
                 {
-                    nextPosition = piece.StartSpace.ActualPosition;
+                    nextPosition = piece.startSpace.ActualPosition;
                     yield return MoveToPosition(piece, nextPosition);
                     break;
                 }
@@ -208,15 +137,4 @@ public class LudoPieceManager : MonoBehaviour
         GameManager.Instance.IsPieceMoved = true;
     }
     #endregion Move
-
-    #region Debug
-    public void LogAllPieces()
-    {
-        Debug.Log($"Total pieces: {GetAllPieces().Count}");
-        foreach (var piece in GetAllPieces())
-        {
-            Debug.Log($"Piece: {piece.name}, Color: {piece.Color}");
-        }
-    }
-    #endregion Debug
 }

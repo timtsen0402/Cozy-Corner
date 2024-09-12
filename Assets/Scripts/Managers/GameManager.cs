@@ -5,18 +5,18 @@ using UnityEngine.UI;
 using System.Linq;
 using DG.Tweening;
 using static Tool;
+using static GameConstants;
+// using System;
 
 public class GameManager : MonoBehaviour
 {
 
     public static GameManager Instance { get; private set; }
-    public int NumberOfPlayers { get; private set; } = 4;
     public int CurrentPlayerTurn { get; private set; } = 1;
 
-    [SerializeField] private float delayBetweenTurns = 1f;
-    // [SerializeField] private float diceRollDuration = 2f;
+    public int HumanPlayers { get; private set; } = 0;
+    public int AIPlayers { get; private set; } = 4;
 
-    // public GameObject SelectedPiece { get; set; }
     public bool IsDiceThrown { get; set; }
     public bool IsPieceMoved { get; set; }
     public int RollCount { get; set; }
@@ -26,37 +26,42 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            //DontDestroyOnLoad(gameObject);
         }
         else
         {
             Destroy(gameObject);
         }
+
     }
 
     private void Start()
     {
+        HumanPlayers = GetHumanPlayers();
         StartCoroutine(GameLoop());
         Time.timeScale = 3;
+        foreach (var team in Team.AllTeams)
+        {
+            print($"{team.name} + {team.GetStrategy()}");
+        }
     }
 
     IEnumerator GameLoop()
     {
+        yield return null;
         while (!isGameOver())
         {
             // hasn't already end
-            if (!LudoPieceManager.Instance.isCertainColorTeamEnd(TurnToColor(CurrentPlayerTurn)))
+            if (!TurnToTeam(CurrentPlayerTurn).isFinished())
             {
                 yield return StartCoroutine(PlayerTurn(CurrentPlayerTurn));
             }
             ChangeTurn();
-            // yield return new WaitForSeconds(delayBetweenTurns);
         }
     }
 
     private IEnumerator PlayerTurn(int playerIndex)
     {
-        return playerIndex <= GameStartManager.Instance.HumanPlayers ? HumanPlayerTurn() : AIPlayerTurn();
+        return playerIndex <= HumanPlayers ? HumanPlayerTurn() : AIPlayerTurn();
     }
 
 
@@ -64,7 +69,7 @@ public class GameManager : MonoBehaviour
     {
         IsDiceThrown = false;
         IsPieceMoved = false;
-        List<LudoPiece> allPieces = TurnToTeam(CurrentPlayerTurn);
+        List<LudoPiece> allPieces = TurnToTeam(CurrentPlayerTurn).GetAllPieces();
 
         Debug.Log("請點擊滑鼠按鈕擲骰子");
         //等到玩家按骰子後，布林值會被刷新
@@ -105,7 +110,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator AIPlayerTurn()
     {
-        List<LudoPiece> allPieces = TurnToTeam(CurrentPlayerTurn);
+        List<LudoPiece> allPieces = TurnToTeam(CurrentPlayerTurn).GetAllPieces();
 
         yield return new WaitForSeconds(Random.Range(0.5f, 1f));
         yield return StartCoroutine(DiceManager.Instance.AIRollDice(DiceManager.Instance.GetDice(0)));
@@ -132,7 +137,7 @@ public class GameManager : MonoBehaviour
 
         }
         LudoPiece selectedPiece;
-        selectedPiece = LudoPieceManager.Instance.SelectPiece(AIStrategies.Difficulty.Dumb, availablePieces);
+        selectedPiece = LudoPieceManager.Instance.SelectPiece(TurnToTeam(CurrentPlayerTurn).GetStrategy(), availablePieces);
 
         if (selectedPiece != null)
         {
@@ -149,7 +154,8 @@ public class GameManager : MonoBehaviour
 
     public void ChangeTurn()
     {
-        CurrentPlayerTurn = (CurrentPlayerTurn % NumberOfPlayers) + 1;
+
+        CurrentPlayerTurn = (CurrentPlayerTurn % TotalPlayers) + 1;
         BackGroundManager.Instance.SetUpTurnFlag();
         RollCount = 0;
     }
@@ -157,20 +163,40 @@ public class GameManager : MonoBehaviour
     // 有3隊都達到終點時才算遊戲結束
     bool isGameOver()
     {
-        foreach (LudoPiece.PieceColor color in LudoPieceManager.Instance.UnfinishedColors.ToList())
+        List<Team> teamsToMove = new List<Team>();
+
+        // 首先，找出所有已完成的隊伍
+        foreach (Team team in LudoPieceManager.Instance.UnfinishedTeams)
         {
-            if (LudoPieceManager.Instance.isCertainColorTeamEnd(color))
+            if (team.isFinished())
             {
-                LudoPieceManager.Instance.FinishedColors.Add(color);
-                LudoPieceManager.Instance.UnfinishedColors.Remove(color);
-                AudioManager.Instance.PlaySFX("Finish");
+                teamsToMove.Add(team);
             }
         }
-        if (LudoPieceManager.Instance.FinishedColors.Count >= 3)
+
+        // 然後，在單獨的循環中移動這些隊伍
+        foreach (Team team in teamsToMove)
+        {
+            LudoPieceManager.Instance.FinishedTeams.Add(team);
+            LudoPieceManager.Instance.UnfinishedTeams.Remove(team);
+            AudioManager.Instance.PlaySFX("Finish");
+        }
+
+        if (LudoPieceManager.Instance.FinishedTeams.Count >= 3)
         {
             CurrentPlayerTurn = 0;
             return true;
         }
         return false;
+    }
+    int GetHumanPlayers()
+    {
+        int count = 0;
+        foreach (var team in Team.AllTeams)
+        {
+            string str = team.GetStateString();
+            if (str == "Player") count++;
+        }
+        return count;
     }
 }

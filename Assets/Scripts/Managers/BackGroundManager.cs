@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using static GameConstants;
 
 public class BackGroundManager : MonoBehaviour
 {
@@ -13,22 +15,36 @@ public class BackGroundManager : MonoBehaviour
 
     private Camera mainCamera;
 
+    public GameObject canvas;
+
+    [Header("Animation")]
     public Animator GramophoneAnim;
     public Animator BellAnim;
+    [Header("Flag Setting")]
     public GameObject TurnFlag;
+    public float flagHeight = 5f; // 旗子初始出现的高度
+    public float plantingDuration = 3f; // 插旗动作的持续时间
+    [Header("TextMeshPro")]
     public TextMeshPro RankingTMP;
     public TextMeshPro KillerTMP;
 
-    public float flagHeight = 5f; // 旗子初始出现的高度
-    public float plantingDuration = 3f; // 插旗动作的持续时间
+    [SerializeField] private Button orangeButton;
+    [SerializeField] private Button greenButton;
+    [SerializeField] private Button blueButton;
+    [SerializeField] private Button redButton;
 
-    public string Gold;
-    public string Silver;
-    public string Bronze;
+    [SerializeField] private TextMeshPro orangeStateText;
+    [SerializeField] private TextMeshPro greenStateText;
+    [SerializeField] private TextMeshPro blueStateText;
+    [SerializeField] private TextMeshPro redStateText;
 
-    public string GoldHexCode;
-    public string SilverHexCode;
-    public string BronzeHexCode;
+    private string Gold;
+    private string Silver;
+    private string Bronze;
+
+    private string GoldHexCode;
+    private string SilverHexCode;
+    private string BronzeHexCode;
 
     string defaultHexCode = "#FFFFFF";
 
@@ -43,9 +59,6 @@ public class BackGroundManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-    }
-    void Start()
-    {
         mainCamera = Camera.main;
         TurnFlag.transform.position = new Vector3(-15f, 0.61f, 15f);
         Gold = string.Empty;
@@ -55,10 +68,52 @@ public class BackGroundManager : MonoBehaviour
         SilverHexCode = defaultHexCode;
         BronzeHexCode = defaultHexCode;
     }
+    private void Start()
+    {
+        InitializeButtons();
+        UpdateAllStateTexts();
+    }
+
+    private void InitializeButtons()
+    {
+        orangeButton.onClick.AddListener(() => CycleTeamState(Team.Orange));
+        greenButton.onClick.AddListener(() => CycleTeamState(Team.Green));
+        blueButton.onClick.AddListener(() => CycleTeamState(Team.Blue));
+        redButton.onClick.AddListener(() => CycleTeamState(Team.Red));
+    }
+
+    private void CycleTeamState(Team team)
+    {
+        team.CycleState();
+        UpdateStateText(team);
+    }
+
+    private void UpdateStateText(Team team)
+    {
+        TextMeshPro stateText = GetStateTextForTeam(team);
+        stateText.text = team.GetStateString();
+    }
+
+    private TextMeshPro GetStateTextForTeam(Team team)
+    {
+        if (team == Team.Orange) return orangeStateText;
+        if (team == Team.Green) return greenStateText;
+        if (team == Team.Blue) return blueStateText;
+        if (team == Team.Red) return redStateText;
+        return null;
+    }
+
+    private void UpdateAllStateTexts()
+    {
+        UpdateStateText(Team.Orange);
+        UpdateStateText(Team.Green);
+        UpdateStateText(Team.Blue);
+        UpdateStateText(Team.Red);
+    }
 
     void Update()
     {
-
+        // SetUpSetting();
         SetUpRanking();
 
         TurnFlag.transform.LookAt(Camera.main.transform.position);
@@ -75,7 +130,7 @@ public class BackGroundManager : MonoBehaviour
             {
                 // 獲取點擊物體的名稱
                 string objectName = hit.collider.gameObject.name;
-                // Debug.Log(objectName);
+                Debug.Log(objectName);
                 switch (objectName)
                 {
                     case "Bell":
@@ -102,25 +157,46 @@ public class BackGroundManager : MonoBehaviour
                     case "Cat":
                         AudioManager.Instance.PlaySFX("Meow");
                         break;
+                    case "OrangeBTN":
+                        CycleTeamState(Team.Orange);
+                        break;
+                    case "GreenBTN":
+                        CycleTeamState(Team.Green);
+                        break;
+                    case "BlueBTN":
+                        CycleTeamState(Team.Blue);
+                        break;
+                    case "RedBTN":
+                        CycleTeamState(Team.Red);
+                        break;
+                    case "Close":
+                        CameraManager.Instance.MoveCameraTo(TitleView, 3f);
+                        break;
+
                 }
             }
         }
     }
     public void SetUpRanking()
     {
+        if (LudoPieceManager.Instance.FinishedTeams == null)
+        {
+            Debug.LogWarning("FinishedTeams is null");
+            return;
+        }
         Gold =
-        LudoPieceManager.Instance.FinishedColors.Count > 0 ? LudoPieceManager.Instance.FinishedColors[0].ToString() : string.Empty;
+        LudoPieceManager.Instance.FinishedTeams.Count > 0 ? LudoPieceManager.Instance.FinishedTeams[0].ToString() : string.Empty;
         Silver =
-        LudoPieceManager.Instance.FinishedColors.Count > 1 ? LudoPieceManager.Instance.FinishedColors[1].ToString() : string.Empty;
+        LudoPieceManager.Instance.FinishedTeams.Count > 1 ? LudoPieceManager.Instance.FinishedTeams[1].ToString() : string.Empty;
         Bronze =
-        LudoPieceManager.Instance.FinishedColors.Count > 2 ? LudoPieceManager.Instance.FinishedColors[2].ToString() : string.Empty;
+        LudoPieceManager.Instance.FinishedTeams.Count > 2 ? LudoPieceManager.Instance.FinishedTeams[2].ToString() : string.Empty;
 
         GoldHexCode =
-        LudoPieceManager.Instance.FinishedColors.Count > 0 ? LudoPieceManager.Instance.GetHexCode(LudoPieceManager.Instance.FinishedColors[0]) : defaultHexCode;
+        LudoPieceManager.Instance.FinishedTeams.Count > 0 ? LudoPieceManager.Instance.FinishedTeams[0].HexCode : defaultHexCode;
         SilverHexCode =
-        LudoPieceManager.Instance.FinishedColors.Count > 1 ? LudoPieceManager.Instance.GetHexCode(LudoPieceManager.Instance.FinishedColors[1]) : defaultHexCode;
+        LudoPieceManager.Instance.FinishedTeams.Count > 1 ? LudoPieceManager.Instance.FinishedTeams[1].HexCode : defaultHexCode;
         BronzeHexCode =
-        LudoPieceManager.Instance.FinishedColors.Count > 2 ? LudoPieceManager.Instance.GetHexCode(LudoPieceManager.Instance.FinishedColors[2]) : defaultHexCode;
+        LudoPieceManager.Instance.FinishedTeams.Count > 2 ? LudoPieceManager.Instance.FinishedTeams[2].HexCode : defaultHexCode;
 
         RankingTMP.text =
         $"<color=#FFD700>Gold:</color> <color={GoldHexCode}>{Gold}</color>\n" +
@@ -130,25 +206,25 @@ public class BackGroundManager : MonoBehaviour
     }
     public string UpdateKillCountDisplay()
     {
-        var colorKillCounts = new[]
+        var teamKillCounts = new[]
         {
-            new { Color = LudoPiece.PieceColor.Orange, HexCode = "#FF8C00" },
-            new { Color = LudoPiece.PieceColor.Green, HexCode = "#228B22" },
-            new { Color = LudoPiece.PieceColor.Blue, HexCode = "#1E90FF" },
-            new { Color = LudoPiece.PieceColor.Red, HexCode = "#CD5C5C" }
+            new { Team = Team.Orange, HexCode = "#FF8C00" },
+            new { Team = Team.Green, HexCode = "#228B22" },
+            new { Team = Team.Blue, HexCode = "#1E90FF" },
+            new { Team = Team.Red, HexCode = "#CD5C5C" }
         };
 
-        var sortedColors = colorKillCounts
-            .OrderByDescending(c => LudoPieceManager.Instance.GetColorKillCount(c.Color))
+        var sortedTeams = teamKillCounts
+            .OrderByDescending(t => t.Team.GetKillCount())
             .ToList();
 
         StringBuilder sb = new StringBuilder();
         sb.AppendLine("<align=center><size=150%><color=#FF0000><b>Top Killer</b></color></size></align>");
 
-        foreach (var color in sortedColors)
+        foreach (var teamInfo in sortedTeams)
         {
-            int killCount = LudoPieceManager.Instance.GetColorKillCount(color.Color);
-            sb.AppendLine($"<align=left><color={color.HexCode}>{color.Color}: {killCount}</color></align>");
+            int killCount = teamInfo.Team.GetKillCount();
+            sb.AppendLine($"<align=left><color={teamInfo.HexCode}>{teamInfo.Team.Name}: {killCount}</color></align>");
         }
 
         return sb.ToString();
@@ -195,5 +271,8 @@ public class BackGroundManager : MonoBehaviour
         // 等待动画完成
         yield return plantSequence.WaitForCompletion();
     }
-
+    public void OnSettingsButtonClicked()
+    {
+        CameraManager.Instance.MoveCameraTo(SettingView, 3f); // 使用3秒的過渡時間，您可以根據需要調整
+    }
 }
