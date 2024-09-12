@@ -39,10 +39,6 @@ public class GameManager : MonoBehaviour
         HumanPlayers = GetHumanPlayers();
         StartCoroutine(GameLoop());
         Time.timeScale = 3;
-        foreach (var team in Team.AllTeams)
-        {
-            print($"{team.name} + {team.GetStrategy()}");
-        }
     }
 
     IEnumerator GameLoop()
@@ -53,6 +49,7 @@ public class GameManager : MonoBehaviour
             // hasn't already end
             if (!TurnToTeam(CurrentPlayerTurn).isFinished())
             {
+                yield return null;
                 yield return StartCoroutine(PlayerTurn(CurrentPlayerTurn));
             }
             ChangeTurn();
@@ -160,6 +157,7 @@ public class GameManager : MonoBehaviour
         RollCount = 0;
     }
 
+
     // 有3隊都達到終點時才算遊戲結束
     bool isGameOver()
     {
@@ -181,6 +179,8 @@ public class GameManager : MonoBehaviour
             LudoPieceManager.Instance.UnfinishedTeams.Remove(team);
             AudioManager.Instance.PlaySFX("Finish");
         }
+
+
 
         if (LudoPieceManager.Instance.FinishedTeams.Count >= 3)
         {

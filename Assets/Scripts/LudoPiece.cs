@@ -36,7 +36,7 @@ public class LudoPiece : MonoBehaviour
         IsMoving = false;
         rend = gameObject.GetComponent<Renderer>();
         originalColor = rend.material.color;
-        transform.position = homeSpace.ActualPosition;
+        //transform.position = homeSpace.ActualPosition;
         transform.rotation = Quaternion.Euler(new Vector3(270f, 0f, 0f));
     }
 

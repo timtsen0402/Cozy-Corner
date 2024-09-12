@@ -145,4 +145,13 @@ public class Team : MonoBehaviour
             piece.ResetToHome();
         }
     }
+
+    public static void LogAllTeamsStatus()
+    {
+        Debug.Log($"Total teams in AllTeams: {AllTeams.Count}");
+        foreach (var team in AllTeams)
+        {
+            Debug.Log($"Team: {team.Name}, Piece count: {team.pieces.Count}, Is finished: {team.isFinished()}");
+        }
+    }
 }

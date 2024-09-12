@@ -21,16 +21,33 @@ public class LudoPieceManager : MonoBehaviour
             //DontDestroyOnLoad(gameObject);
             InitializePieceDictionary();
             // CollectAllPieces();
+
+            // Debug.Log($"Team.AllTeams count: {Team.AllTeams.Count}");
+            // // 初始檢查
+            // foreach (Team team in Team.AllTeams)
+            // {
+            //     if (team.isFinished())
+            //     {
+            //         FinishedTeams.Add(team);
+            //         UnfinishedTeams.Remove(team);
+            //         Debug.Log($"{team.Name} is initially finished and added to FinishedTeams");
+            //     }
+            // }
         }
         else
         {
             Destroy(gameObject);
         }
 
+
+    }
+    private void Start()
+    {
+        // Team.LogAllTeamsStatus();
         UnfinishedTeams = new List<Team>(Team.AllTeams);
         FinishedTeams = new List<Team>();
-    }
 
+    }
 
     private void InitializePieceDictionary()
     {
@@ -78,6 +95,15 @@ public class LudoPieceManager : MonoBehaviour
     public string GetHexCode(Team team)
     {
         return team.HexCode;
+    }
+    public List<Team> GetFinishedTeam()
+    {
+        List<Team> teams = new List<Team>();
+        foreach (var team in Team.AllTeams)
+        {
+            if (team.isFinished()) teams.Add(team);
+        }
+        return teams;
     }
     #endregion Get
 

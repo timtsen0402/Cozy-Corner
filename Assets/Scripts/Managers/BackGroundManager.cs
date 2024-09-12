@@ -130,7 +130,7 @@ public class BackGroundManager : MonoBehaviour
             {
                 // 獲取點擊物體的名稱
                 string objectName = hit.collider.gameObject.name;
-                Debug.Log(objectName);
+                //Debug.Log(objectName);
                 switch (objectName)
                 {
                     case "Bell":
@@ -185,11 +185,11 @@ public class BackGroundManager : MonoBehaviour
             return;
         }
         Gold =
-        LudoPieceManager.Instance.FinishedTeams.Count > 0 ? LudoPieceManager.Instance.FinishedTeams[0].ToString() : string.Empty;
+        LudoPieceManager.Instance.FinishedTeams.Count > 0 ? LudoPieceManager.Instance.FinishedTeams[0].name : string.Empty;
         Silver =
-        LudoPieceManager.Instance.FinishedTeams.Count > 1 ? LudoPieceManager.Instance.FinishedTeams[1].ToString() : string.Empty;
+        LudoPieceManager.Instance.FinishedTeams.Count > 1 ? LudoPieceManager.Instance.FinishedTeams[1].name : string.Empty;
         Bronze =
-        LudoPieceManager.Instance.FinishedTeams.Count > 2 ? LudoPieceManager.Instance.FinishedTeams[2].ToString() : string.Empty;
+        LudoPieceManager.Instance.FinishedTeams.Count > 2 ? LudoPieceManager.Instance.FinishedTeams[2].name : string.Empty;
 
         GoldHexCode =
         LudoPieceManager.Instance.FinishedTeams.Count > 0 ? LudoPieceManager.Instance.FinishedTeams[0].HexCode : defaultHexCode;
