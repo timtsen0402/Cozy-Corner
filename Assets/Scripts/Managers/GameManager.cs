@@ -36,15 +36,21 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        AudioManager.Instance.PlayBgmRandomly();
+        CameraManager.Instance.SetInitialCameraPosition(TitleView);
         HumanPlayers = GetHumanPlayers();
-        StartCoroutine(GameLoop());
         Time.timeScale = 3;
+    }
+
+    public void START_GAME()
+    {
+        StartCoroutine(GameLoop());
     }
 
     IEnumerator GameLoop()
     {
         yield return null;
-        while (!isGameOver())
+        while (!isGameOver() && UIManager.Instance.gameStarted)
         {
             // hasn't already end
             if (!TurnToTeam(CurrentPlayerTurn).isFinished())
@@ -153,7 +159,7 @@ public class GameManager : MonoBehaviour
     {
 
         CurrentPlayerTurn = (CurrentPlayerTurn % TotalPlayers) + 1;
-        BackGroundManager.Instance.SetUpTurnFlag();
+        UIManager.Instance.SetUpTurnFlag();
         RollCount = 0;
     }
 

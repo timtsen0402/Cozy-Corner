@@ -18,21 +18,7 @@ public class LudoPieceManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            //DontDestroyOnLoad(gameObject);
             InitializePieceDictionary();
-            // CollectAllPieces();
-
-            // Debug.Log($"Team.AllTeams count: {Team.AllTeams.Count}");
-            // // 初始檢查
-            // foreach (Team team in Team.AllTeams)
-            // {
-            //     if (team.isFinished())
-            //     {
-            //         FinishedTeams.Add(team);
-            //         UnfinishedTeams.Remove(team);
-            //         Debug.Log($"{team.Name} is initially finished and added to FinishedTeams");
-            //     }
-            // }
         }
         else
         {
@@ -43,7 +29,6 @@ public class LudoPieceManager : MonoBehaviour
     }
     private void Start()
     {
-        // Team.LogAllTeamsStatus();
         UnfinishedTeams = new List<Team>(Team.AllTeams);
         FinishedTeams = new List<Team>();
 

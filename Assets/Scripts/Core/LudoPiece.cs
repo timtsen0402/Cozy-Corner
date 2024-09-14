@@ -192,7 +192,7 @@ public class LudoPiece : MonoBehaviour
     {
         if (IsClickable)
         {
-            rend.material.color = UnityEngine.Color.black;
+            rend.material.color = Color.black;
         }
     }
     void OnMouseExit()

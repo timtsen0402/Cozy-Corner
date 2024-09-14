@@ -3557,7 +3557,7 @@ GameObject:
   - component: {fileID: 186148978}
   - component: {fileID: 186148977}
   m_Layer: 0
-  m_Name: BackGroundManager
+  m_Name: UIManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3575,6 +3575,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf0a0991d195e2b4fb660150766361fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainCamera: {fileID: 0}
   canvas: {fileID: 2065243266}
   GramophoneAnim: {fileID: 8889695960425549442}
   BellAnim: {fileID: 937041658}
@@ -3591,6 +3592,7 @@ MonoBehaviour:
   greenStateText: {fileID: 38784169}
   blueStateText: {fileID: 1934299200}
   redStateText: {fileID: 419185278}
+  transferTime: 5
 --- !u!4 &186148978
 Transform:
   m_ObjectHideFlags: 0
@@ -13933,7 +13935,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 809700868}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dedc0ee3bfc840244975cdc310f330db, type: 3}
   m_Name: 
@@ -13948,54 +13950,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 436916, guid: 287711fb95cdc004b814e53a055b4b1e, type: 3}
   m_PrefabInstance: {fileID: 1897851570}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &819473441
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 819473443}
-  - component: {fileID: 819473442}
-  m_Layer: 0
-  m_Name: GameStartManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &819473442
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 819473441}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 18c92b33a29159046aa1d8d0fb51b047, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  transitionDuration: 5
-  cc: {fileID: 963194229}
-  canvas: {fileID: 2065243266}
-  transferTime: 5
---- !u!4 &819473443
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 819473441}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &822190893 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -5452520549238382188, guid: e71123af09983ef4b9b3bccf892fed57, type: 3}
@@ -14312,9 +14266,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 819473442}
-        m_TargetAssemblyTypeName: GameStartManager, Assembly-CSharp
-        m_MethodName: StartGame
+      - m_Target: {fileID: 186148977}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: OnPlayButtonClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -16632,7 +16586,6 @@ GameObject:
   - component: {fileID: 963194228}
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
-  - component: {fileID: 963194229}
   - component: {fileID: 963194230}
   m_Layer: 0
   m_Name: Main Camera
@@ -16715,25 +16668,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -134.3, z: 0}
---- !u!114 &963194229
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 963194225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2b68bdb58f5c4c4da2c784b0dd4ed5a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Target: {fileID: 7390764576779708652}
-  rotateSpeed: 2
-  scrollSpeed: 30
-  minDistance: 5
-  maxDistance: 80
-  minAngle: 5
-  maxAngle: 80
 --- !u!114 &963194230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20228,6 +20162,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27a8530822c9d1a49a8f32a743417d14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Target: {fileID: 7390764576779708652}
+  rotateSpeed: 2
+  scrollSpeed: 30
+  minDistance: 5
+  maxDistance: 80
+  minAngle: 5
+  maxAngle: 85
 --- !u!4 &1167725496
 Transform:
   m_ObjectHideFlags: 0
@@ -27680,7 +27621,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -10.82
+      value: -13.54
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
       propertyPath: m_LocalPosition.y
@@ -43047,7 +42988,7 @@ Transform:
   m_GameObject: {fileID: 832149484931618154}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -24.04, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 24.04}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -51934,7 +51875,6 @@ SceneRoots:
   - {fileID: 1195825635}
   - {fileID: 18131290}
   - {fileID: 1589456568}
-  - {fileID: 819473443}
   - {fileID: 1167725496}
   - {fileID: 809700870}
   - {fileID: 1806963534}
