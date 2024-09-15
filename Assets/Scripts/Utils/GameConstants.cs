@@ -41,3 +41,18 @@ public struct CameraView
         Rotation = rotation;
     }
 }
+
+public enum TeamState
+{
+    Player,
+    AI_Dumb,
+    AI_Peaceful,
+    AI_Aggressive
+}
+
+public enum Difficulty
+{
+    Dumb,
+    Peaceful,
+    Aggressive
+}

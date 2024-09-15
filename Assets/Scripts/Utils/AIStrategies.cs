@@ -5,12 +5,7 @@ using System.Linq;
 
 public class AIStrategies : MonoBehaviour
 {
-    public enum Difficulty
-    {
-        Dumb,
-        Peaceful,
-        Aggressive
-    }
+
     public delegate LudoPiece AIStrategy(List<LudoPiece> availablePieces);
 
     // 使用字典來映射難度級別和相應的策略

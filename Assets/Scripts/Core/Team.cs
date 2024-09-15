@@ -5,13 +5,7 @@ using System.Linq;
 
 public class Team : MonoBehaviour
 {
-    public enum TeamState
-    {
-        Player,
-        AI_Dumb,
-        AI_Peaceful,
-        AI_Aggressive
-    }
+
     public TeamState CurrentState { get; private set; } = TeamState.AI_Peaceful;
 
     public static Team Orange { get; private set; }
@@ -25,7 +19,7 @@ public class Team : MonoBehaviour
     public string HexCode { get; private set; }
 
     [SerializeField] private TeamData teamData;
-    public AIStrategies.Difficulty Difficulty = AIStrategies.Difficulty.Peaceful;
+    public Difficulty Difficulty = Difficulty.Peaceful;
     [field: SerializeField]
     public Space StartSpace { get; private set; }
     private List<LudoPiece> pieces = new List<LudoPiece>();
@@ -41,16 +35,17 @@ public class Team : MonoBehaviour
         if (teamData != null)
         {
             InitializeTeam(teamData);
+            CreatePieces();
         }
         else
         {
             Debug.LogError($"TeamData is not set for {gameObject.name}");
         }
-        CreatePieces();
+
     }
     private void Start()
     {
-        Difficulty = AIStrategies.Difficulty.Peaceful;
+        Difficulty = Difficulty.Peaceful;
     }
 
     private void InitializeTeam(TeamData data)
@@ -88,16 +83,16 @@ public class Team : MonoBehaviour
         switch (CurrentState)
         {
             case TeamState.AI_Dumb:
-                Difficulty = AIStrategies.Difficulty.Dumb;
+                Difficulty = Difficulty.Dumb;
                 break;
             case TeamState.AI_Peaceful:
-                Difficulty = AIStrategies.Difficulty.Peaceful;
+                Difficulty = Difficulty.Peaceful;
                 break;
             case TeamState.AI_Aggressive:
-                Difficulty = AIStrategies.Difficulty.Aggressive;
+                Difficulty = Difficulty.Aggressive;
                 break;
             default:
-                Difficulty = AIStrategies.Difficulty.Peaceful;
+                Difficulty = Difficulty.Peaceful;
                 break;
         }
     }
@@ -116,14 +111,52 @@ public class Team : MonoBehaviour
     {
         return pieces.OrderBy(piece => piece.GetDistanceToTheEnd()).ToList();
     }
-    //方法:得到這隊是否已經結束
+    // 方法:得到這隊是否已經結束
     public bool isFinished()
     {
-        if (!pieces.All(piece => piece.CheckCurrentSpace().gameObject.layer == 9)) return false;
+        if (!pieces.All(piece => piece.CurrentSpace.gameObject.layer == 9)) return false;
         return true;
     }
+    // public bool isFinished()
+    // {
+    //     if (pieces == null || pieces.Count == 0)
+    //     {
+    //         Debug.LogWarning($"Team {Name}: pieces 集合為空或為 null");
+    //         return false;
+    //     }
+
+    //     foreach (var piece in pieces)
+    //     {
+    //         if (piece == null)
+    //         {
+    //             Debug.LogError($"Team {Name}: 在 pieces 集合中發現 null 的 piece");
+    //             return false;
+    //         }
+
+    //         Space currentSpace = piece.CheckCurrentSpace();
+    //         if (currentSpace == null)
+    //         {
+    //             Debug.LogWarning($"Team {Name}: Piece {piece.name} 的 CheckCurrentSpace() 返回 null");
+    //             return false;
+    //         }
+
+    //         if (currentSpace.gameObject == null)
+    //         {
+    //             Debug.LogError($"Team {Name}: Piece {piece.name} 的 currentSpace.gameObject 為 null");
+    //             return false;
+    //         }
+
+    //         if (currentSpace.gameObject.layer != 9)
+    //         {
+    //             Debug.Log($"Team {Name}: Piece {piece.name} 不在正確的 layer 上。當前 layer: {currentSpace.gameObject.layer}");
+    //             return false;
+    //         }
+    //     }
+
+    //     return true;
+    // }
     //方法:得到這隊的AI戰術
-    public AIStrategies.Difficulty GetStrategy()
+    public Difficulty GetStrategy()
     {
         return Difficulty;
     }

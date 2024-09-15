@@ -55,6 +55,7 @@ public class UIManager : MonoBehaviour
     {
         InitializeButtons();
         UpdateAllStateTexts();
+        TurnFlag.transform.position = FlagPosOrange;
     }
 
     private void Update()

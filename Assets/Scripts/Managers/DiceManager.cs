@@ -9,6 +9,10 @@ public class DiceManager : MonoBehaviour
     public List<Dice> dices = new List<Dice>();
     public bool IsAnyDiceMoving { get; private set; }
 
+    public static float VelocityThreshold = 0.01f;
+    public static float AngularVelocityThreshold = 0.01f;
+    public static float SettleTime = 0.1f;
+
     private void Awake()
     {
         if (Instance == null)
@@ -98,16 +102,15 @@ public class DiceManager : MonoBehaviour
 
 
     #region Roll
+
     public IEnumerator AIRollDice(params Dice[] dices)
     {
         float elapsedTime = 0f;
-        float diceRollDuration = Random.Range(2f, 3.5f);
+        float diceRollDuration = Random.Range(1.5f, 3f);
 
         foreach (var dice in dices)
         {
-            // dice.rb.useGravity = false;
-            float randomRange = Random.Range(0f, 90f);
-            dice.transform.rotation = Quaternion.Euler(randomRange, randomRange, randomRange);
+            dice.transform.rotation = Random.rotation;
         }
 
         while (elapsedTime < diceRollDuration)
@@ -120,10 +123,32 @@ public class DiceManager : MonoBehaviour
             elapsedTime += 0.01f;
             yield return null;
         }
-        // foreach (var dice in dices)
-        // {
-        //     dice.rb.useGravity = true;
-        // }
     }
-    #endregion Roll
+    // public IEnumerator AIRollDice(params Dice[] dices)
+    // {
+    //     float diceRollDuration = Random.Range(1f, 2.5f);
+    //     float elapsedTime = 0f;
+
+    //     // 初始化骰子的隨機旋轉
+    //     foreach (var dice in dices)
+    //     {
+    //         dice.transform.rotation = Random.rotation;
+    //     }
+
+    //     while (elapsedTime < diceRollDuration)
+    //     {
+    //         foreach (var dice in dices)
+    //         {
+    //             // 使用 RotateAround 來實現更自然的旋轉
+    //             dice.transform.RotateAround(dice.transform.position, Random.insideUnitSphere, dice.speed * Time.deltaTime);
+
+    //             // 根據經過的時間逐漸減緩旋轉速度
+    //             float slowdownFactor = 1f - (elapsedTime / diceRollDuration);
+    //             dice.transform.position = Vector3.Lerp(dice.transform.position, dice.rotatingPos, Time.deltaTime * (1f - slowdownFactor));
+    //         }
+
+    //         elapsedTime += Time.deltaTime;
+    //         yield return null;
+    //     }
 }
+#endregion Roll

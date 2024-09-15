@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
         AudioManager.Instance.PlayBgmRandomly();
         CameraManager.Instance.SetInitialCameraPosition(TitleView);
         HumanPlayers = GetHumanPlayers();
-        Time.timeScale = 3;
+        Time.timeScale = 3f;
     }
 
     public void START_GAME()
@@ -118,6 +118,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(Random.Range(0.5f, 1f));
         yield return StartCoroutine(DiceManager.Instance.AIRollDice(DiceManager.Instance.GetDice(0)));
         yield return new WaitUntil(() => !DiceManager.Instance.IsAnyDiceMoving);
+        yield return new WaitForSeconds(1f);
 
         List<LudoPiece> availablePieces = SelectAvailablePiece(allPieces);
 

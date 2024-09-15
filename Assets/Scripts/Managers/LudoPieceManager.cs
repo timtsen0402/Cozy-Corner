@@ -7,6 +7,7 @@ using DG.Tweening;
 public class LudoPieceManager : MonoBehaviour
 {
     public static LudoPieceManager Instance { get; private set; }
+    public static Quaternion PieceRotation = Quaternion.Euler(new Vector3(270f, 0f, 0f));
     public List<Team> UnfinishedTeams { get; set; }
     public List<Team> FinishedTeams { get; set; }
     // 使用字典來按顏色存儲棋子
@@ -43,28 +44,9 @@ public class LudoPieceManager : MonoBehaviour
         }
     }
 
-    // private void CollectAllPieces()
-    // {
-    //     LudoPiece[] allPieces = FindObjectsOfType<LudoPiece>();
-    //     foreach (LudoPiece piece in allPieces)
-    //     {
-    //         AddPiece(piece);
-    //     }
-    // }
-
-    // public void AddPiece(LudoPiece piece)
-    // {
-    //     if (piecesByTeam.TryGetValue(piece.myTeam, out List<LudoPiece> teamPieces))
-    //     {
-    //         if (!teamPieces.Contains(piece))
-    //         {
-    //             teamPieces.Add(piece);
-    //         }
-    //     }
-    // }
     #region Get
 
-    public LudoPiece SelectPiece(AIStrategies.Difficulty difficulty, List<LudoPiece> availablePieces)
+    public LudoPiece SelectPiece(Difficulty difficulty, List<LudoPiece> availablePieces)
     {
         var strategy = AIStrategies.GetStrategy(difficulty);
         return strategy(availablePieces);

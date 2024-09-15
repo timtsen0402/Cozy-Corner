@@ -10,14 +10,15 @@ public class LudoPiece : MonoBehaviour
 {
 
     public Team myTeam { get; private set; }
+
     [field: SerializeField]
     public Space homeSpace { get; private set; }
     public Space startSpace { get; private set; }
 
     public Space CurrentSpace { get; private set; }
-    public bool IsClickable { get; set; }
-    public bool IsMoving { get; set; }
     public int killCount { get; private set; }
+    public bool IsClickable { get; set; }
+    public bool IsMoving { get; set; } = false;
 
     Rigidbody rb;
     Renderer rend;
@@ -26,34 +27,33 @@ public class LudoPiece : MonoBehaviour
     void Awake()
     {
         myTeam = GetComponentInParent<Team>();
+        rb = GetComponent<Rigidbody>();
+        rend = gameObject.GetComponent<Renderer>();
+
         startSpace = myTeam.StartSpace;
     }
 
     void Start()
     {
 
-        rb = GetComponent<Rigidbody>();
+
         IsMoving = false;
-        rend = gameObject.GetComponent<Renderer>();
+
         originalColor = rend.material.color;
-        //transform.position = homeSpace.ActualPosition;
-        transform.rotation = Quaternion.Euler(new Vector3(270f, 0f, 0f));
+        ResetToHome();
     }
 
     void Update()
     {
         CurrentSpace = CheckCurrentSpace();
-        if (CurrentSpace == null) ResetToHome();
+        //if (CurrentSpace == null) ResetToHome();
         if (IsClickable) OnClick();
-
-
-
         RigidbodySetting();
     }
     public void ResetToHome()
     {
         transform.position = homeSpace.ActualPosition;
-        transform.rotation = Quaternion.Euler(new Vector3(270f, 0f, 0f));
+        transform.rotation = LudoPieceManager.PieceRotation;
         if (!rb.isKinematic) rb.velocity = Vector3.zero;
     }
     void RigidbodySetting()
@@ -92,6 +92,7 @@ public class LudoPiece : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, Vector3.down, out hit))
         {
+            if (hit.collider.gameObject.GetComponent<Space>() == null) return CurrentSpace;
             return hit.collider.gameObject.GetComponent<Space>();
         }
         else
@@ -124,20 +125,7 @@ public class LudoPiece : MonoBehaviour
         }
         return count;
     }
-    public void OnClick()
-    {
-        if (Input.GetMouseButtonDown(0)) // 檢測左鍵點擊
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit) && hit.collider.gameObject == gameObject)
-            {
-                StartCoroutine(MovePiece());
-                // selectedPiece = gameObject;
-            }
-        }
-    }
     private IEnumerator MovePiece()
     {
         foreach (LudoPiece piece in myTeam.GetAllPieces())
@@ -187,7 +175,20 @@ public class LudoPiece : MonoBehaviour
         IsMoving = false;
     }
 
+    #region  OnMouse
+    public void OnClick()
+    {
+        if (Input.GetMouseButtonDown(0)) // 檢測左鍵點擊
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
 
+            if (Physics.Raycast(ray, out hit) && hit.collider.gameObject == gameObject)
+            {
+                StartCoroutine(MovePiece());
+            }
+        }
+    }
     void OnMouseEnter()
     {
         if (IsClickable)
@@ -199,7 +200,7 @@ public class LudoPiece : MonoBehaviour
     {
         rend.material.color = originalColor;
     }
-
+    #endregion  OnMouse
     private void OnDrawGizmos()
     {
         Gizmos.color = UnityEngine.Color.black;
