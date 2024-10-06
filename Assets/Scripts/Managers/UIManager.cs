@@ -205,8 +205,9 @@ public class UIManager : MonoBehaviour
                 CycleTeamState(Team.Red);
                 break;
             case "Close":
-                CameraManager.Instance.MoveCameraTo(TitleView, 3f);
-                canvas.SetActive(true);
+                canvas.SetActive(false);
+                CameraManager.Instance.MoveCameraTo(GameView, transferTime);
+                StartCoroutine(LateSet(transferTime));
                 break;
         }
     }
@@ -256,13 +257,6 @@ public class UIManager : MonoBehaviour
 
     #region Game Flow Methods
 
-    public void OnPlayButtonClicked()
-    {
-        canvas.SetActive(false);
-        CameraManager.Instance.MoveCameraTo(GameView, transferTime);
-        StartCoroutine(LateSet(transferTime));
-    }
-
     private IEnumerator LateSet(float seconds)
     {
         yield return new WaitForSeconds(seconds);
@@ -272,7 +266,13 @@ public class UIManager : MonoBehaviour
         CameraManager.Instance.SetCameraOffset();
     }
 
-    public void OnSettingsButtonClicked()
+    public void OnClassicButtonClicked()
+    {
+        CameraManager.Instance.MoveCameraTo(SettingView, 3f);
+        canvas.SetActive(false);
+    }
+
+    public void OnCrazyButtonClicked()
     {
         CameraManager.Instance.MoveCameraTo(SettingView, 3f);
         canvas.SetActive(false);

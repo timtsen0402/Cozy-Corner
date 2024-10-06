@@ -14,6 +14,17 @@ public static class GameConstants
     public static readonly Vector3 FlagPosRed = new Vector3(-15f, 0.61f, -15f);
     public static readonly Vector3 FlagPosDefault = new Vector3(0, 0.61f, 0);
 
+    // Dice Position
+    public static readonly Vector3 DiceRotatingPos = new Vector3(0, 7f, 25f);
+    public static readonly Vector3[] DiceSleepingPositions = new Vector3[]
+    {
+    new Vector3(-18f, 0, 0),
+    new Vector3(-18f, 0, 5f),
+    new Vector3(-18f, 0, 10f),
+    new Vector3(-18f, 0, -5f),
+    new Vector3(-18f, 0, -10f)
+    };
+
     // Player Numbers
     public static int TotalPlayers { get; private set; } = 4;
 

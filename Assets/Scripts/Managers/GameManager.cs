@@ -90,7 +90,7 @@ public class GameManager : MonoBehaviour
                 RollCount++;
                 yield return StartCoroutine(HumanPlayerTurn());
             }
-            if (DiceManager.Instance.GetTotalDiceResult() == 6)
+            if (DiceManager.Instance.GetDiceResult(0) == 6)
             {
                 yield return StartCoroutine(HumanPlayerTurn());
 
@@ -105,7 +105,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         //若骰6則可以再一次
-        if (DiceManager.Instance.GetTotalDiceResult() == 6)
+        if (DiceManager.Instance.GetDiceResult(0) == 6)
             yield return StartCoroutine(HumanPlayerTurn());
         else
             yield return null;
@@ -131,10 +131,9 @@ public class GameManager : MonoBehaviour
                 RollCount++;
                 yield return StartCoroutine(AIPlayerTurn());
             }
-            if (DiceManager.Instance.GetTotalDiceResult() == 6)
+            if (DiceManager.Instance.GetDiceResult(0) == 6)
             {
                 yield return StartCoroutine(AIPlayerTurn());
-
             }
 
             yield break;
@@ -150,7 +149,7 @@ public class GameManager : MonoBehaviour
 
         availablePieces = null;
 
-        if (DiceManager.Instance.GetTotalDiceResult() == 6)
+        if (DiceManager.Instance.GetDiceResult(0) == 6)
             yield return StartCoroutine(AIPlayerTurn());
         else
             yield return null;

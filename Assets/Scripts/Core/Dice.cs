@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using static GameConstants;
 
 public class Dice : MonoBehaviour
 {
@@ -22,7 +23,7 @@ public class Dice : MonoBehaviour
     void Start()
     {
         rb = gameObject.GetComponent<Rigidbody>();
-        rotatingPos = new Vector3(0, 7f, 25f);
+        rotatingPos = DiceRotatingPos;
     }
 
     void Update()

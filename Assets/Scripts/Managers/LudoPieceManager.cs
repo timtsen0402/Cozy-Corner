@@ -86,7 +86,7 @@ public class LudoPieceManager : MonoBehaviour
     public IEnumerator AIMovePiece(LudoPiece piece)
     {
         piece.IsMoving = true;
-        int steps = DiceManager.Instance.GetTotalDiceResult();
+        int steps = DiceManager.Instance.GetDiceResult(0);
         for (int i = 0; i < steps; i++)
         {
             Space currentSpace = piece.CheckCurrentSpace();
