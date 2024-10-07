@@ -30,7 +30,7 @@ public class Dice : MonoBehaviour
     {
         if (gameObject.transform.position.y < -10f)
         {
-            ResetPosition();
+            transform.position = DiceRotatingPos;
         }
 
         if (!isCheckingForSettle)
@@ -97,7 +97,24 @@ public class Dice : MonoBehaviour
     #region  Reset
     public void ResetPosition()
     {
-        gameObject.transform.position = rotatingPos;
+        switch (tag)
+        {
+            case "Orange":
+                transform.position = new Vector3(-18f, 0, 5f);
+                break;
+            case "Green":
+                transform.position = new Vector3(-18f, 0, 10f);
+                break;
+            case "Blue":
+                transform.position = new Vector3(-18f, 0, -5f);
+                break;
+            case "Red":
+                transform.position = new Vector3(-18f, 0, -10f);
+                break;
+            default:
+                transform.position = new Vector3(-18f, 0, 0);
+                break;
+        }
     }
     #endregion Reset
 

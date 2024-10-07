@@ -50,7 +50,7 @@ public class AIStrategies : MonoBehaviour
         if (pieces.Count == 0) return null;
         if (pieces.Count == 1) return pieces[0];
 
-        int steps = DiceManager.Instance.GetDiceResult(0);
+        int steps = DiceManager.Instance.GetCurrentDiceResult();
         // if movable chesses number is 2,3 or 4
         List<LudoPiece> nearestPieces = LudoPieceManager.Instance.GetNearestPiecesToFinish(pieces);
         foreach (LudoPiece piece in nearestPieces)

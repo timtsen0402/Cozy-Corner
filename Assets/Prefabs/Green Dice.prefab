@@ -69,7 +69,7 @@ GameObject:
   - component: {fileID: 2953379857542534839}
   m_Layer: 11
   m_Name: Green Dice
-  m_TagString: Untagged
+  m_TagString: Green
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

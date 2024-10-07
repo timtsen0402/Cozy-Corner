@@ -16,6 +16,7 @@ public static class GameConstants
 
     // Dice Position
     public static readonly Vector3 DiceRotatingPos = new Vector3(0, 7f, 25f);
+    public static readonly Vector3 DiceRotation = new Vector3(90f, 0, 90f);
     public static readonly Vector3[] DiceSleepingPositions = new Vector3[]
     {
     new Vector3(-18f, 0, 0),
@@ -66,4 +67,9 @@ public enum Difficulty
     Dumb,
     Peaceful,
     Aggressive
+}
+public enum GameMode
+{
+    Classic,
+    Crazy
 }

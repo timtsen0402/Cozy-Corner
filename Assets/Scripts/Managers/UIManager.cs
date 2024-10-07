@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Collections;
 using static GameConstants;
@@ -91,10 +92,10 @@ public class UIManager : MonoBehaviour
 
     private void InitializeButtons()
     {
-        orangeButton.onClick.AddListener(() => CycleTeamState(Team.Orange));
-        greenButton.onClick.AddListener(() => CycleTeamState(Team.Green));
-        blueButton.onClick.AddListener(() => CycleTeamState(Team.Blue));
-        redButton.onClick.AddListener(() => CycleTeamState(Team.Red));
+        orangeButton.onClick.AddListener(() => CycleTeamState(TeamOrange.Instance));
+        greenButton.onClick.AddListener(() => CycleTeamState(TeamGreen.Instance));
+        blueButton.onClick.AddListener(() => CycleTeamState(TeamBlue.Instance));
+        redButton.onClick.AddListener(() => CycleTeamState(TeamRed.Instance));
     }
 
     #endregion
@@ -138,23 +139,23 @@ public class UIManager : MonoBehaviour
 
     private void UpdateKillerData()
     {
-        var teamKillCounts = new[]
+        List<Team> teams = new List<Team>
         {
-            new { Team = Team.Orange, Team.Orange.HexCode },
-            new { Team = Team.Green, Team.Green.HexCode },
-            new { Team = Team.Blue, Team.Blue.HexCode },
-            new { Team = Team.Red, Team.Red.HexCode }
+            TeamOrange.Instance,
+            TeamGreen.Instance,
+            TeamBlue.Instance,
+            TeamRed.Instance
         };
 
-        var sortedTeams = teamKillCounts.OrderByDescending(t => t.Team.GetKillCount()).ToList();
+        var sortedTeams = teams.OrderByDescending(t => t.GetKillCount()).ToList();
 
         StringBuilder sb = new StringBuilder();
         sb.AppendLine("<align=center><size=150%><color=#FF0000><b>Top Killer</b></color></size></align>");
 
         foreach (var teamInfo in sortedTeams)
         {
-            int killCount = teamInfo.Team.GetKillCount();
-            sb.AppendLine($"<align=left><color={teamInfo.HexCode}>{teamInfo.Team.Name}: {killCount}</color></align>");
+            int killCount = teamInfo.GetKillCount();
+            sb.AppendLine($"<align=left><color={teamInfo.HexCode}>{teamInfo.Name}: {killCount}</color></align>");
         }
 
         KillerTMP.text = sb.ToString();
@@ -193,16 +194,16 @@ public class UIManager : MonoBehaviour
                 AudioManager.Instance.PlaySFX("Meow");
                 break;
             case "OrangeBTN":
-                CycleTeamState(Team.Orange);
+                CycleTeamState(TeamOrange.Instance);
                 break;
             case "GreenBTN":
-                CycleTeamState(Team.Green);
+                CycleTeamState(TeamGreen.Instance);
                 break;
             case "BlueBTN":
-                CycleTeamState(Team.Blue);
+                CycleTeamState(TeamBlue.Instance);
                 break;
             case "RedBTN":
-                CycleTeamState(Team.Red);
+                CycleTeamState(TeamRed.Instance);
                 break;
             case "Close":
                 canvas.SetActive(false);
@@ -238,19 +239,19 @@ public class UIManager : MonoBehaviour
 
     private TextMeshPro GetStateTextForTeam(Team team)
     {
-        if (team == Team.Orange) return orangeStateText;
-        else if (team == Team.Green) return greenStateText;
-        else if (team == Team.Blue) return blueStateText;
-        else if (team == Team.Red) return redStateText;
+        if (team == TeamOrange.Instance) return orangeStateText;
+        else if (team == TeamGreen.Instance) return greenStateText;
+        else if (team == TeamBlue.Instance) return blueStateText;
+        else if (team == TeamRed.Instance) return redStateText;
         return null;
     }
 
     private void UpdateAllStateTexts()
     {
-        UpdateStateText(Team.Orange);
-        UpdateStateText(Team.Green);
-        UpdateStateText(Team.Blue);
-        UpdateStateText(Team.Red);
+        UpdateStateText(TeamOrange.Instance);
+        UpdateStateText(TeamGreen.Instance);
+        UpdateStateText(TeamBlue.Instance);
+        UpdateStateText(TeamRed.Instance);
     }
 
     #endregion
@@ -268,12 +269,14 @@ public class UIManager : MonoBehaviour
 
     public void OnClassicButtonClicked()
     {
+        GameManager.Instance.CurrentGameMode = GameMode.Classic;
         CameraManager.Instance.MoveCameraTo(SettingView, 3f);
         canvas.SetActive(false);
     }
 
     public void OnCrazyButtonClicked()
     {
+        GameManager.Instance.CurrentGameMode = GameMode.Crazy;
         CameraManager.Instance.MoveCameraTo(SettingView, 3f);
         canvas.SetActive(false);
     }

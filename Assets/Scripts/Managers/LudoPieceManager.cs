@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using System.Linq;
 using DG.Tweening;
+using static Tool;
 
 public class LudoPieceManager : MonoBehaviour
 {
@@ -86,7 +87,14 @@ public class LudoPieceManager : MonoBehaviour
     public IEnumerator AIMovePiece(LudoPiece piece)
     {
         piece.IsMoving = true;
-        int steps = DiceManager.Instance.GetDiceResult(0);
+        int steps = DiceManager.Instance.GetCurrentDiceResult();
+        // Special Move
+        //
+        if (GameManager.Instance.CurrentGameMode == GameMode.Crazy && steps == 6)
+        {
+            TurnToTeam(GameManager.Instance.CurrentPlayerTurn).ActivateSpecialFunction(piece);
+        }
+        //
         for (int i = 0; i < steps; i++)
         {
             Space currentSpace = piece.CheckCurrentSpace();
@@ -130,4 +138,25 @@ public class LudoPieceManager : MonoBehaviour
         GameManager.Instance.IsPieceMoved = true;
     }
     #endregion Move
+    // private void ActivateSpecialFunction(Team team)
+    // {
+    //     switch (team.Name)
+    //     {
+    //         case "Orange":
+    //             team.ActivateOrangeSpecialFunction();
+    //             break;
+    //         case "Green":
+    //             team.ActivateGreenSpecialFunction();
+    //             break;
+    //         case "Blue":
+    //             team.ActivateBlueSpecialFunction();
+    //             break;
+    //         case "Red":
+    //             team.ActivateRedSpecialFunction();
+    //             break;
+    //         default:
+    //             Debug.LogWarning($"No special function defined for team {team.Name}");
+    //             break;
+    //     }
+    // }
 }

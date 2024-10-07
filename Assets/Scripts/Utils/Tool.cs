@@ -10,13 +10,13 @@ public static class Tool
         switch (turn)
         {
             case 1:
-                return Team.Orange;
+                return TeamOrange.Instance;
             case 2:
-                return Team.Green;
+                return TeamGreen.Instance;
             case 3:
-                return Team.Blue;
+                return TeamBlue.Instance;
             case 4:
-                return Team.Red;
+                return TeamRed.Instance;
             default:
                 return null;
         }
@@ -71,7 +71,7 @@ public static class Tool
             //踢掉不能選的
             if (piece.CurrentSpace.gameObject.layer == 6)//Home
             {
-                if (DiceManager.Instance.GetDiceResult(0) != 6 || pieces.Contains(space_start.CurrentPiece))
+                if (DiceManager.Instance.GetCurrentDiceResult() != 6 || pieces.Contains(space_start.CurrentPiece))
                 {
                     continue;
                 }
@@ -81,7 +81,7 @@ public static class Tool
                 //路徑上沒棋
                 //到的點有pos
                 //到的點非己方
-                if (!isMovePossible(piece, DiceManager.Instance.GetDiceResult(0))) continue;
+                if (!isMovePossible(piece, DiceManager.Instance.GetCurrentDiceResult())) continue;
             }
             piece.IsClickable = true;
         }
@@ -95,7 +95,7 @@ public static class Tool
             //踢掉不能選的
             if (piece.CurrentSpace.gameObject.layer == 6)//Home
             {
-                if (DiceManager.Instance.GetDiceResult(0) != 6 || pieces.Contains(piece.startSpace.CurrentPiece))
+                if (DiceManager.Instance.GetCurrentDiceResult() != 6 || pieces.Contains(piece.startSpace.CurrentPiece))
                 {
                     continue;
                 }
@@ -105,7 +105,7 @@ public static class Tool
                 //路徑上沒棋
                 //到的點有pos
                 //到的點非己方
-                if (!isMovePossible(piece, DiceManager.Instance.GetDiceResult(0))) continue;
+                if (!isMovePossible(piece, DiceManager.Instance.GetCurrentDiceResult())) continue;
             }
             clickablePieces.Add(piece);
         }

@@ -82,12 +82,13 @@ public class DiceManager : MonoBehaviour
 
     #region Reset
     // 新增方法：重置指定骰子的位置
-    public void ResetDicePosition(int index)
+    public void ResetDice(int index)
     {
         Dice dice = GetDice(index);
         if (dice != null)
         {
             dice.ResetPosition();
+            dice.transform.eulerAngles = DiceRotation;
         }
     }
 
@@ -106,7 +107,7 @@ public class DiceManager : MonoBehaviour
 
         while (elapsedTime < diceRollDuration)
         {
-            dice.ResetPosition();
+            dice.transform.position = DiceRotatingPos;
             dice.transform.Rotate(dice.rotatingSpeed);
 
             elapsedTime += 0.01f;
@@ -115,5 +116,19 @@ public class DiceManager : MonoBehaviour
     }
 
     #endregion Roll
+
+    public Dice GetCurrentDice()
+    {
+        return GameManager.Instance.CurrentGameMode == GameMode.Classic
+            ? GetDice(0)
+            : GetDice(GameManager.Instance.CurrentPlayerTurn);
+    }
+
+    public int GetCurrentDiceResult()
+    {
+        return GameManager.Instance.CurrentGameMode == GameMode.Classic
+            ? GetDiceResult(0)
+            : GetDiceResult(GameManager.Instance.CurrentPlayerTurn);
+    }
 }
 

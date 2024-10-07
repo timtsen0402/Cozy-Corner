@@ -334,7 +334,7 @@ GameObject:
   - component: {fileID: 8109108075479564191}
   m_Layer: 11
   m_Name: Blue Dice
-  m_TagString: Untagged
+  m_TagString: Blue
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

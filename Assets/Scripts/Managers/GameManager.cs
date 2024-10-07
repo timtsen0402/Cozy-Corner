@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour
     public bool IsPieceMoved { get; set; }
     public int RollCount { get; set; }
 
+    public GameMode CurrentGameMode { get; set; }
+
     private void Awake()
     {
         if (Instance == null)
@@ -90,7 +92,7 @@ public class GameManager : MonoBehaviour
                 RollCount++;
                 yield return StartCoroutine(HumanPlayerTurn());
             }
-            if (DiceManager.Instance.GetDiceResult(0) == 6)
+            if (DiceManager.Instance.GetCurrentDiceResult() == 6)
             {
                 yield return StartCoroutine(HumanPlayerTurn());
 
@@ -105,7 +107,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         //若骰6則可以再一次
-        if (DiceManager.Instance.GetDiceResult(0) == 6)
+        if (DiceManager.Instance.GetCurrentDiceResult() == 6)
             yield return StartCoroutine(HumanPlayerTurn());
         else
             yield return null;
@@ -116,7 +118,9 @@ public class GameManager : MonoBehaviour
         List<LudoPiece> allPieces = TurnToTeam(CurrentPlayerTurn).GetAllPieces();
 
         yield return new WaitForSeconds(Random.Range(0.5f, 1f));
-        yield return StartCoroutine(DiceManager.Instance.AIRollDice(DiceManager.Instance.GetDice(0)));
+
+        yield return StartCoroutine(DiceManager.Instance.AIRollDice(DiceManager.Instance.GetCurrentDice()));
+
         yield return new WaitUntil(() => !DiceManager.Instance.IsAnyDiceMoving);
         yield return new WaitForSeconds(1f);
 
@@ -131,7 +135,7 @@ public class GameManager : MonoBehaviour
                 RollCount++;
                 yield return StartCoroutine(AIPlayerTurn());
             }
-            if (DiceManager.Instance.GetDiceResult(0) == 6)
+            if (DiceManager.Instance.GetCurrentDiceResult() == 6)
             {
                 yield return StartCoroutine(AIPlayerTurn());
             }
@@ -149,7 +153,7 @@ public class GameManager : MonoBehaviour
 
         availablePieces = null;
 
-        if (DiceManager.Instance.GetDiceResult(0) == 6)
+        if (DiceManager.Instance.GetCurrentDiceResult() == 6)
             yield return StartCoroutine(AIPlayerTurn());
         else
             yield return null;
@@ -161,6 +165,20 @@ public class GameManager : MonoBehaviour
         CurrentPlayerTurn = (CurrentPlayerTurn % TotalPlayers) + 1;
         UIManager.Instance.SetUpTurnFlag();
         RollCount = 0;
+
+        if (CurrentGameMode == GameMode.Classic) return;
+
+        // Reset last dices
+        if (CurrentPlayerTurn == 1)
+        {
+            DiceManager.Instance.ResetDice(4);
+        }
+        else
+        {
+            DiceManager.Instance.ResetDice(CurrentPlayerTurn - 1);
+        }
+        //
+
     }
 
 

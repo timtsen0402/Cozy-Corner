@@ -133,7 +133,7 @@ public class LudoPiece : MonoBehaviour
             piece.IsClickable = false;
         }
         IsMoving = true;
-        int steps = DiceManager.Instance.GetDiceResult(0);
+        int steps = DiceManager.Instance.GetCurrentDiceResult();
 
         for (int i = 0; i < steps; i++)
         {
