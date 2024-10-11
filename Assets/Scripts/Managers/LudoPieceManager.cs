@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Linq;
 using DG.Tweening;
 using static Tool;
+using Unity.VisualScripting;
 
 public class LudoPieceManager : MonoBehaviour
 {
@@ -84,15 +85,24 @@ public class LudoPieceManager : MonoBehaviour
         yield return moveTween.WaitForCompletion();
     }
 
-    public IEnumerator AIMovePiece(LudoPiece piece)
+    public IEnumerator AIMovePiece(LudoPiece piece, int steps)
     {
         piece.IsMoving = true;
-        int steps = DiceManager.Instance.GetCurrentDiceResult();
         // Special Move
         //
         if (GameManager.Instance.CurrentGameMode == GameMode.Crazy && steps == 6)
         {
+            Space currentSpace = piece.CheckCurrentSpace();
+            //如果被選到的棋在家就出來 否則執行以下
+            if (currentSpace.NextSpace == piece.startSpace && currentSpace.gameObject.layer == 6)
+            {
+                Vector3 nextPosition;
+                nextPosition = piece.startSpace.ActualPosition;
+                yield return MoveToPosition(piece, nextPosition);
+                yield break;
+            }
             TurnToTeam(GameManager.Instance.CurrentPlayerTurn).ActivateSpecialFunction(piece);
+            yield break;
         }
         //
         for (int i = 0; i < steps; i++)

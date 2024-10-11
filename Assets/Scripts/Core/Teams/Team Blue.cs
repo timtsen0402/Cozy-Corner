@@ -25,8 +25,10 @@ public class TeamBlue : Team
 
     public override void ActivateSpecialFunction(LudoPiece piece)
     {
+        ParticleEffectManager.Instance.PlayEffect(effect, piece.transform.position);
+        AudioManager.Instance.PlaySFX("Team Blue");
+
         Debug.Log("Activating Blue team's special function");
-        // 實現橙色隊伍的特殊功能
-        // 例如：所有棋子向前移動一格
+        // 獲得防護罩
     }
 }

@@ -46,24 +46,10 @@ public class ParticleEffectManager : MonoBehaviour
         }
     }
 
-    public void PlayEffect(string effectName, Vector3 position)
+    public void PlayEffect(GameObject prefab, Vector3 position)
     {
-        if (!pools.TryGetValue(effectName, out var queue) || queue.Count == 0)
-        {
-            Debug.LogWarning($"Effect {effectName} not available.");
-            return;
-        }
-
-        var obj = queue.Dequeue();
-        obj.transform.position = position;
-        obj.SetActive(true);
-
-        var particleSystem = obj.GetComponent<ParticleSystem>();
-        if (particleSystem != null)
-        {
-            particleSystem.Play();
-            StartCoroutine(ReturnToPool(obj, effectName, particleSystem.main.duration));
-        }
+        GameObject obj = Instantiate(prefab, position, Quaternion.identity);
+        Destroy(obj, 3f);
     }
 
     private System.Collections.IEnumerator ReturnToPool(GameObject obj, string effectName, float delay)

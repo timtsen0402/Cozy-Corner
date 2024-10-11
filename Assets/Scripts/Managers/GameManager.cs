@@ -148,9 +148,16 @@ public class GameManager : MonoBehaviour
 
         if (selectedPiece != null)
         {
-            yield return StartCoroutine(LudoPieceManager.Instance.AIMovePiece(selectedPiece));
+            yield return StartCoroutine(LudoPieceManager.Instance.AIMovePiece(selectedPiece, DiceManager.Instance.GetCurrentDiceResult()));
+
+            if (TurnToTeam(CurrentPlayerTurn) == TeamRed.Instance && isMovePossible(selectedPiece, TeamRed.Instance.ExtraSteps))
+            {
+                yield return new WaitForSeconds(1f);
+                StartCoroutine(LudoPieceManager.Instance.AIMovePiece(selectedPiece, TeamRed.Instance.ExtraSteps));
+            }
         }
 
+        // Reset
         availablePieces = null;
 
         if (DiceManager.Instance.GetCurrentDiceResult() == 6)

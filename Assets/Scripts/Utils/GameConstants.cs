@@ -19,9 +19,9 @@ public static class GameConstants
     public static readonly Vector3 DiceRotation = new Vector3(90f, 0, 90f);
     public static readonly Vector3[] DiceSleepingPositions = new Vector3[]
     {
-    new Vector3(-18f, 0, 0),
-    new Vector3(-18f, 0, 5f),
     new Vector3(-18f, 0, 10f),
+    new Vector3(-18f, 0, 5f),
+    new Vector3(-18f, 0, 0),
     new Vector3(-18f, 0, -5f),
     new Vector3(-18f, 0, -10f)
     };

@@ -36,15 +36,18 @@ public class LudoPiece : MonoBehaviour
     void Start()
     {
 
-
         IsMoving = false;
 
         originalColor = rend.material.color;
         ResetToHome();
+
+
     }
 
     void Update()
     {
+        // ParticleEffectManager.Instance.PlayEffect("fire", transform.position);
+
         CurrentSpace = CheckCurrentSpace();
         //if (CurrentSpace == null) ResetToHome();
         if (IsClickable) OnClick();

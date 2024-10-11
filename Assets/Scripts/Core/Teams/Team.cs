@@ -194,10 +194,15 @@ public abstract class Team : MonoBehaviour
     public string HexCode { get; protected set; }
 
     [SerializeField] protected TeamData teamData;
+    [field: SerializeField] public Space StartSpace { get; protected set; }
+
+    [Header("Special Features")]
+    [SerializeField] protected GameObject effect;
+
     public Difficulty Difficulty { get; protected set; } = Difficulty.Peaceful;
-    [field: SerializeField]
-    public Space StartSpace { get; protected set; }
+
     protected List<LudoPiece> pieces = new List<LudoPiece>();
+
 
     protected virtual void Awake()
     {

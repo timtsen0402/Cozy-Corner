@@ -29,7 +29,10 @@ public class TeamGreen : Team
 
     public override void ActivateSpecialFunction(LudoPiece piece)
     {
-        //生成在要移動的棋上的pos
+        ParticleEffectManager.Instance.PlayEffect(effect, piece.transform.position);
+        AudioManager.Instance.PlaySFX("Team Green");
+
+        //種樹換下一格
         Instantiate(tree, piece.transform.position, Quaternion.identity);
     }
 }

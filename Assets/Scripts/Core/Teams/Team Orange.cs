@@ -26,7 +26,9 @@ public class TeamOrange : Team
     public override void ActivateSpecialFunction(LudoPiece piece)
     {
         Debug.Log("Activating Orange team's special function");
-        // 實現橙色隊伍的特殊功能
-        // 例如：所有棋子向前移動一格
+        // 爆炸影響前後的棋子
+        ParticleEffectManager.Instance.PlayEffect(effect, piece.transform.position);
+
+        AudioManager.Instance.PlaySFX("Team Orange");
     }
 }

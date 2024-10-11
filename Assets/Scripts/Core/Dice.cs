@@ -100,19 +100,19 @@ public class Dice : MonoBehaviour
         switch (tag)
         {
             case "Orange":
-                transform.position = new Vector3(-18f, 0, 5f);
+                transform.position = DiceSleepingPositions[1];
                 break;
             case "Green":
-                transform.position = new Vector3(-18f, 0, 10f);
+                transform.position = DiceSleepingPositions[2];
                 break;
             case "Blue":
-                transform.position = new Vector3(-18f, 0, -5f);
+                transform.position = DiceSleepingPositions[3];
                 break;
             case "Red":
-                transform.position = new Vector3(-18f, 0, -10f);
+                transform.position = DiceSleepingPositions[4];
                 break;
             default:
-                transform.position = new Vector3(-18f, 0, 0);
+                transform.position = DiceSleepingPositions[0];
                 break;
         }
     }
