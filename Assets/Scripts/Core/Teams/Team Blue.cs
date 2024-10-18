@@ -28,7 +28,13 @@ public class TeamBlue : Team
         ParticleEffectManager.Instance.PlayEffect(effect, piece.transform.position);
         AudioManager.Instance.PlaySFX("Team Blue");
 
-        Debug.Log("Activating Blue team's special function");
-        // 獲得防護罩
+        // shield effect
+        Renderer renderer = piece.GetComponent<Renderer>();
+        Material material = renderer.material;
+        material.SetFloat("_Metallic", 1f);
+        material.SetFloat("_Glossiness", 1f);
+        //
+
+        //實際功能
     }
 }

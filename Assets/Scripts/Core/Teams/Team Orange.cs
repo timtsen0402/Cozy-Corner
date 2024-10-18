@@ -25,10 +25,22 @@ public class TeamOrange : Team
 
     public override void ActivateSpecialFunction(LudoPiece piece)
     {
-        Debug.Log("Activating Orange team's special function");
-        // 爆炸影響前後的棋子
         ParticleEffectManager.Instance.PlayEffect(effect, piece.transform.position);
-
         AudioManager.Instance.PlaySFX("Team Orange");
+
+        //炸兩側的棋子回家
+        Space currentSpace = piece.CurrentSpace;
+        Space nextSpace = currentSpace.NextSpace;
+        Space previousSpace = currentSpace.PreviousSpace;
+        if (nextSpace.CurrentPiece != null && !nextSpace.CurrentPiece.CompareTag("Orange"))
+        {
+            nextSpace.CurrentPiece.ResetToHome();
+            piece.killCount++;
+        }
+        if (previousSpace.CurrentPiece != null && !previousSpace.CurrentPiece.CompareTag("Orange"))
+        {
+            previousSpace.CurrentPiece.ResetToHome();
+            piece.killCount++;
+        }
     }
 }

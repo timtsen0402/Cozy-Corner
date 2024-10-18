@@ -34,5 +34,6 @@ public class TeamGreen : Team
 
         //種樹換下一格
         Instantiate(tree, piece.transform.position, Quaternion.identity);
+        StartCoroutine(LudoPieceManager.Instance.AIMovePiece(piece, 1));
     }
 }

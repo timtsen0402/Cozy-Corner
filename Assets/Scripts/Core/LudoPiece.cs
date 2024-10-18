@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using DG.Tweening;
 using static Tool;
+using UnityEditor.Experimental.GraphView;
 
 public class LudoPiece : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class LudoPiece : MonoBehaviour
     public Space startSpace { get; private set; }
 
     public Space CurrentSpace { get; private set; }
-    public int killCount { get; private set; }
+    public int killCount;
     public bool IsClickable { get; set; }
     public bool IsMoving { get; set; } = false;
 
@@ -35,12 +36,10 @@ public class LudoPiece : MonoBehaviour
 
     void Start()
     {
-
         IsMoving = false;
 
         originalColor = rend.material.color;
         ResetToHome();
-
 
     }
 
@@ -51,6 +50,7 @@ public class LudoPiece : MonoBehaviour
         CurrentSpace = CheckCurrentSpace();
         //if (CurrentSpace == null) ResetToHome();
         if (IsClickable) OnClick();
+        if (CurrentSpace.CurrentTree != null) Destroy(CurrentSpace.CurrentTree);
         RigidbodySetting();
     }
     public void ResetToHome()
@@ -76,17 +76,28 @@ public class LudoPiece : MonoBehaviour
     }
     void OnCollisionEnter(Collision collision)
     {
-        if (IsMoving)
+        if (!IsMoving) return;
+
+        GameObject collidedObject = collision.gameObject;
+        LudoPiece collisionPiece = collidedObject.GetComponent<LudoPiece>();
+
+        print(collision.gameObject.layer);
+
+        if (collidedObject.layer == 12)
         {
-            LudoPiece collisionPiece = collision.transform.gameObject.GetComponent<LudoPiece>();
-            if (collisionPiece != null && !myTeam.GetAllPieces().Contains(collisionPiece))
-            {
-                LudoPiece piece = collision.transform.gameObject.GetComponent<LudoPiece>();
-                piece.ResetToHome();
-                AudioManager.Instance.PlaySFX("Kick");
-                killCount++;
-                //ParticleEffectManager.Instance.PlayEffect("fire", collision.transform.position);
-            }
+            Debug.Log($"碰撞到樹木：{collidedObject.name}");
+            Destroy(collidedObject);
+            // TODO: 更改音效
+            AudioManager.Instance.PlaySFX("Kick");
+            // TODO: 添加樹木銷毀的視覺效果
+            // PlayTreeDestroyEffect(collision.contacts[0].point);
+        }
+        else if (collisionPiece != null && !myTeam.GetAllPieces().Contains(collisionPiece))
+        {
+            Debug.Log($"碰撞到敵方棋子：{collidedObject.name}");
+            collisionPiece.ResetToHome();
+            AudioManager.Instance.PlaySFX("Kick");
+            killCount++;
         }
     }
 

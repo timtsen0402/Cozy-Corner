@@ -43,12 +43,10 @@ public class TeamRed : Team
 
     public override void ActivateSpecialFunction(LudoPiece piece)
     {
-        Debug.Log("Activating Red team's special function");
-        // 每骰到一次，每次都往前多動一步
-        ExtraSteps += 1;
-
-        //特效
         ParticleEffectManager.Instance.PlayEffect(effect, piece.transform.position);
         AudioManager.Instance.PlaySFX("Team Red");
+
+
+        ExtraSteps += 1;
     }
 }

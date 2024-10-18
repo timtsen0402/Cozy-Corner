@@ -48,8 +48,9 @@ public static class Tool
 
             Space spaceNext = currentSpace;
 
-            //如果路徑上有其他棋則動不了
-            if (spaceNext.CurrentPiece != null && i != steps - 1)
+            // 如果路徑上有其他棋則動不了
+            // 新增:若有樹也不行
+            if ((spaceNext.CurrentPiece != null || spaceNext.CurrentTree != null) && i != steps - 1)
             {
                 return false;
             }
@@ -89,6 +90,21 @@ public static class Tool
     public static List<LudoPiece> SelectAvailablePiece(List<LudoPiece> pieces)
     {
         List<LudoPiece> clickablePieces = new List<LudoPiece>();
+
+        // special pattern
+        if (GameManager.Instance.CurrentGameMode == GameMode.Crazy && DiceManager.Instance.GetCurrentDiceResult() == 6)
+        {
+            foreach (LudoPiece piece in pieces)
+            {
+                if (piece.CurrentSpace.gameObject.layer != 9)
+                {
+                    clickablePieces.Add(piece);
+                }
+            }
+            return clickablePieces;
+        }
+
+        // normal number
         //踢掉不能選的
         foreach (LudoPiece piece in pieces)
         {
