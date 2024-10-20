@@ -146,6 +146,7 @@ public class GameManager : MonoBehaviour
         LudoPiece selectedPiece;
         selectedPiece = LudoPieceManager.Instance.SelectPiece(TurnToTeam(CurrentPlayerTurn).GetStrategy(), availablePieces);
 
+        // move piece
         if (selectedPiece != null)
         {
             yield return StartCoroutine(LudoPieceManager.Instance.AIMovePiece(selectedPiece, DiceManager.Instance.GetCurrentDiceResult()));

@@ -46,7 +46,9 @@ public class TeamRed : Team
         ParticleEffectManager.Instance.PlayEffect(effect, piece.transform.position);
         AudioManager.Instance.PlaySFX("Team Red");
 
-
-        ExtraSteps += 1;
+        if (ExtraSteps < 5)
+        {
+            ExtraSteps += 1;
+        }
     }
 }

@@ -193,10 +193,11 @@ public abstract class Team : MonoBehaviour
     public string Name { get; protected set; }
     public string HexCode { get; protected set; }
 
+    [Header("Basic Info")]
     [SerializeField] protected TeamData teamData;
     [field: SerializeField] public Space StartSpace { get; protected set; }
 
-    [Header("Special Features")]
+    [Header("Effects")]
     [SerializeField] protected GameObject effect;
 
     public Difficulty Difficulty { get; protected set; } = Difficulty.Peaceful;

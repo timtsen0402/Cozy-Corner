@@ -1,8 +1,16 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TeamOrange : Team
 {
     public static TeamOrange Instance { get; private set; }
+
+    [Header("Only in Team Orange")]
+    [SerializeField] private Space end1;
+    [SerializeField] private Space end2;
+    [SerializeField] private Space end3;
+    [SerializeField] private Space end4;
+    List<Space> spaces = new List<Space>();
 
     protected override void Awake()
     {
@@ -20,7 +28,11 @@ public class TeamOrange : Team
     protected override void InitializeTeam(TeamData data)
     {
         base.InitializeTeam(data);
-        // Any Orange-specific initialization
+
+        spaces.Add(end4);
+        spaces.Add(end3);
+        spaces.Add(end2);
+        spaces.Add(end1);
     }
 
     public override void ActivateSpecialFunction(LudoPiece piece)
@@ -32,15 +44,39 @@ public class TeamOrange : Team
         Space currentSpace = piece.CurrentSpace;
         Space nextSpace = currentSpace.NextSpace;
         Space previousSpace = currentSpace.PreviousSpace;
-        if (nextSpace.CurrentPiece != null && !nextSpace.CurrentPiece.CompareTag("Orange"))
+
+        piece.killCount += ImpactAfterExplosion(nextSpace);
+        piece.killCount += ImpactAfterExplosion(previousSpace);
+    }
+
+    private int ImpactAfterExplosion(Space space)
+    {
+        int kill = 0;
+        if (space.CurrentPiece != null)
         {
-            nextSpace.CurrentPiece.ResetToHome();
-            piece.killCount++;
+            if (space.CurrentPiece.CompareTag("Orange"))
+            {
+                // 送他去終點
+                foreach (var s in spaces)
+                {
+                    if (s.CurrentPiece == null)
+                    {
+                        space.CurrentPiece.transform.position = s.ActualPosition;
+                        AudioManager.Instance.PlaySFX("Transport");
+                        return 0;
+                    }
+                }
+            }
+            else
+            {
+                space.CurrentPiece.ResetToHome();
+                kill++;
+            }
         }
-        if (previousSpace.CurrentPiece != null && !previousSpace.CurrentPiece.CompareTag("Orange"))
+        else if (space.CurrentTree != null)
         {
-            previousSpace.CurrentPiece.ResetToHome();
-            piece.killCount++;
+            Destroy(space.CurrentTree);
         }
+        return kill;
     }
 }

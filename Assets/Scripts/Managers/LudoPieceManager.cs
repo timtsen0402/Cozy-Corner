@@ -134,6 +134,7 @@ public class LudoPieceManager : MonoBehaviour
                     nextPosition = currentSpace.NextSpace.ActualPosition;
                 }
             }
+            // other situations
             else
             {
                 nextPosition = currentSpace.NextSpace.ActualPosition;
@@ -144,29 +145,11 @@ public class LudoPieceManager : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
 
         }
+
+        // after moving
+        if (piece.CurrentSpace.CurrentTree != null) Destroy(piece.CurrentSpace.CurrentTree);
         piece.IsMoving = false;
         GameManager.Instance.IsPieceMoved = true;
     }
     #endregion Move
-    // private void ActivateSpecialFunction(Team team)
-    // {
-    //     switch (team.Name)
-    //     {
-    //         case "Orange":
-    //             team.ActivateOrangeSpecialFunction();
-    //             break;
-    //         case "Green":
-    //             team.ActivateGreenSpecialFunction();
-    //             break;
-    //         case "Blue":
-    //             team.ActivateBlueSpecialFunction();
-    //             break;
-    //         case "Red":
-    //             team.ActivateRedSpecialFunction();
-    //             break;
-    //         default:
-    //             Debug.LogWarning($"No special function defined for team {team.Name}");
-    //             break;
-    //     }
-    // }
 }

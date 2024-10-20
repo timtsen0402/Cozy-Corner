@@ -24,7 +24,6 @@ public class TeamGreen : Team
     protected override void InitializeTeam(TeamData data)
     {
         base.InitializeTeam(data);
-        // Any Orange-specific initialization
     }
 
     public override void ActivateSpecialFunction(LudoPiece piece)

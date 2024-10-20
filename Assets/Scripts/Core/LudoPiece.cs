@@ -5,7 +5,6 @@ using System.Linq;
 using UnityEngine;
 using DG.Tweening;
 using static Tool;
-using UnityEditor.Experimental.GraphView;
 
 public class LudoPiece : MonoBehaviour
 {
@@ -50,7 +49,6 @@ public class LudoPiece : MonoBehaviour
         CurrentSpace = CheckCurrentSpace();
         //if (CurrentSpace == null) ResetToHome();
         if (IsClickable) OnClick();
-        if (CurrentSpace.CurrentTree != null) Destroy(CurrentSpace.CurrentTree);
         RigidbodySetting();
     }
     public void ResetToHome()
