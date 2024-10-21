@@ -25,16 +25,17 @@ public class UIManager : MonoBehaviour
     [SerializeField] private float plantingDuration = 3f;
 
     [Header("UI Elements")]
+    [SerializeField] private TextMeshPro orangeStateText;
+    [SerializeField] private TextMeshPro greenStateText;
+    [SerializeField] private TextMeshPro blueStateText;
+    [SerializeField] private TextMeshPro redStateText;
     [SerializeField] private TextMeshPro RankingTMP;
     [SerializeField] private TextMeshPro KillerTMP;
     [SerializeField] private Button orangeButton;
     [SerializeField] private Button greenButton;
     [SerializeField] private Button blueButton;
     [SerializeField] private Button redButton;
-    [SerializeField] private TextMeshPro orangeStateText;
-    [SerializeField] private TextMeshPro greenStateText;
-    [SerializeField] private TextMeshPro blueStateText;
-    [SerializeField] private TextMeshPro redStateText;
+
 
     [Header("Game Settings")]
     [SerializeField] private float transferTime = 5f;

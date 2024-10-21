@@ -22,71 +22,53 @@ public static class Tool
         }
     }
 
-    //前提為棋不在home
     public static bool isMovePossible(LudoPiece piece, int steps)
     {
         Space currentSpace = piece.CurrentSpace;
 
         for (int i = 0; i < steps; i++)
         {
+            // piece at last space can't move
+            if (currentSpace == null || !currentSpace.UseNextSpace) return false;
 
-            //首先這個棋的當前位置或下個位置不能是空的
-            if (currentSpace == null || !currentSpace.UseNextSpace)
-            {
-                return false; // 路徑中斷或到達終點
-            }
-
-            // 檢查是否需要轉換到 next_space2
-            if (currentSpace.NextSpace == piece.startSpace && currentSpace.UseNextSpace2)
-            {
-                currentSpace = currentSpace.NextSpace2;
-            }
-            else
-            {
-                currentSpace = currentSpace.NextSpace;
-            }
+            currentSpace = (currentSpace.NextSpace == piece.startSpace && currentSpace.UseNextSpace2)
+                ? currentSpace.NextSpace2
+                : currentSpace.NextSpace;
 
             Space spaceNext = currentSpace;
+            // if any piece or tree on the path, can't move
+            if ((spaceNext.CurrentPiece != null || spaceNext.CurrentTree != null) && i != steps - 1) return false;
 
-            // 如果路徑上有其他棋則動不了
-            // 新增:若有樹也不行
-            if ((spaceNext.CurrentPiece != null || spaceNext.CurrentTree != null) && i != steps - 1)
-            {
-                return false;
-            }
-            // 最後一步為己方也動不了
-            if (i == steps - 1 && TurnToTeam(GameManager.Instance.CurrentPlayerTurn).GetAllPieces().Contains(spaceNext.CurrentPiece))
-            {
-                return false;
-            }
+            // if ally piece on the target space, can't move
+            if (i == steps - 1 && TurnToTeam(GameManager.Instance.CurrentPlayerTurn).GetAllPieces().Contains(spaceNext.CurrentPiece)) return false;
+
         }
-
-        return true; // 移動路徑上沒有阻礙
+        return true; // movable confirmed
     }
+
+    // 待修改
     public static void SelectClickablePiece(List<LudoPiece> pieces)
     {
         foreach (LudoPiece piece in pieces)
         {
             Space space_start = piece.startSpace;
 
-            //踢掉不能選的
-            if (piece.CurrentSpace.gameObject.layer == 6)//Home
+            if (piece.CurrentSpace.gameObject.IsInHomeLayer())
             {
                 if (DiceManager.Instance.GetCurrentDiceResult() != 6 || pieces.Contains(space_start.CurrentPiece))
                 {
                     continue;
                 }
             }
-            else//在Home以外
+            else
             {
-                //路徑上沒棋
-                //到的點有pos
-                //到的點非己方
                 if (!isMovePossible(piece, DiceManager.Instance.GetCurrentDiceResult())) continue;
             }
             piece.IsClickable = true;
         }
     }
+    //
+
     public static List<LudoPiece> SelectAvailablePiece(List<LudoPiece> pieces)
     {
         List<LudoPiece> clickablePieces = new List<LudoPiece>();
@@ -96,6 +78,7 @@ public static class Tool
         {
             foreach (LudoPiece piece in pieces)
             {
+                // unavailable at end space
                 if (piece.CurrentSpace.gameObject.layer != 9)
                 {
                     clickablePieces.Add(piece);
@@ -105,22 +88,19 @@ public static class Tool
         }
 
         // normal number
-        //踢掉不能選的
         foreach (LudoPiece piece in pieces)
         {
-            //踢掉不能選的
-            if (piece.CurrentSpace.gameObject.layer == 6)//Home
+            // piece at home
+            if (piece.CurrentSpace.gameObject.IsInHomeLayer())
             {
                 if (DiceManager.Instance.GetCurrentDiceResult() != 6 || pieces.Contains(piece.startSpace.CurrentPiece))
                 {
                     continue;
                 }
             }
-            else//在Home以外
+            // otherwise
+            else
             {
-                //路徑上沒棋
-                //到的點有pos
-                //到的點非己方
                 if (!isMovePossible(piece, DiceManager.Instance.GetCurrentDiceResult())) continue;
             }
             clickablePieces.Add(piece);
@@ -130,21 +110,20 @@ public static class Tool
 
     public static bool isTripleThrowScenario(List<LudoPiece> pieces)
     {
-        int pieceAtHome = pieces.Count(piece => piece.CurrentSpace.gameObject.layer == 6);
+        int pieceAtHome = pieces.Count(piece => piece.CurrentSpace.gameObject.IsInHomeLayer());
         bool pieceAtEnd4 = pieces.Any(piece => piece.CurrentSpace.tag == "End4");
         bool pieceAtEnd3 = pieces.Any(piece => piece.CurrentSpace.tag == "End3");
         bool pieceAtEnd2 = pieces.Any(piece => piece.CurrentSpace.tag == "End2");
         bool pieceAtEnd1 = pieces.Any(piece => piece.CurrentSpace.tag == "End1");
 
-        //全在家或是vxxx或是vvxx或是vvvx而且其他都在家
-        if (pieces.All(piece => piece.GetComponent<LudoPiece>().CheckCurrentSpace().gameObject.layer == 6) ||
+        // 4 situations (vxxx or vvxx or vvvx or vvvv)
+        if (pieces.All(piece => piece.GetComponent<LudoPiece>().CheckCurrentSpace().gameObject.IsInHomeLayer()) ||
         pieceAtHome == 3 && pieceAtEnd4 ||
         pieceAtHome == 2 && pieceAtEnd4 && pieceAtEnd3 ||
         pieceAtHome == 1 && pieceAtEnd4 && pieceAtEnd3 && pieceAtEnd2)
         {
             return true;
-
         }
-        else return false;
+        return false;
     }
 }

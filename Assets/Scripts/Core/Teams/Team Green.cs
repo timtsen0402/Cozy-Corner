@@ -21,17 +21,12 @@ public class TeamGreen : Team
         }
     }
 
-    protected override void InitializeTeam(TeamData data)
-    {
-        base.InitializeTeam(data);
-    }
-
+    // plant a tree(barrier) and move 1 step
     public override void ActivateSpecialFunction(LudoPiece piece)
     {
         ParticleEffectManager.Instance.PlayEffect(effect, piece.transform.position);
         AudioManager.Instance.PlaySFX("Team Green");
 
-        //種樹換下一格
         Instantiate(tree, piece.transform.position, Quaternion.identity);
         StartCoroutine(LudoPieceManager.Instance.AIMovePiece(piece, 1));
     }

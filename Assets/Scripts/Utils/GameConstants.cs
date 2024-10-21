@@ -1,7 +1,10 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public static class GameConstants
 {
+    public static List<Team> AllTeams { get; private set; } = new List<Team>();
+
     // Camera Views
     public static readonly CameraView TitleView = new CameraView(new Vector3(336f, 323f, 364f), Quaternion.Euler(25f, -135f, 0f));
     public static readonly CameraView GameView = new CameraView(new Vector3(-33f, 25f, 0), Quaternion.Euler(30f, 90f, 0));
@@ -14,7 +17,8 @@ public static class GameConstants
     public static readonly Vector3 FlagPosRed = new Vector3(-15f, 0.61f, -15f);
     public static readonly Vector3 FlagPosDefault = new Vector3(0, 0.61f, 0);
 
-    // Dice Position
+    // Dice Settings
+    public static readonly Vector3 DiceRotatingSpeed = new Vector3(5f, 5f, 5f);
     public static readonly Vector3 DiceRotatingPos = new Vector3(0, 7f, 25f);
     public static readonly Vector3 DiceRotation = new Vector3(90f, 0, 90f);
     public static readonly Vector3[] DiceSleepingPositions = new Vector3[]
@@ -25,6 +29,9 @@ public static class GameConstants
     new Vector3(-18f, 0, -5f),
     new Vector3(-18f, 0, -10f)
     };
+    public const float VelocityThreshold = 0.01f;
+    public const float AngularVelocityThreshold = 0.01f;
+    public const float SettleTime = 0.1f;
 
     // Player Numbers
     public static int TotalPlayers { get; private set; } = 4;
@@ -34,10 +41,30 @@ public static class GameConstants
     // HexCode Settings
     public const string DEFAULT_HEX_CODE = "#FFFFFF";
 
-    // Initialize method to be called at the start of the game
-    public static void Initialize()
+    public static void LogAllTeamsStatus()
     {
-        // Load any dynamic values here, if needed
+        Debug.Log($"Total teams in AllTeams: {AllTeams.Count}");
+        foreach (var team in AllTeams)
+        {
+            Debug.Log($"Team: {team.Name}, Piece count: {team.GetAllPieces().Count}, Is finished: {team.isFinished()}");
+        }
+    }
+
+    public static bool IsInHomeLayer(this GameObject go)
+    {
+        return go.layer == 6;
+    }
+    public static bool IsInStartLayer(this GameObject go)
+    {
+        return go.layer == 7;
+    }
+    public static bool IsInPathLayer(this GameObject go)
+    {
+        return go.layer == 8;
+    }
+    public static bool IsInEndLayer(this GameObject go)
+    {
+        return go.layer == 9;
     }
 }
 
@@ -73,3 +100,4 @@ public enum GameMode
     Classic,
     Crazy
 }
+

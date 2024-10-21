@@ -6,33 +6,31 @@ using static GameConstants;
 
 public class Dice : MonoBehaviour
 {
-
-    public Vector3 rotatingPos = new Vector3(0, 7f, 25f);
-    public Vector3 rotatingSpeed = new Vector3(5f, 5f, 5f);
-    public float speed = 10f;
-
-
-    public int dice_result { get; private set; }
-    public Rigidbody rb { get; private set; }
-
-
     public bool isCheckingForSettle { get; private set; }
     public bool hasSettled { get; private set; }
     public bool isRollFinished { get; private set; }
+    public int diceResult { get; private set; }
+    public Rigidbody rb { get; private set; }
 
-    void Start()
+    void Awake()
     {
         rb = gameObject.GetComponent<Rigidbody>();
-        rotatingPos = DiceRotatingPos;
     }
 
     void Update()
+    {
+        ResetIfDrop();
+        CheckIsSettled();
+    }
+    private void ResetIfDrop()
     {
         if (gameObject.transform.position.y < -10f)
         {
             transform.position = DiceRotatingPos;
         }
-
+    }
+    private void CheckIsSettled()
+    {
         if (!isCheckingForSettle)
         {
             StartCoroutine(CheckForSettle());
@@ -42,8 +40,8 @@ public class Dice : MonoBehaviour
     // is dice moving or not
     private bool IsDiceSettled()
     {
-        return rb.velocity.magnitude < DiceManager.VelocityThreshold &&
-               rb.angularVelocity.magnitude < DiceManager.AngularVelocityThreshold;
+        return rb.velocity.magnitude < VelocityThreshold &&
+               rb.angularVelocity.magnitude < AngularVelocityThreshold;
     }
 
     private IEnumerator CheckForSettle()
@@ -51,7 +49,7 @@ public class Dice : MonoBehaviour
         isCheckingForSettle = true;
         float elapsedTime = 0f;
 
-        while (elapsedTime < DiceManager.SettleTime)
+        while (elapsedTime < SettleTime)
         {
             if (!IsDiceSettled())
             {
@@ -77,7 +75,7 @@ public class Dice : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, Vector3.up, out hit))
         {
-            dice_result = GetDiceResult(hit.collider.gameObject.name);
+            diceResult = GetDiceResult(hit.collider.gameObject.name);
         }
     }
 
@@ -129,7 +127,7 @@ public class Dice : MonoBehaviour
         {
             UpdateDiceResult();
         }
-        return dice_result;
+        return diceResult;
     }
     #endregion Get
 
@@ -142,8 +140,8 @@ public class Dice : MonoBehaviour
         if (GameManager.Instance.CurrentPlayerTurn <= GameManager.Instance.HumanPlayers && isRollFinished && isAllUnclickable)
         {
             rb.useGravity = false;
-            transform.position = rotatingPos;
-            transform.Rotate(rotatingSpeed);
+            transform.position = DiceRotatingPos;
+            transform.Rotate(DiceRotatingSpeed);
             GameManager.Instance.IsDiceThrown = true;
             GameManager.Instance.IsPieceMoved = false;
             hasSettled = false;
@@ -160,10 +158,4 @@ public class Dice : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawRay(transform.position, Vector3.up);
     }
-    private void OnCollisionEnter(Collision collision)
-    {
-        // AudioManager.Instance.PlaySFX("DiceRoll");
-    }
-
-
 }

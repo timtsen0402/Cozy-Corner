@@ -39,15 +39,6 @@ public class Space : MonoBehaviour
     {
         abovePosition = ActualPosition + Vector3.up * 3f;
     }
-    // private void Update()
-    // {
-    //     if (CurrentTree != null)
-    //     {
-    //         Debug.Log(CurrentTree.name);
-    //         Debug.Log(CurrentTree.tag);
-    //         Debug.Log(CurrentTree.layer);
-    //     }
-    // }
 
     private LudoPiece PieceInCurrentSpace()
     {
@@ -69,9 +60,9 @@ public class Space : MonoBehaviour
         return null;
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawRay(abovePosition, Vector3.down);
-    }
+    // private void OnDrawGizmos()
+    // {
+    //     Gizmos.color = Color.red;
+    //     Gizmos.DrawRay(abovePosition, Vector3.down);
+    // }
 }

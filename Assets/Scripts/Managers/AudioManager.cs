@@ -55,9 +55,6 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-
-    // 這裡我們將添加播放音樂和音效的方法
-
     public void PlayBGM(string name)
     {
         if (soundDictionary.TryGetValue(name, out Sound s))
@@ -91,13 +88,11 @@ public class AudioManager : MonoBehaviour
     {
         if (bgmSounds.Length == 0) return;
 
-        // 如果所有音樂都播放過了，重置列表
         if (playedBgmIndices.Count == bgmSounds.Length)
         {
             playedBgmIndices.Clear();
         }
 
-        // 選擇一個還沒播放過的音樂
         int nextIndex;
         do
         {
@@ -113,7 +108,6 @@ public class AudioManager : MonoBehaviour
         bgmSource.Play();
         FadeBGM(fadeSecondsBGM, 1f);
 
-        // 設置在這首音樂結束時播放下一首
         StartCoroutine(WaitForMusicEnd());
     }
 
@@ -128,7 +122,6 @@ public class AudioManager : MonoBehaviour
         return bgmSounds.Select(s => s.name).ToList();
     }
 
-    // 可選：獲取所有SFX名稱的方法
     public List<string> GetAllSFXNames()
     {
         return sfxSounds.Select(s => s.name).ToList();

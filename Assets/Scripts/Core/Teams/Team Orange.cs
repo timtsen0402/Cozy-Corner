@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class TeamOrange : Team
 {
@@ -35,12 +36,12 @@ public class TeamOrange : Team
         spaces.Add(end1);
     }
 
+    // next and last piece will be effected (ally will be sent to the end, enemy will be sent to home) 
     public override void ActivateSpecialFunction(LudoPiece piece)
     {
         ParticleEffectManager.Instance.PlayEffect(effect, piece.transform.position);
         AudioManager.Instance.PlaySFX("Team Orange");
 
-        //炸兩側的棋子回家
         Space currentSpace = piece.CurrentSpace;
         Space nextSpace = currentSpace.NextSpace;
         Space previousSpace = currentSpace.PreviousSpace;
@@ -49,34 +50,57 @@ public class TeamOrange : Team
         piece.killCount += ImpactAfterExplosion(previousSpace);
     }
 
+    // private int ImpactAfterExplosion(Space space)
+    // {
+    //     int kill = 0;
+    //     if (space.CurrentPiece != null)
+    //     {
+    //         if (space.CurrentPiece.CompareTag("Orange"))
+    //         {
+    //             // 送他去終點
+    //             foreach (var s in spaces)
+    //             {
+    //                 if (s.CurrentPiece == null)
+    //                 {
+    //                     space.CurrentPiece.transform.position = s.ActualPosition;
+    //                     AudioManager.Instance.PlaySFX("Transport");
+    //                     return 0;
+    //                 }
+    //             }
+    //         }
+    //         else
+    //         {
+    //             space.CurrentPiece.ResetToHome();
+    //             kill++;
+    //         }
+    //     }
+    //     else if (space.CurrentTree != null)
+    //     {
+    //         Destroy(space.CurrentTree);
+    //     }
+    //     return kill;
+    // }
     private int ImpactAfterExplosion(Space space)
     {
-        int kill = 0;
-        if (space.CurrentPiece != null)
+        if (space.CurrentPiece == null)
         {
-            if (space.CurrentPiece.CompareTag("Orange"))
-            {
-                // 送他去終點
-                foreach (var s in spaces)
-                {
-                    if (s.CurrentPiece == null)
-                    {
-                        space.CurrentPiece.transform.position = s.ActualPosition;
-                        AudioManager.Instance.PlaySFX("Transport");
-                        return 0;
-                    }
-                }
-            }
-            else
-            {
-                space.CurrentPiece.ResetToHome();
-                kill++;
-            }
+            if (space.CurrentTree != null)
+                Destroy(space.CurrentTree);
+            return 0;
         }
-        else if (space.CurrentTree != null)
+
+        if (space.CurrentPiece.CompareTag("Orange"))
         {
-            Destroy(space.CurrentTree);
+            var emptySpace = spaces.FirstOrDefault(s => s.CurrentPiece == null);
+            if (emptySpace != null)
+            {
+                space.CurrentPiece.transform.position = emptySpace.ActualPosition;
+                AudioManager.Instance.PlaySFX("Transport");
+            }
+            return 0;
         }
-        return kill;
+
+        space.CurrentPiece.ResetToHome();
+        return 1;
     }
 }

@@ -8,7 +8,6 @@ public class AIStrategies : MonoBehaviour
 
     public delegate LudoPiece AIStrategy(List<LudoPiece> availablePieces);
 
-    // 使用字典來映射難度級別和相應的策略
     private static readonly Dictionary<Difficulty, AIStrategy> StrategyMap = new Dictionary<Difficulty, AIStrategy>
     {
         { Difficulty.Dumb, RandomSelect },
@@ -16,14 +15,13 @@ public class AIStrategies : MonoBehaviour
         { Difficulty.Aggressive, AttackFirst }
     };
 
-    // 獲取指定難度的策略
     public static AIStrategy GetStrategy(Difficulty difficulty)
     {
         if (StrategyMap.TryGetValue(difficulty, out var strategy))
         {
             return strategy;
         }
-        return AttackFirst; // 默認策略
+        return FrontmostFirst;
     }
     public static LudoPiece RandomSelect(List<LudoPiece> pieces)
     {
@@ -67,12 +65,12 @@ public class AIStrategies : MonoBehaviour
                     return piece;
                 }
                 // 2.Go Out
-                if (steps == 6 && piece.CurrentSpace.gameObject.layer == 6)
+                if (steps == 6 && piece.CurrentSpace.gameObject.IsInHomeLayer())
                 {
                     return piece;
                 }
                 // 3.Go to the end
-                if (i == steps - 1 && spaceNext.CurrentPiece == null && spaceNext.gameObject.layer == 9)
+                if (i == steps - 1 && spaceNext.CurrentPiece == null && spaceNext.gameObject.IsInEndLayer())
                 {
                     return piece;
                 }

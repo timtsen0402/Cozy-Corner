@@ -44,12 +44,11 @@ public class LudoPiece : MonoBehaviour
 
     void Update()
     {
-        // ParticleEffectManager.Instance.PlayEffect("fire", transform.position);
-
         CurrentSpace = CheckCurrentSpace();
-        //if (CurrentSpace == null) ResetToHome();
         if (IsClickable) OnClick();
         RigidbodySetting();
+
+        //if (CurrentSpace == null) ResetToHome();
     }
     public void ResetToHome()
     {
@@ -61,13 +60,11 @@ public class LudoPiece : MonoBehaviour
     {
         if (IsMoving)
         {
-            // 移動時,讓物體有質量和不受重力影響
             rb.isKinematic = true;
             rb.useGravity = false;
         }
         else
         {
-            // 靜止時,讓物體受重力影響
             rb.isKinematic = false;
             rb.useGravity = true;
         }
@@ -76,23 +73,10 @@ public class LudoPiece : MonoBehaviour
     {
         if (!IsMoving) return;
 
-        GameObject collidedObject = collision.gameObject;
-        LudoPiece collisionPiece = collidedObject.GetComponent<LudoPiece>();
+        LudoPiece collisionPiece = collision.gameObject.GetComponent<LudoPiece>();
 
-        print(collision.gameObject.layer);
-
-        if (collidedObject.layer == 12)
+        if (collisionPiece != null && !myTeam.GetAllPieces().Contains(collisionPiece))
         {
-            Debug.Log($"碰撞到樹木：{collidedObject.name}");
-            Destroy(collidedObject);
-            // TODO: 更改音效
-            AudioManager.Instance.PlaySFX("Kick");
-            // TODO: 添加樹木銷毀的視覺效果
-            // PlayTreeDestroyEffect(collision.contacts[0].point);
-        }
-        else if (collisionPiece != null && !myTeam.GetAllPieces().Contains(collisionPiece))
-        {
-            Debug.Log($"碰撞到敵方棋子：{collidedObject.name}");
             collisionPiece.ResetToHome();
             AudioManager.Instance.PlaySFX("Kick");
             killCount++;
@@ -101,39 +85,22 @@ public class LudoPiece : MonoBehaviour
 
     public Space CheckCurrentSpace()
     {
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, Vector3.down, out hit))
-        {
-            if (hit.collider.gameObject.GetComponent<Space>() == null) return CurrentSpace;
-            return hit.collider.gameObject.GetComponent<Space>();
-        }
-        else
-        {
-            return CurrentSpace;
-        }
+        return Physics.Raycast(transform.position, Vector3.down, out var hit)
+               && hit.collider.TryGetComponent(out Space space)
+            ? space
+            : CurrentSpace;
     }
+
     public int GetDistanceToTheEnd()
     {
-        Space currentSpace = CurrentSpace;
         int count = 0;
-        while (currentSpace != null)
+        for (Space space = CurrentSpace; space != null; count++)
         {
-            if (!currentSpace.UseNextSpace) //end
-            {
-                return count;
-            }
+            if (!space.UseNextSpace) return count;
 
-            count++;
-
-            // 檢查是否需要轉換到 next_space2
-            if (currentSpace.NextSpace == startSpace && currentSpace.UseNextSpace2)
-            {
-                currentSpace = currentSpace.NextSpace2;
-            }
-            else
-            {
-                currentSpace = currentSpace.NextSpace;
-            }
+            space = (space.NextSpace == startSpace && space.UseNextSpace2)
+                ? space.NextSpace2
+                : space.NextSpace;
         }
         return count;
     }
@@ -160,7 +127,7 @@ public class LudoPiece : MonoBehaviour
 
             if (currentSpace.NextSpace == startSpace)
             {
-                if (currentSpace.gameObject.layer == 6) // Home
+                if (currentSpace.gameObject.IsInHomeLayer()) // Home
                 {
                     nextPosition = startSpace.ActualPosition;
                     yield return StartCoroutine(LudoPieceManager.Instance.MoveToPosition(this, nextPosition));

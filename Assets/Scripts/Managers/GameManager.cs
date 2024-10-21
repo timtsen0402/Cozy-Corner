@@ -224,7 +224,7 @@ public class GameManager : MonoBehaviour
     int GetHumanPlayers()
     {
         int count = 0;
-        foreach (var team in Team.AllTeams)
+        foreach (var team in AllTeams)
         {
             string str = team.GetStateString();
             if (str == "Player") count++;

@@ -7,13 +7,10 @@ public class DiceManager : MonoBehaviour
 {
     public static DiceManager Instance { get; private set; }
 
-    public List<GameObject> AllDiceObjects = new List<GameObject>();
     public bool IsAnyDiceMoving { get; private set; }
 
-    public static float VelocityThreshold = 0.01f;
-    public static float AngularVelocityThreshold = 0.01f;
-    public static float SettleTime = 0.1f;
-
+    [SerializeField]
+    private List<GameObject> allDiceObjects = new List<GameObject>();
     private List<Dice> diceScripts = new List<Dice>();
 
     private void Awake()
@@ -21,7 +18,6 @@ public class DiceManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            //DontDestroyOnLoad(gameObject);
             SetAllDices();
 
         }
@@ -40,7 +36,6 @@ public class DiceManager : MonoBehaviour
     {
         foreach (var dice in diceScripts)
         {
-            if (dice == null) return false;
             if (!dice.isStop())
             {
                 return true;
@@ -51,17 +46,16 @@ public class DiceManager : MonoBehaviour
 
     public void SetAllDices()
     {
-        for (int i = 0; i < AllDiceObjects.Count; i++)
+        for (int i = 0; i < allDiceObjects.Count; i++)
         {
-            GameObject dice = Instantiate(AllDiceObjects[i], DiceSleepingPositions[i], AllDiceObjects[i].transform.rotation);
+            GameObject dice = Instantiate(allDiceObjects[i], DiceSleepingPositions[i], allDiceObjects[i].transform.rotation);
             diceScripts.Add(dice.GetComponent<Dice>());
         }
     }
 
 
     #region Get
-    // 新增方法：獲取指定索引的骰子
-    public Dice GetDice(int index)
+    private Dice GetDice(int index)
     {
         if (index >= 0 && index < diceScripts.Count)
         {
@@ -71,17 +65,29 @@ public class DiceManager : MonoBehaviour
         return null;
     }
 
-    // 新增方法：獲取指定骰子的結果
-    public int GetDiceResult(int index)
+    private int GetDiceResult(int index)
     {
         Dice dice = GetDice(index);
         return dice != null ? dice.GetLatestDiceResult() : 0;
     }
 
+    public Dice GetCurrentDice()
+    {
+        return GameManager.Instance.CurrentGameMode == GameMode.Classic
+            ? GetDice(0)
+            : GetDice(GameManager.Instance.CurrentPlayerTurn);
+    }
+
+    public int GetCurrentDiceResult()
+    {
+        return GameManager.Instance.CurrentGameMode == GameMode.Classic
+            ? GetDiceResult(0)
+            : GetDiceResult(GameManager.Instance.CurrentPlayerTurn);
+    }
+
     #endregion Get
 
     #region Reset
-    // 新增方法：重置指定骰子的位置
     public void ResetDice(int index)
     {
         Dice dice = GetDice(index);
@@ -108,7 +114,7 @@ public class DiceManager : MonoBehaviour
         while (elapsedTime < diceRollDuration)
         {
             dice.transform.position = DiceRotatingPos;
-            dice.transform.Rotate(dice.rotatingSpeed);
+            dice.transform.Rotate(DiceRotatingSpeed);
 
             elapsedTime += 0.01f;
             yield return null;
@@ -117,18 +123,5 @@ public class DiceManager : MonoBehaviour
 
     #endregion Roll
 
-    public Dice GetCurrentDice()
-    {
-        return GameManager.Instance.CurrentGameMode == GameMode.Classic
-            ? GetDice(0)
-            : GetDice(GameManager.Instance.CurrentPlayerTurn);
-    }
-
-    public int GetCurrentDiceResult()
-    {
-        return GameManager.Instance.CurrentGameMode == GameMode.Classic
-            ? GetDiceResult(0)
-            : GetDiceResult(GameManager.Instance.CurrentPlayerTurn);
-    }
 }
 

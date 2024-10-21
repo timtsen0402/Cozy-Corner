@@ -5,6 +5,7 @@ using System.Linq;
 using DG.Tweening;
 using static Tool;
 using Unity.VisualScripting;
+using static GameConstants;
 
 public class LudoPieceManager : MonoBehaviour
 {
@@ -32,7 +33,7 @@ public class LudoPieceManager : MonoBehaviour
     }
     private void Start()
     {
-        UnfinishedTeams = new List<Team>(Team.AllTeams);
+        UnfinishedTeams = new List<Team>(AllTeams);
         FinishedTeams = new List<Team>();
 
     }
@@ -40,7 +41,7 @@ public class LudoPieceManager : MonoBehaviour
     private void InitializePieceDictionary()
     {
         piecesByTeam = new Dictionary<Team, List<LudoPiece>>();
-        foreach (Team team in Team.AllTeams)
+        foreach (Team team in AllTeams)
         {
             piecesByTeam[team] = new List<LudoPiece>();
         }
@@ -68,7 +69,7 @@ public class LudoPieceManager : MonoBehaviour
     public List<Team> GetFinishedTeam()
     {
         List<Team> teams = new List<Team>();
-        foreach (var team in Team.AllTeams)
+        foreach (var team in AllTeams)
         {
             if (team.isFinished()) teams.Add(team);
         }
@@ -94,7 +95,7 @@ public class LudoPieceManager : MonoBehaviour
         {
             Space currentSpace = piece.CheckCurrentSpace();
             //如果被選到的棋在家就出來 否則執行以下
-            if (currentSpace.NextSpace == piece.startSpace && currentSpace.gameObject.layer == 6)
+            if (currentSpace.NextSpace == piece.startSpace && currentSpace.gameObject.IsInHomeLayer())
             {
                 Vector3 nextPosition;
                 nextPosition = piece.startSpace.ActualPosition;
@@ -118,13 +119,13 @@ public class LudoPieceManager : MonoBehaviour
 
             if (currentSpace.NextSpace == piece.startSpace)
             {
-                if (piece.CheckCurrentSpace().gameObject.layer == 6)//Home
+                if (piece.CheckCurrentSpace().gameObject.IsInHomeLayer())//Home
                 {
                     nextPosition = piece.startSpace.ActualPosition;
                     yield return MoveToPosition(piece, nextPosition);
                     break;
                 }
-                else if (piece.CheckCurrentSpace().gameObject.layer == 8)//Path
+                else if (piece.CheckCurrentSpace().gameObject.IsInPathLayer())//Path
                 {
                     nextPosition = currentSpace.NextSpace2.ActualPosition;
 
