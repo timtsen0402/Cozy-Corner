@@ -277,8 +277,8 @@ GameObject:
   - component: {fileID: 2429159824828244928}
   - component: {fileID: 4639702826893796320}
   - component: {fileID: 123989422403318285}
-  - component: {fileID: 6073614681062323883}
   - component: {fileID: 8018840735199967119}
+  - component: {fileID: 3274523026592636125}
   m_Layer: 11
   m_Name: Orange Dice
   m_TagString: Orange
@@ -295,7 +295,7 @@ Transform:
   m_GameObject: {fileID: 7979635576341929908}
   serializedVersion: 2
   m_LocalRotation: {x: 0.5, y: -0.5, z: 0.5, w: 0.5}
-  m_LocalPosition: {x: -10.756961, y: 9.47, z: 0}
+  m_LocalPosition: {x: -2.5, y: 0, z: 25}
   m_LocalScale: {x: 100, y: 99.999985, z: 99.999985}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -386,21 +386,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &6073614681062323883
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7979635576341929908}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae7a49b52e7530c468a782a2f31fbe61, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rotatingPos: {x: 0, y: 7, z: 25}
-  rotatingSpeed: {x: 5, y: 5, z: 5}
-  speed: 10
 --- !u!65 &8018840735199967119
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -422,6 +407,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.020000005, y: 0.020000007, z: 0.020000005}
   m_Center: {x: 0, y: -4.656613e-10, z: 0}
+--- !u!114 &3274523026592636125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7979635576341929908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6cc8c5c2fdf5d02449b3f49a9885699b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7998666849433960747
 GameObject:
   m_ObjectHideFlags: 0

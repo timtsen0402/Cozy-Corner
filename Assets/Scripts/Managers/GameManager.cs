@@ -40,12 +40,13 @@ public class GameManager : MonoBehaviour
     {
         AudioManager.Instance.PlayBgmRandomly();
         CameraManager.Instance.SetInitialCameraPosition(TitleView);
-        HumanPlayers = GetHumanPlayers();
+
         Time.timeScale = 3f;
     }
 
     public void START_GAME()
     {
+        HumanPlayers = GetHumanPlayers();
         StartCoroutine(GameLoop());
     }
 
@@ -76,19 +77,19 @@ public class GameManager : MonoBehaviour
         IsPieceMoved = false;
         List<LudoPiece> allPieces = TurnToTeam(CurrentPlayerTurn).GetAllPieces();
 
-        Debug.Log("請點擊滑鼠按鈕擲骰子");
-        //等到玩家按骰子後，布林值會被刷新
-        yield return new WaitUntil(() => !DiceManager.Instance.IsAnyDiceMoving && IsDiceThrown);
+        Debug.Log("Please click the dice");
 
-        //決定可以被按的棋子
+        // wait until player roll the dice
+        yield return new WaitUntil(() => IsDiceThrown && !DiceManager.Instance.IsAnyDiceMoving);
+
+        // check all clicable pieces
         SelectClickablePiece(allPieces);
 
-        //若全部都不行按
+        // if all pieces are unclickable
         if (allPieces.All(piece => !piece.IsClickable))
         {
             if (isTripleThrowScenario(allPieces) && RollCount < 2)
             {
-                //就可以刷3次6
                 RollCount++;
                 yield return StartCoroutine(HumanPlayerTurn());
             }
@@ -102,6 +103,7 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("請點擊滑鼠移動棋子");
 
+        // wait until player move the piece
         yield return new WaitUntil(() => IsPieceMoved);
 
         yield return new WaitForSeconds(1f);

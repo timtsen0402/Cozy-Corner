@@ -43,6 +43,12 @@ public abstract class Team : MonoBehaviour
     {
         Difficulty = Difficulty.Peaceful;
     }
+    //
+    // private void Update()
+    // {
+    //     print(CurrentState);
+    // }
+    //
 
     protected virtual void InitializeTeam(TeamData data)
     {

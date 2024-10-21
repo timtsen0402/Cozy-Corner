@@ -3,21 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using static GameConstants;
+using static Tool;
 
-public class Dice : MonoBehaviour
+public abstract class Dice : MonoBehaviour
 {
-    public bool isCheckingForSettle { get; private set; }
-    public bool hasSettled { get; private set; }
-    public bool isRollFinished { get; private set; }
-    public int diceResult { get; private set; }
-    public Rigidbody rb { get; private set; }
+    public bool isCheckingForSettle { get; protected set; }
+    public bool hasSettled { get; protected set; }
+    public bool isRollFinished { get; protected set; }
+    public int diceResult { get; protected set; }
+    public Rigidbody rb { get; protected set; }
 
-    void Awake()
+    protected virtual void Awake()
     {
         rb = gameObject.GetComponent<Rigidbody>();
     }
 
-    void Update()
+    protected virtual void Update()
     {
         ResetIfDrop();
         CheckIsSettled();
@@ -38,13 +39,13 @@ public class Dice : MonoBehaviour
     }
 
     // is dice moving or not
-    private bool IsDiceSettled()
+    protected virtual bool IsDiceSettled()
     {
         return rb.velocity.magnitude < VelocityThreshold &&
                rb.angularVelocity.magnitude < AngularVelocityThreshold;
     }
 
-    private IEnumerator CheckForSettle()
+    protected virtual IEnumerator CheckForSettle()
     {
         isCheckingForSettle = true;
         float elapsedTime = 0f;
@@ -93,27 +94,7 @@ public class Dice : MonoBehaviour
         }
     }
     #region  Reset
-    public void ResetPosition()
-    {
-        switch (tag)
-        {
-            case "Orange":
-                transform.position = DiceSleepingPositions[1];
-                break;
-            case "Green":
-                transform.position = DiceSleepingPositions[2];
-                break;
-            case "Blue":
-                transform.position = DiceSleepingPositions[3];
-                break;
-            case "Red":
-                transform.position = DiceSleepingPositions[4];
-                break;
-            default:
-                transform.position = DiceSleepingPositions[0];
-                break;
-        }
-    }
+    public abstract void ResetPosition();
     #endregion Reset
 
     #region Get
@@ -132,9 +113,11 @@ public class Dice : MonoBehaviour
     #endregion Get
 
     #region  OnMouse
-    private void OnMouseDrag()
+    protected virtual void OnMouseDrag()
     {
-        List<LudoPiece> allColorPieces = Tool.TurnToTeam(GameManager.Instance.CurrentPlayerTurn).GetAllPieces();
+        // if not your dice, refuse it
+
+        List<LudoPiece> allColorPieces = TurnToTeam(GameManager.Instance.CurrentPlayerTurn).GetAllPieces();
         bool isAllUnclickable = allColorPieces.All(piece => !piece.IsClickable);
         // 若為人類玩家 且停止 且任何棋是不可被點擊的狀態
         if (GameManager.Instance.CurrentPlayerTurn <= GameManager.Instance.HumanPlayers && isRollFinished && isAllUnclickable)
@@ -147,15 +130,15 @@ public class Dice : MonoBehaviour
             hasSettled = false;
         }
     }
-    private void OnMouseUp()
+    protected virtual void OnMouseUp()
     {
         rb.useGravity = true;
         isRollFinished = false;
     }
     #endregion  OnMouse
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawRay(transform.position, Vector3.up);
-    }
+    // private void OnDrawGizmos()
+    // {
+    //     Gizmos.color = Color.red;
+    //     Gizmos.DrawRay(transform.position, Vector3.up);
+    // }
 }

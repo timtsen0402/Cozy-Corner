@@ -5,6 +5,12 @@ public static class GameConstants
 {
     public static List<Team> AllTeams { get; private set; } = new List<Team>();
 
+    // Team
+    public const int OrangeNumber = 1;
+    public const int GreenNumber = 2;
+    public const int BlueNumber = 3;
+    public const int RedNumber = 4;
+
     // Camera Views
     public static readonly CameraView TitleView = new CameraView(new Vector3(336f, 323f, 364f), Quaternion.Euler(25f, -135f, 0f));
     public static readonly CameraView GameView = new CameraView(new Vector3(-33f, 25f, 0), Quaternion.Euler(30f, 90f, 0));
@@ -50,6 +56,7 @@ public static class GameConstants
         }
     }
 
+    // layer
     public static bool IsInHomeLayer(this GameObject go)
     {
         return go.layer == 6;

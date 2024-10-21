@@ -65,8 +65,8 @@ GameObject:
   - component: {fileID: 8162313328288729682}
   - component: {fileID: 8694109693510281673}
   - component: {fileID: 4006218590165663247}
-  - component: {fileID: 8461277345543300383}
   - component: {fileID: 9085255315804599961}
+  - component: {fileID: 2608083741075627468}
   m_Layer: 11
   m_Name: Green Dice
   m_TagString: Green
@@ -83,7 +83,7 @@ Transform:
   m_GameObject: {fileID: 3730158929933576132}
   serializedVersion: 2
   m_LocalRotation: {x: 0.5, y: -0.5, z: 0.5, w: 0.5}
-  m_LocalPosition: {x: -5.756961, y: 9.47, z: 0}
+  m_LocalPosition: {x: 2.5, y: 0, z: 25}
   m_LocalScale: {x: 100, y: 99.999985, z: 99.999985}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -176,21 +176,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &8461277345543300383
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3730158929933576132}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae7a49b52e7530c468a782a2f31fbe61, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rotatingPos: {x: 0, y: 7, z: 25}
-  rotatingSpeed: {x: 5, y: 5, z: 5}
-  speed: 10
 --- !u!65 &9085255315804599961
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -212,6 +197,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.020000005, y: 0.020000007, z: 0.020000005}
   m_Center: {x: 0, y: -4.656613e-10, z: 0}
+--- !u!114 &2608083741075627468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3730158929933576132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e704211f3240a8c4d95cf4eb04558b18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4016749756657987585
 GameObject:
   m_ObjectHideFlags: 0

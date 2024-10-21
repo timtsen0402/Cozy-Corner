@@ -105,14 +105,29 @@ public class LudoPiece : MonoBehaviour
         return count;
     }
 
-    private IEnumerator MovePiece()
+    private IEnumerator MovePiece(LudoPiece piece, int steps)
     {
-        foreach (LudoPiece piece in myTeam.GetAllPieces())
+        foreach (LudoPiece p in myTeam.GetAllPieces())
         {
-            piece.IsClickable = false;
+            p.IsClickable = false;
         }
         IsMoving = true;
-        int steps = DiceManager.Instance.GetCurrentDiceResult();
+        //
+        if (GameManager.Instance.CurrentGameMode == GameMode.Crazy && steps == 6)
+        {
+            Space currentSpace = piece.CheckCurrentSpace();
+            //如果被選到的棋在家就出來 否則執行以下
+            if (currentSpace.NextSpace == piece.startSpace && currentSpace.gameObject.IsInHomeLayer())
+            {
+                Vector3 nextPosition;
+                nextPosition = piece.startSpace.ActualPosition;
+                yield return StartCoroutine(LudoPieceManager.Instance.MoveToPosition(piece, nextPosition));
+                yield break;
+            }
+            TurnToTeam(GameManager.Instance.CurrentPlayerTurn).ActivateSpecialFunction(piece);
+            yield break;
+        }
+        //
 
         for (int i = 0; i < steps; i++)
         {
@@ -164,7 +179,7 @@ public class LudoPiece : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit) && hit.collider.gameObject == gameObject)
             {
-                StartCoroutine(MovePiece());
+                StartCoroutine(MovePiece(this, DiceManager.Instance.GetCurrentDiceResult()));
             }
         }
     }
