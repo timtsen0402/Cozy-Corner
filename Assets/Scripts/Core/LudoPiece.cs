@@ -112,7 +112,7 @@ public class LudoPiece : MonoBehaviour
             p.IsClickable = false;
         }
         IsMoving = true;
-        //
+        // special 
         if (GameManager.Instance.CurrentGameMode == GameMode.Crazy && steps == 6)
         {
             Space currentSpace = piece.CheckCurrentSpace();
@@ -122,6 +122,7 @@ public class LudoPiece : MonoBehaviour
                 Vector3 nextPosition;
                 nextPosition = piece.startSpace.ActualPosition;
                 yield return StartCoroutine(LudoPieceManager.Instance.MoveToPosition(piece, nextPosition));
+                IsMoving = false;
                 yield break;
             }
             TurnToTeam(GameManager.Instance.CurrentPlayerTurn).ActivateSpecialFunction(piece);
@@ -161,11 +162,11 @@ public class LudoPiece : MonoBehaviour
 
             yield return StartCoroutine(LudoPieceManager.Instance.MoveToPosition(this, nextPosition));
 
-            // 短暂暂停，让玩家能看清每一步的移动
             yield return new WaitForSeconds(0.1f);
         }
 
-        GameManager.Instance.IsPieceMoved = true;
+        yield return new WaitForSeconds(1f);
+
         IsMoving = false;
     }
 
@@ -179,7 +180,10 @@ public class LudoPiece : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit) && hit.collider.gameObject == gameObject)
             {
+                GameManager.Instance.ChosenPiece = this;
                 StartCoroutine(MovePiece(this, DiceManager.Instance.GetCurrentDiceResult()));
+
+
             }
         }
     }

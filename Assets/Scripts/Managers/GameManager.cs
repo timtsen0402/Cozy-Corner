@@ -17,11 +17,12 @@ public class GameManager : MonoBehaviour
     public int HumanPlayers { get; private set; } = 0;
     public int AIPlayers { get; private set; } = 4;
 
-    public bool IsDiceThrown { get; set; }
-    public bool IsPieceMoved { get; set; }
+    public bool IsDiceThrown { get; set; } = false;
     public int RollCount { get; set; }
 
     public GameMode CurrentGameMode { get; set; }
+
+    public LudoPiece ChosenPiece;
 
     private void Awake()
     {
@@ -42,6 +43,12 @@ public class GameManager : MonoBehaviour
         CameraManager.Instance.SetInitialCameraPosition(TitleView);
 
         Time.timeScale = 3f;
+    }
+    private void Update()
+    {
+        // Debug.Log(!DiceManager.Instance.IsAnyDiceMoving);
+        //print(DiceManager.Instance.GetCurrentDiceResult());
+        // && !DiceManager.Instance.IsAnyDiceMoving
     }
 
     public void START_GAME()
@@ -67,23 +74,27 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator PlayerTurn(int playerIndex)
     {
-        return playerIndex <= HumanPlayers ? HumanPlayerTurn() : AIPlayerTurn();
+        if (TurnToTeam(playerIndex).CurrentState == TeamState.Player) return HumanPlayerTurn();
+        return AIPlayerTurn();
     }
 
 
     IEnumerator HumanPlayerTurn()
     {
         IsDiceThrown = false;
-        IsPieceMoved = false;
+
         List<LudoPiece> allPieces = TurnToTeam(CurrentPlayerTurn).GetAllPieces();
 
-        Debug.Log("Please click the dice");
+        Debug.Log("Please press the dice");
 
         // wait until player roll the dice
         yield return new WaitUntil(() => IsDiceThrown && !DiceManager.Instance.IsAnyDiceMoving);
 
-        // check all clicable pieces
+        yield return new WaitForSeconds(1f);
+
+        // check all clickable pieces
         SelectClickablePiece(allPieces);
+        // print(allPieces.Count);
 
         // if all pieces are unclickable
         if (allPieces.All(piece => !piece.IsClickable))
@@ -104,15 +115,19 @@ public class GameManager : MonoBehaviour
         Debug.Log("請點擊滑鼠移動棋子");
 
         // wait until player move the piece
-        yield return new WaitUntil(() => IsPieceMoved);
+        yield return new WaitUntil(() => allPieces.All(piece => !piece.IsClickable));
 
         yield return new WaitForSeconds(1f);
+
+        if (TurnToTeam(CurrentPlayerTurn) == TeamRed.Instance && isMovePossible(ChosenPiece, TeamRed.Instance.ExtraSteps))
+        {
+            yield return new WaitForSeconds(1f);
+            StartCoroutine(LudoPieceManager.Instance.AIMovePiece(ChosenPiece, TeamRed.Instance.ExtraSteps));
+        }
 
         //若骰6則可以再一次
         if (DiceManager.Instance.GetCurrentDiceResult() == 6)
             yield return StartCoroutine(HumanPlayerTurn());
-        else
-            yield return null;
     }
 
     IEnumerator AIPlayerTurn()
@@ -121,11 +136,15 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSeconds(Random.Range(0.5f, 1f));
 
+        // AI roll the dice
         yield return StartCoroutine(DiceManager.Instance.AIRollDice(DiceManager.Instance.GetCurrentDice()));
+        // DiceManager.Instance.AIRollDice2(DiceManager.Instance.GetCurrentDice());
 
+        // wait until AI roll the dice
         yield return new WaitUntil(() => !DiceManager.Instance.IsAnyDiceMoving);
         yield return new WaitForSeconds(1f);
 
+        // select movable pieces
         List<LudoPiece> availablePieces = SelectAvailablePiece(allPieces);
 
 
@@ -145,10 +164,12 @@ public class GameManager : MonoBehaviour
             yield break;
 
         }
+
+        // select one of all movable pieces
         LudoPiece selectedPiece;
         selectedPiece = LudoPieceManager.Instance.SelectPiece(TurnToTeam(CurrentPlayerTurn).GetStrategy(), availablePieces);
 
-        // move piece
+        // move that piece
         if (selectedPiece != null)
         {
             yield return StartCoroutine(LudoPieceManager.Instance.AIMovePiece(selectedPiece, DiceManager.Instance.GetCurrentDiceResult()));
@@ -165,30 +186,19 @@ public class GameManager : MonoBehaviour
 
         if (DiceManager.Instance.GetCurrentDiceResult() == 6)
             yield return StartCoroutine(AIPlayerTurn());
-        else
-            yield return null;
     }
 
     public void ChangeTurn()
     {
-
         CurrentPlayerTurn = (CurrentPlayerTurn % TotalPlayers) + 1;
         UIManager.Instance.SetUpTurnFlag();
         RollCount = 0;
 
         if (CurrentGameMode == GameMode.Classic) return;
 
-        // Reset last dices
-        if (CurrentPlayerTurn == 1)
-        {
-            DiceManager.Instance.ResetDice(4);
-        }
-        else
-        {
-            DiceManager.Instance.ResetDice(CurrentPlayerTurn - 1);
-        }
-        //
-
+        // Reset dices for Crazy Mode
+        if (CurrentPlayerTurn == 1) DiceManager.Instance.ResetDice(4);
+        else DiceManager.Instance.ResetDice(CurrentPlayerTurn - 1);
     }
 
 

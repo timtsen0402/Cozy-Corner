@@ -27,7 +27,7 @@ public class TeamGreen : Team
         ParticleEffectManager.Instance.PlayEffect(effect, piece.transform.position);
         AudioManager.Instance.PlaySFX("Team Green");
 
-        Instantiate(tree, piece.transform.position, Quaternion.identity);
+        Instantiate(tree, new Vector3(piece.transform.position.x, 1.22f, piece.transform.position.z), Quaternion.identity);
         StartCoroutine(LudoPieceManager.Instance.AIMovePiece(piece, 1));
     }
 }

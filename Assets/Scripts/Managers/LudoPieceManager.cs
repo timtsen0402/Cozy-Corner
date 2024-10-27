@@ -150,7 +150,6 @@ public class LudoPieceManager : MonoBehaviour
         // after moving
         if (piece.CurrentSpace.CurrentTree != null) Destroy(piece.CurrentSpace.CurrentTree);
         piece.IsMoving = false;
-        GameManager.Instance.IsPieceMoved = true;
     }
     #endregion Move
 }

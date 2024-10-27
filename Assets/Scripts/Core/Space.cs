@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Space : MonoBehaviour
 {
-
     [field: SerializeField]
     public Vector3 ActualPosition { get; private set; }
     [field: SerializeField]
@@ -18,6 +17,10 @@ public class Space : MonoBehaviour
     [field: SerializeField]
     public Space PreviousSpace { get; private set; }
 
+    // 新增一個序列化字段來在Inspector中顯示
+    [SerializeField]
+    private LudoPiece currentPieceInspector;
+
     private Vector3 abovePosition;
 
     public LudoPiece CurrentPiece
@@ -27,6 +30,7 @@ public class Space : MonoBehaviour
             return PieceInCurrentSpace();
         }
     }
+
     public GameObject CurrentTree
     {
         get
@@ -38,6 +42,12 @@ public class Space : MonoBehaviour
     private void Start()
     {
         abovePosition = ActualPosition + Vector3.up * 3f;
+    }
+
+    private void Update()
+    {
+        // 在Update中更新Inspector顯示的值
+        currentPieceInspector = PieceInCurrentSpace();
     }
 
     private LudoPiece PieceInCurrentSpace()
@@ -60,6 +70,7 @@ public class Space : MonoBehaviour
         return null;
     }
 
+    // Uncomment for debugging
     // private void OnDrawGizmos()
     // {
     //     Gizmos.color = Color.red;

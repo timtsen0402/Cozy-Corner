@@ -24,7 +24,13 @@ public static class GameConstants
     public static readonly Vector3 FlagPosDefault = new Vector3(0, 0.61f, 0);
 
     // Dice Settings
-    public static readonly Vector3 DiceRotatingSpeed = new Vector3(5f, 5f, 5f);
+    public static readonly Vector3 DiceRotatingSpeed =
+    new Vector3
+    (
+    Random.Range(4f, 7f) * (Random.value < 0.5f ? 1 : -1),
+    Random.Range(4f, 7f) * (Random.value < 0.5f ? 1 : -1),
+    Random.Range(4f, 7f) * (Random.value < 0.5f ? 1 : -1)
+    );
     public static readonly Vector3 DiceRotatingPos = new Vector3(0, 7f, 25f);
     public static readonly Vector3 DiceRotation = new Vector3(90f, 0, 90f);
     public static readonly Vector3[] DiceSleepingPositions = new Vector3[]

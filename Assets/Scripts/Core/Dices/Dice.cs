@@ -13,15 +13,24 @@ public abstract class Dice : MonoBehaviour
     public int diceResult { get; protected set; }
     public Rigidbody rb { get; protected set; }
 
+
+
+    private bool isManuallyRotating = false;
+
+    [SerializeField]
+    protected int myNumber;
+
     protected virtual void Awake()
     {
         rb = gameObject.GetComponent<Rigidbody>();
     }
 
-    protected virtual void Update()
+    protected virtual void FixedUpdate()
     {
         ResetIfDrop();
         CheckIsSettled();
+
+        //Debug.Log(rb.velocity.magnitude + rb.angularVelocity.magnitude);
     }
     private void ResetIfDrop()
     {
@@ -41,6 +50,7 @@ public abstract class Dice : MonoBehaviour
     // is dice moving or not
     protected virtual bool IsDiceSettled()
     {
+        if (isManuallyRotating) return false;
         return rb.velocity.magnitude < VelocityThreshold &&
                rb.angularVelocity.magnitude < AngularVelocityThreshold;
     }
@@ -59,15 +69,15 @@ public abstract class Dice : MonoBehaviour
                 yield break;
             }
 
-            elapsedTime += Time.deltaTime;
-
+            elapsedTime += Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();  // 改用WaitForFixedUpdate
             yield return null;
         }
 
         hasSettled = true;
         isCheckingForSettle = false;
 
-        UpdateDiceResult();
+        // UpdateDiceResult();
         isRollFinished = true;
     }
 
@@ -106,6 +116,7 @@ public abstract class Dice : MonoBehaviour
     {
         if (hasSettled)
         {
+            // Debug.Log("enter");
             UpdateDiceResult();
         }
         return diceResult;
@@ -113,27 +124,45 @@ public abstract class Dice : MonoBehaviour
     #endregion Get
 
     #region  OnMouse
+    protected virtual void OnMouseDown()
+    {
+        DiceManager.Instance.RotatingSpeed = new Vector3
+        (
+        Random.Range(4f, 7f) * (Random.value < 0.5f ? 1 : -1),
+        Random.Range(4f, 7f) * (Random.value < 0.5f ? 1 : -1),
+        Random.Range(4f, 7f) * (Random.value < 0.5f ? 1 : -1)
+        );
+    }
     protected virtual void OnMouseDrag()
     {
-        // if not your dice, refuse it
+
 
         List<LudoPiece> allColorPieces = TurnToTeam(GameManager.Instance.CurrentPlayerTurn).GetAllPieces();
         bool isAllUnclickable = allColorPieces.All(piece => !piece.IsClickable);
+        // able to roll the dice
         // 若為人類玩家 且停止 且任何棋是不可被點擊的狀態
-        if (GameManager.Instance.CurrentPlayerTurn <= GameManager.Instance.HumanPlayers && isRollFinished && isAllUnclickable)
+        if (TurnToTeam(GameManager.Instance.CurrentPlayerTurn).CurrentState == TeamState.Player && isRollFinished && isAllUnclickable)
         {
+            Debug.Log("enter");
             rb.useGravity = false;
+            isManuallyRotating = true;
             transform.position = DiceRotatingPos;
-            transform.Rotate(DiceRotatingSpeed);
-            GameManager.Instance.IsDiceThrown = true;
-            GameManager.Instance.IsPieceMoved = false;
+            transform.Rotate(DiceManager.Instance.RotatingSpeed);
+
             hasSettled = false;
         }
     }
     protected virtual void OnMouseUp()
     {
+        Vector3 velocity = rb.velocity;
+        velocity.y = 0;
+        rb.velocity = velocity;
+
+        GameManager.Instance.IsDiceThrown = true;
         rb.useGravity = true;
         isRollFinished = false;
+        isManuallyRotating = false;
+
     }
     #endregion  OnMouse
     // private void OnDrawGizmos()

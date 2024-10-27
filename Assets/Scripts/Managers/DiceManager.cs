@@ -13,6 +13,8 @@ public class DiceManager : MonoBehaviour
     private List<GameObject> allDiceObjects = new List<GameObject>();
     private List<Dice> diceScripts = new List<Dice>();
 
+    public Vector3 RotatingSpeed;
+
     private void Awake()
     {
         if (Instance == null)
@@ -27,7 +29,7 @@ public class DiceManager : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         IsAnyDiceMoving = CheckIfAnyDiceMoving();
     }
@@ -40,6 +42,15 @@ public class DiceManager : MonoBehaviour
             {
                 return true;
             }
+        }
+        return false;
+    }
+
+    public bool CheckDiceMoving(Dice dice)
+    {
+        if (!dice.isStop())
+        {
+            return true;
         }
         return false;
     }
@@ -106,6 +117,13 @@ public class DiceManager : MonoBehaviour
 
     public IEnumerator AIRollDice(Dice dice)
     {
+        RotatingSpeed = new Vector3
+        (
+        Random.Range(4f, 7f) * (Random.value < 0.5f ? 1 : -1),
+        Random.Range(4f, 7f) * (Random.value < 0.5f ? 1 : -1),
+        Random.Range(4f, 7f) * (Random.value < 0.5f ? 1 : -1)
+        );
+
         float elapsedTime = 0f;
         float diceRollDuration = Random.Range(1.5f, 3f);
 
@@ -114,13 +132,12 @@ public class DiceManager : MonoBehaviour
         while (elapsedTime < diceRollDuration)
         {
             dice.transform.position = DiceRotatingPos;
-            dice.transform.Rotate(DiceRotatingSpeed);
+            dice.transform.Rotate(RotatingSpeed);
 
-            elapsedTime += 0.01f;
+            elapsedTime += Time.deltaTime;
             yield return null;
         }
     }
-
     #endregion Roll
 
 }

@@ -49,13 +49,29 @@ public static class Tool
     // 待修改
     public static void SelectClickablePiece(List<LudoPiece> pieces)
     {
+        //
+        // special pattern
+        if (GameManager.Instance.CurrentGameMode == GameMode.Crazy && DiceManager.Instance.GetCurrentDiceResult() == 6)
+        {
+            foreach (LudoPiece piece in pieces)
+            {
+                //若棋在家且門口有人，contuniue
+
+                // unavailable at end space
+                if (!piece.CurrentSpace.gameObject.IsInEndLayer())
+                {
+                    if (piece.CurrentSpace.gameObject.IsInHomeLayer() && pieces.Contains(piece.startSpace.CurrentPiece)) continue;
+                    piece.IsClickable = true;
+                }
+            }
+            return;
+        }
+        //
         foreach (LudoPiece piece in pieces)
         {
-            Space space_start = piece.startSpace;
-
             if (piece.CurrentSpace.gameObject.IsInHomeLayer())
             {
-                if (DiceManager.Instance.GetCurrentDiceResult() != 6 || pieces.Contains(space_start.CurrentPiece))
+                if (DiceManager.Instance.GetCurrentDiceResult() != 6 || pieces.Contains(piece.startSpace.CurrentPiece))
                 {
                     continue;
                 }
