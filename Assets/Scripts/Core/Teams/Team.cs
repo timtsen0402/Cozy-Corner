@@ -43,12 +43,6 @@ public abstract class Team : MonoBehaviour
     {
         Difficulty = Difficulty.Peaceful;
     }
-    //
-    // private void Update()
-    // {
-    //     print(CurrentState);
-    // }
-    //
 
     protected virtual void InitializeTeam(TeamData data)
     {
@@ -59,6 +53,14 @@ public abstract class Team : MonoBehaviour
     protected virtual void CreatePieces()
     {
         pieces = GetComponentsInChildren<LudoPiece>().ToList();
+    }
+
+    public virtual void ResetClickableState()
+    {
+        foreach (LudoPiece p in GetAllPieces())
+        {
+            p.IsClickable = false;
+        }
     }
 
     public virtual void CycleState()

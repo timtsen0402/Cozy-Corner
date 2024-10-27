@@ -29,8 +29,6 @@ public abstract class Dice : MonoBehaviour
     {
         ResetIfDrop();
         CheckIsSettled();
-
-        //Debug.Log(rb.velocity.magnitude + rb.angularVelocity.magnitude);
     }
     private void ResetIfDrop()
     {
@@ -76,8 +74,6 @@ public abstract class Dice : MonoBehaviour
 
         hasSettled = true;
         isCheckingForSettle = false;
-
-        // UpdateDiceResult();
         isRollFinished = true;
     }
 
@@ -116,7 +112,6 @@ public abstract class Dice : MonoBehaviour
     {
         if (hasSettled)
         {
-            // Debug.Log("enter");
             UpdateDiceResult();
         }
         return diceResult;
@@ -135,15 +130,12 @@ public abstract class Dice : MonoBehaviour
     }
     protected virtual void OnMouseDrag()
     {
-
-
         List<LudoPiece> allColorPieces = TurnToTeam(GameManager.Instance.CurrentPlayerTurn).GetAllPieces();
         bool isAllUnclickable = allColorPieces.All(piece => !piece.IsClickable);
         // able to roll the dice
         // 若為人類玩家 且停止 且任何棋是不可被點擊的狀態
         if (TurnToTeam(GameManager.Instance.CurrentPlayerTurn).CurrentState == TeamState.Player && isRollFinished && isAllUnclickable)
         {
-            Debug.Log("enter");
             rb.useGravity = false;
             isManuallyRotating = true;
             transform.position = DiceRotatingPos;
@@ -165,9 +157,4 @@ public abstract class Dice : MonoBehaviour
 
     }
     #endregion  OnMouse
-    // private void OnDrawGizmos()
-    // {
-    //     Gizmos.color = Color.red;
-    //     Gizmos.DrawRay(transform.position, Vector3.up);
-    // }
 }

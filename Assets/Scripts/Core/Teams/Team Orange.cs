@@ -49,37 +49,6 @@ public class TeamOrange : Team
         piece.killCount += ImpactAfterExplosion(nextSpace);
         piece.killCount += ImpactAfterExplosion(previousSpace);
     }
-
-    // private int ImpactAfterExplosion(Space space)
-    // {
-    //     int kill = 0;
-    //     if (space.CurrentPiece != null)
-    //     {
-    //         if (space.CurrentPiece.CompareTag("Orange"))
-    //         {
-    //             // 送他去終點
-    //             foreach (var s in spaces)
-    //             {
-    //                 if (s.CurrentPiece == null)
-    //                 {
-    //                     space.CurrentPiece.transform.position = s.ActualPosition;
-    //                     AudioManager.Instance.PlaySFX("Transport");
-    //                     return 0;
-    //                 }
-    //             }
-    //         }
-    //         else
-    //         {
-    //             space.CurrentPiece.ResetToHome();
-    //             kill++;
-    //         }
-    //     }
-    //     else if (space.CurrentTree != null)
-    //     {
-    //         Destroy(space.CurrentTree);
-    //     }
-    //     return kill;
-    // }
     private int ImpactAfterExplosion(Space space)
     {
         if (space.CurrentPiece == null)

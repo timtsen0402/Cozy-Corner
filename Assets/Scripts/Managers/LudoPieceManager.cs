@@ -125,14 +125,9 @@ public class LudoPieceManager : MonoBehaviour
                     yield return MoveToPosition(piece, nextPosition);
                     break;
                 }
-                else if (piece.CheckCurrentSpace().gameObject.IsInPathLayer())//Path
+                else //Path
                 {
                     nextPosition = currentSpace.NextSpace2.ActualPosition;
-
-                }
-                else
-                {
-                    nextPosition = currentSpace.NextSpace.ActualPosition;
                 }
             }
             // other situations
@@ -142,13 +137,17 @@ public class LudoPieceManager : MonoBehaviour
             }
             yield return MoveToPosition(piece, nextPosition);
 
-            // 短暂暂停，让玩家能看清每一步的移动
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.3f);
 
         }
 
         // after moving
-        if (piece.CurrentSpace.CurrentTree != null) Destroy(piece.CurrentSpace.CurrentTree);
+        if (piece.CurrentSpace.CurrentTree != null)
+        {
+            Destroy(piece.CurrentSpace.CurrentTree);
+            // TODO: SE
+        }
+
         piece.IsMoving = false;
     }
     #endregion Move

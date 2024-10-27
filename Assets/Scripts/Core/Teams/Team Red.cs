@@ -5,7 +5,7 @@ public class TeamRed : Team
     public static TeamRed Instance { get; private set; }
 
     public int ExtraSteps { get; private set; } = 0;
-    [SerializeField] int ExtraStepLimitation = 5;
+    [SerializeField] int ExtraStepLimitation = 3;
 
     protected override void Awake()
     {

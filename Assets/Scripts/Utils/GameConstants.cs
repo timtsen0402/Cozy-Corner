@@ -53,15 +53,6 @@ public static class GameConstants
     // HexCode Settings
     public const string DEFAULT_HEX_CODE = "#FFFFFF";
 
-    public static void LogAllTeamsStatus()
-    {
-        Debug.Log($"Total teams in AllTeams: {AllTeams.Count}");
-        foreach (var team in AllTeams)
-        {
-            Debug.Log($"Team: {team.Name}, Piece count: {team.GetAllPieces().Count}, Is finished: {team.isFinished()}");
-        }
-    }
-
     // layer
     public static bool IsInHomeLayer(this GameObject go)
     {

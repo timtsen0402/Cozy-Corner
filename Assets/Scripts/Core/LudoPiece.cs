@@ -29,45 +29,31 @@ public class LudoPiece : MonoBehaviour
         myTeam = GetComponentInParent<Team>();
         rb = GetComponent<Rigidbody>();
         rend = gameObject.GetComponent<Renderer>();
-
         startSpace = myTeam.StartSpace;
+        originalColor = rend.material.color;
     }
 
     void Start()
     {
-        IsMoving = false;
-
-        originalColor = rend.material.color;
-        ResetToHome();
-
+        // 
+        //ResetToHome();
     }
 
     void Update()
     {
-        CurrentSpace = CheckCurrentSpace();
         if (IsClickable) OnClick();
-        RigidbodySetting();
 
-        //if (CurrentSpace == null) ResetToHome();
+        // detect current space
+        CurrentSpace = CheckCurrentSpace();
+
+        // ensure this piece is on the space
+        if (CurrentSpace == null) ResetToHome();
     }
     public void ResetToHome()
     {
         transform.position = homeSpace.ActualPosition;
         transform.rotation = LudoPieceManager.PieceRotation;
         if (!rb.isKinematic) rb.velocity = Vector3.zero;
-    }
-    void RigidbodySetting()
-    {
-        if (IsMoving)
-        {
-            rb.isKinematic = true;
-            rb.useGravity = false;
-        }
-        else
-        {
-            rb.isKinematic = false;
-            rb.useGravity = true;
-        }
     }
     void OnCollisionEnter(Collision collision)
     {
@@ -105,71 +91,6 @@ public class LudoPiece : MonoBehaviour
         return count;
     }
 
-    private IEnumerator MovePiece(LudoPiece piece, int steps)
-    {
-        foreach (LudoPiece p in myTeam.GetAllPieces())
-        {
-            p.IsClickable = false;
-        }
-        IsMoving = true;
-        // special 
-        if (GameManager.Instance.CurrentGameMode == GameMode.Crazy && steps == 6)
-        {
-            Space currentSpace = piece.CheckCurrentSpace();
-            //如果被選到的棋在家就出來 否則執行以下
-            if (currentSpace.NextSpace == piece.startSpace && currentSpace.gameObject.IsInHomeLayer())
-            {
-                Vector3 nextPosition;
-                nextPosition = piece.startSpace.ActualPosition;
-                yield return StartCoroutine(LudoPieceManager.Instance.MoveToPosition(piece, nextPosition));
-                IsMoving = false;
-                yield break;
-            }
-            TurnToTeam(GameManager.Instance.CurrentPlayerTurn).ActivateSpecialFunction(piece);
-            yield break;
-        }
-        //
-
-        for (int i = 0; i < steps; i++)
-        {
-            Space currentSpace = CheckCurrentSpace();
-
-            if (currentSpace.NextSpace == null)
-            {
-                break;
-            }
-
-            Vector3 nextPosition;
-
-            if (currentSpace.NextSpace == startSpace)
-            {
-                if (currentSpace.gameObject.IsInHomeLayer()) // Home
-                {
-                    nextPosition = startSpace.ActualPosition;
-                    yield return StartCoroutine(LudoPieceManager.Instance.MoveToPosition(this, nextPosition));
-                    break;
-                }
-                //終點前
-                else
-                {
-                    nextPosition = currentSpace.NextSpace2.ActualPosition;
-                }
-            }
-            else
-            {
-                nextPosition = currentSpace.NextSpace.ActualPosition;
-            }
-
-            yield return StartCoroutine(LudoPieceManager.Instance.MoveToPosition(this, nextPosition));
-
-            yield return new WaitForSeconds(0.1f);
-        }
-
-        yield return new WaitForSeconds(1f);
-
-        IsMoving = false;
-    }
-
     #region  OnMouse
     public void OnClick()
     {
@@ -180,10 +101,9 @@ public class LudoPiece : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit) && hit.collider.gameObject == gameObject)
             {
+                myTeam.ResetClickableState();
                 GameManager.Instance.ChosenPiece = this;
-                StartCoroutine(MovePiece(this, DiceManager.Instance.GetCurrentDiceResult()));
-
-
+                StartCoroutine(LudoPieceManager.Instance.AIMovePiece(this, DiceManager.Instance.GetCurrentDiceResult()));
             }
         }
     }
@@ -199,9 +119,4 @@ public class LudoPiece : MonoBehaviour
         rend.material.color = originalColor;
     }
     #endregion  OnMouse
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = UnityEngine.Color.black;
-        Gizmos.DrawRay(transform.position, Vector3.down);
-    }
 }

@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
 {
 
     public static GameManager Instance { get; private set; }
+
     public int CurrentPlayerTurn { get; private set; } = 1;
 
     public int HumanPlayers { get; private set; } = 0;
@@ -44,13 +45,6 @@ public class GameManager : MonoBehaviour
 
         Time.timeScale = 3f;
     }
-    private void Update()
-    {
-        // Debug.Log(!DiceManager.Instance.IsAnyDiceMoving);
-        //print(DiceManager.Instance.GetCurrentDiceResult());
-        // && !DiceManager.Instance.IsAnyDiceMoving
-    }
-
     public void START_GAME()
     {
         HumanPlayers = GetHumanPlayers();
@@ -94,7 +88,6 @@ public class GameManager : MonoBehaviour
 
         // check all clickable pieces
         SelectClickablePiece(allPieces);
-        // print(allPieces.Count);
 
         // if all pieces are unclickable
         if (allPieces.All(piece => !piece.IsClickable))
@@ -112,7 +105,7 @@ public class GameManager : MonoBehaviour
             yield break;
         }
 
-        Debug.Log("請點擊滑鼠移動棋子");
+        Debug.Log("Please move the piece");
 
         // wait until player move the piece
         yield return new WaitUntil(() => allPieces.All(piece => !piece.IsClickable));
