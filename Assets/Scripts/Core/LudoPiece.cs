@@ -35,8 +35,7 @@ public class LudoPiece : MonoBehaviour
 
     void Start()
     {
-        // 
-        //ResetToHome();
+        ResetToHome();
     }
 
     void Update()

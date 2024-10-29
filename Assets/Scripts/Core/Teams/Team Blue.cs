@@ -30,7 +30,7 @@ public class TeamBlue : Team
             bool isHomePiece = p.CurrentSpace.gameObject.IsInHomeLayer();
             if (isHomePiece && hasHomePiece) continue;
 
-            ParticleEffectManager.Instance.PlayEffect(effect, p.transform.position);
+            ParticleEffectManager.Instance.PlayEffect("Splash", p.transform.position);
             StartCoroutine(LudoPieceManager.Instance.AIMovePiece(p, 1));
 
             if (isHomePiece) hasHomePiece = true;

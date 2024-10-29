@@ -15,9 +15,6 @@ public abstract class Team : MonoBehaviour
     [SerializeField] protected TeamData teamData;
     [field: SerializeField] public Space StartSpace { get; protected set; }
 
-    [Header("Effects")]
-    [SerializeField] protected GameObject effect;
-
     protected List<LudoPiece> pieces = new List<LudoPiece>();
 
 
@@ -106,7 +103,13 @@ public abstract class Team : MonoBehaviour
 
     public virtual bool isFinished()
     {
-        return pieces.All(piece => piece.CurrentSpace.gameObject.IsInEndLayer());
+        if (pieces == null) return false;
+
+        return pieces.All(piece =>
+            piece != null &&
+            piece.CurrentSpace != null &&
+            piece.CurrentSpace.gameObject != null &&
+            piece.CurrentSpace.gameObject.IsInEndLayer());
     }
 
     public virtual Difficulty GetStrategy()

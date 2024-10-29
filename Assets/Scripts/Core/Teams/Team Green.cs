@@ -24,7 +24,7 @@ public class TeamGreen : Team
     // plant a tree(barrier) and move 1 step
     public override void ActivateSpecialFunction(LudoPiece piece)
     {
-        ParticleEffectManager.Instance.PlayEffect(effect, piece.transform.position);
+        ParticleEffectManager.Instance.PlayEffect("Plant", piece.transform.position);
         AudioManager.Instance.PlaySFX("Team Green");
 
         Instantiate(tree, new Vector3(piece.transform.position.x, 1.22f, piece.transform.position.z), Quaternion.identity);

@@ -39,7 +39,7 @@ public class TeamOrange : Team
     // next and last piece will be effected (ally will be sent to the end, enemy will be sent to home) 
     public override void ActivateSpecialFunction(LudoPiece piece)
     {
-        ParticleEffectManager.Instance.PlayEffect(effect, piece.transform.position);
+        ParticleEffectManager.Instance.PlayEffect("Explode", piece.transform.position);
         AudioManager.Instance.PlaySFX("Team Orange");
 
         Space currentSpace = piece.CurrentSpace;
