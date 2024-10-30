@@ -28,6 +28,6 @@ public class TeamGreen : Team
         AudioManager.Instance.PlaySFX("Team Green");
 
         Instantiate(tree, new Vector3(piece.transform.position.x, 1.22f, piece.transform.position.z), Quaternion.identity);
-        StartCoroutine(LudoPieceManager.Instance.AIMovePiece(piece, 1));
+        StartCoroutine(LudoPieceManager.Instance.MovePiece(piece, 1));
     }
 }

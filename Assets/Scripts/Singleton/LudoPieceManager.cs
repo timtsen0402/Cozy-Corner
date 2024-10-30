@@ -86,14 +86,14 @@ public class LudoPieceManager : MonoBehaviour
         yield return moveTween.WaitForCompletion();
     }
 
-    public IEnumerator AIMovePiece(LudoPiece piece, int steps)
+    public IEnumerator MovePiece(LudoPiece piece, int steps)
     {
         piece.IsMoving = true;
         // Special Move
         //
         if (GameManager.Instance.CurrentGameMode == GameMode.Crazy && steps == 6)
         {
-            Space currentSpace = piece.CheckCurrentSpace();
+            Space currentSpace = piece.GetCurrentSpace();
             //如果被選到的棋在家就出來 否則執行以下
             if (currentSpace.NextSpace == piece.startSpace && currentSpace.gameObject.IsInHomeLayer())
             {
@@ -108,7 +108,7 @@ public class LudoPieceManager : MonoBehaviour
         //
         for (int i = 0; i < steps; i++)
         {
-            Space currentSpace = piece.CheckCurrentSpace();
+            Space currentSpace = piece.GetCurrentSpace();
 
             if (currentSpace.NextSpace == null)
             {
@@ -119,7 +119,7 @@ public class LudoPieceManager : MonoBehaviour
 
             if (currentSpace.NextSpace == piece.startSpace)
             {
-                if (piece.CheckCurrentSpace().gameObject.IsInHomeLayer())//Home
+                if (piece.GetCurrentSpace().gameObject.IsInHomeLayer())//Home
                 {
                     nextPosition = piece.startSpace.ActualPosition;
                     yield return MoveToPosition(piece, nextPosition);

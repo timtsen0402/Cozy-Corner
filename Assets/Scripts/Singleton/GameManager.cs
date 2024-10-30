@@ -115,7 +115,7 @@ public class GameManager : MonoBehaviour
         if (TurnToTeam(CurrentPlayerTurn) == TeamRed.Instance && isMovePossible(ChosenPiece, TeamRed.Instance.ExtraSteps))
         {
             yield return new WaitForSeconds(1f);
-            StartCoroutine(LudoPieceManager.Instance.AIMovePiece(ChosenPiece, TeamRed.Instance.ExtraSteps));
+            StartCoroutine(LudoPieceManager.Instance.MovePiece(ChosenPiece, TeamRed.Instance.ExtraSteps));
         }
 
         //若骰6則可以再一次
@@ -165,12 +165,12 @@ public class GameManager : MonoBehaviour
         // move that piece
         if (selectedPiece != null)
         {
-            yield return StartCoroutine(LudoPieceManager.Instance.AIMovePiece(selectedPiece, DiceManager.Instance.GetCurrentDiceResult()));
+            yield return StartCoroutine(LudoPieceManager.Instance.MovePiece(selectedPiece, DiceManager.Instance.GetCurrentDiceResult()));
 
             if (TurnToTeam(CurrentPlayerTurn) == TeamRed.Instance && isMovePossible(selectedPiece, TeamRed.Instance.ExtraSteps))
             {
                 yield return new WaitForSeconds(1f);
-                StartCoroutine(LudoPieceManager.Instance.AIMovePiece(selectedPiece, TeamRed.Instance.ExtraSteps));
+                StartCoroutine(LudoPieceManager.Instance.MovePiece(selectedPiece, TeamRed.Instance.ExtraSteps));
             }
         }
 

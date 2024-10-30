@@ -1,10 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using DG.Tweening;
-using static Tool;
 
 public class LudoPiece : MonoBehaviour
 {
@@ -43,17 +37,13 @@ public class LudoPiece : MonoBehaviour
         if (IsClickable) OnClick();
 
         // detect current space
-        CurrentSpace = CheckCurrentSpace();
+        CurrentSpace = GetCurrentSpace();
 
         // ensure this piece is on the space
         if (CurrentSpace == null) ResetToHome();
     }
-    public void ResetToHome()
-    {
-        transform.position = homeSpace.ActualPosition;
-        transform.rotation = LudoPieceManager.PieceRotation;
-        if (!rb.isKinematic) rb.velocity = Vector3.zero;
-    }
+
+    //  for killing other pieces
     void OnCollisionEnter(Collision collision)
     {
         if (!IsMoving) return;
@@ -68,7 +58,15 @@ public class LudoPiece : MonoBehaviour
         }
     }
 
-    public Space CheckCurrentSpace()
+    public void ResetToHome()
+    {
+        transform.position = homeSpace.ActualPosition;
+        transform.rotation = LudoPieceManager.PieceRotation;
+        if (!rb.isKinematic) rb.velocity = Vector3.zero;
+    }
+
+
+    public Space GetCurrentSpace()
     {
         return Physics.Raycast(transform.position, Vector3.down, out var hit)
                && hit.collider.TryGetComponent(out Space space)
@@ -93,16 +91,17 @@ public class LudoPiece : MonoBehaviour
     #region  OnMouse
     public void OnClick()
     {
-        if (Input.GetMouseButtonDown(0)) // 檢測左鍵點擊
+        if (Input.GetMouseButtonDown(0))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
+            // move an reset clickable pieces
             if (Physics.Raycast(ray, out hit) && hit.collider.gameObject == gameObject)
             {
                 myTeam.ResetClickableState();
                 GameManager.Instance.ChosenPiece = this;
-                StartCoroutine(LudoPieceManager.Instance.AIMovePiece(this, DiceManager.Instance.GetCurrentDiceResult()));
+                StartCoroutine(LudoPieceManager.Instance.MovePiece(this, DiceManager.Instance.GetCurrentDiceResult()));
             }
         }
     }

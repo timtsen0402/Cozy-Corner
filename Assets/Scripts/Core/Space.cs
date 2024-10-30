@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Space : MonoBehaviour
@@ -17,63 +15,25 @@ public class Space : MonoBehaviour
     [field: SerializeField]
     public Space PreviousSpace { get; private set; }
 
-    // 新增一個序列化字段來在Inspector中顯示
-    [SerializeField]
-    private LudoPiece currentPieceInspector;
-
     private Vector3 abovePosition;
-
-    public LudoPiece CurrentPiece
-    {
-        get
-        {
-            return PieceInCurrentSpace();
-        }
-    }
-
-    public GameObject CurrentTree
-    {
-        get
-        {
-            return TreeInCurrentSpace();
-        }
-    }
-
     private void Start()
     {
         abovePosition = ActualPosition + Vector3.up * 3f;
     }
 
-    private void Update()
-    {
-        // 在Update中更新Inspector顯示的值
-        currentPieceInspector = PieceInCurrentSpace();
-    }
-
-    private LudoPiece PieceInCurrentSpace()
+    private T CheckObject<T>(string layerName) where T : Object
     {
         RaycastHit hit;
-        if (Physics.Raycast(abovePosition, Vector3.down, out hit, 3f, LayerMask.GetMask("Piece")))
+        if (Physics.Raycast(abovePosition, Vector3.down, out hit, 3f, LayerMask.GetMask(layerName)))
         {
-            return hit.collider.gameObject.GetComponent<LudoPiece>();
+            return typeof(T) == typeof(GameObject) ?
+                hit.collider.gameObject as T :
+                hit.collider.gameObject.GetComponent<T>();
         }
         return null;
     }
 
-    private GameObject TreeInCurrentSpace()
-    {
-        RaycastHit hit;
-        if (Physics.Raycast(abovePosition, Vector3.down, out hit, 3f, LayerMask.GetMask("Tree")))
-        {
-            return hit.collider.gameObject;
-        }
-        return null;
-    }
+    public LudoPiece CurrentPiece => CheckObject<LudoPiece>("Piece");
+    public GameObject CurrentTree => CheckObject<GameObject>("Tree");
 
-    // Uncomment for debugging
-    // private void OnDrawGizmos()
-    // {
-    //     Gizmos.color = Color.red;
-    //     Gizmos.DrawRay(abovePosition, Vector3.down);
-    // }
 }

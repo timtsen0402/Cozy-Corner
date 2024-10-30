@@ -13,12 +13,7 @@ public abstract class Dice : MonoBehaviour
     public int diceResult { get; protected set; }
     public Rigidbody rb { get; protected set; }
 
-
-
     private bool isManuallyRotating = false;
-
-    [SerializeField]
-    protected int myNumber;
 
     protected virtual void Awake()
     {
@@ -68,7 +63,7 @@ public abstract class Dice : MonoBehaviour
             }
 
             elapsedTime += Time.fixedDeltaTime;
-            yield return new WaitForFixedUpdate();  // 改用WaitForFixedUpdate
+            yield return new WaitForFixedUpdate();
             yield return null;
         }
 
@@ -133,7 +128,6 @@ public abstract class Dice : MonoBehaviour
         List<LudoPiece> allColorPieces = TurnToTeam(GameManager.Instance.CurrentPlayerTurn).GetAllPieces();
         bool isAllUnclickable = allColorPieces.All(piece => !piece.IsClickable);
         // able to roll the dice
-        // 若為人類玩家 且停止 且任何棋是不可被點擊的狀態
         if (TurnToTeam(GameManager.Instance.CurrentPlayerTurn).CurrentState == TeamState.Player && isRollFinished && isAllUnclickable)
         {
             rb.useGravity = false;

@@ -46,82 +46,14 @@ public static class Tool
         return true; // movable confirmed
     }
 
-    // 待修改
     public static void SelectClickablePiece(List<LudoPiece> pieces)
     {
-        //
-        // special pattern
-        if (GameManager.Instance.CurrentGameMode == GameMode.Crazy && DiceManager.Instance.GetCurrentDiceResult() == 6)
-        {
-            foreach (LudoPiece piece in pieces)
-            {
-                //若棋在家且門口有人，contuniue
-
-                // unavailable at end space
-                if (!piece.CurrentSpace.gameObject.IsInEndLayer())
-                {
-                    if (piece.CurrentSpace.gameObject.IsInHomeLayer() && pieces.Contains(piece.startSpace.CurrentPiece)) continue;
-                    piece.IsClickable = true;
-                }
-            }
-            return;
-        }
-        //
-        foreach (LudoPiece piece in pieces)
-        {
-            if (piece.CurrentSpace.gameObject.IsInHomeLayer())
-            {
-                if (DiceManager.Instance.GetCurrentDiceResult() != 6 || pieces.Contains(piece.startSpace.CurrentPiece))
-                {
-                    continue;
-                }
-            }
-            else
-            {
-                if (!isMovePossible(piece, DiceManager.Instance.GetCurrentDiceResult())) continue;
-            }
-            piece.IsClickable = true;
-        }
+        GetValidPieces(pieces).ForEach(piece => piece.IsClickable = true);
     }
-    //
 
     public static List<LudoPiece> SelectAvailablePiece(List<LudoPiece> pieces)
     {
-        List<LudoPiece> clickablePieces = new List<LudoPiece>();
-
-        // special pattern
-        if (GameManager.Instance.CurrentGameMode == GameMode.Crazy && DiceManager.Instance.GetCurrentDiceResult() == 6)
-        {
-            foreach (LudoPiece piece in pieces)
-            {
-                // unavailable at end space
-                if (piece.CurrentSpace.gameObject.layer != 9)
-                {
-                    clickablePieces.Add(piece);
-                }
-            }
-            return clickablePieces;
-        }
-
-        // normal number
-        foreach (LudoPiece piece in pieces)
-        {
-            // piece at home
-            if (piece.CurrentSpace.gameObject.IsInHomeLayer())
-            {
-                if (DiceManager.Instance.GetCurrentDiceResult() != 6 || pieces.Contains(piece.startSpace.CurrentPiece))
-                {
-                    continue;
-                }
-            }
-            // otherwise
-            else
-            {
-                if (!isMovePossible(piece, DiceManager.Instance.GetCurrentDiceResult())) continue;
-            }
-            clickablePieces.Add(piece);
-        }
-        return clickablePieces;
+        return GetValidPieces(pieces);
     }
 
     public static bool isTripleThrowScenario(List<LudoPiece> pieces)
@@ -133,7 +65,7 @@ public static class Tool
         bool pieceAtEnd1 = pieces.Any(piece => piece.CurrentSpace.tag == "End1");
 
         // 4 situations (vxxx or vvxx or vvvx or vvvv)
-        if (pieces.All(piece => piece.GetComponent<LudoPiece>().CheckCurrentSpace().gameObject.IsInHomeLayer()) ||
+        if (pieces.All(piece => piece.GetComponent<LudoPiece>().GetCurrentSpace().gameObject.IsInHomeLayer()) ||
         pieceAtHome == 3 && pieceAtEnd4 ||
         pieceAtHome == 2 && pieceAtEnd4 && pieceAtEnd3 ||
         pieceAtHome == 1 && pieceAtEnd4 && pieceAtEnd3 && pieceAtEnd2)
@@ -141,5 +73,39 @@ public static class Tool
             return true;
         }
         return false;
+    }
+
+    private static List<LudoPiece> GetValidPieces(List<LudoPiece> pieces)
+    {
+        List<LudoPiece> clickablePieces = new List<LudoPiece>();
+        bool isSpecialPattern = GameManager.Instance.CurrentGameMode == GameMode.Crazy &&
+                           DiceManager.Instance.GetCurrentDiceResult() == 6;
+
+        foreach (LudoPiece piece in pieces)
+        {
+            bool isClickable = false;
+
+            if (piece.CurrentSpace.gameObject.IsInHomeLayer() && pieces.Contains(piece.startSpace.CurrentPiece)) continue;
+
+
+            if (isSpecialPattern)
+            {
+                isClickable = !piece.CurrentSpace.gameObject.IsInEndLayer();
+            }
+            else
+            {
+                if (piece.CurrentSpace.gameObject.IsInHomeLayer())
+                {
+                    isClickable = DiceManager.Instance.GetCurrentDiceResult() == 6;
+                }
+                else
+                {
+                    isClickable = isMovePossible(piece, DiceManager.Instance.GetCurrentDiceResult());
+                }
+            }
+
+            if (isClickable) clickablePieces.Add(piece);
+        }
+        return clickablePieces;
     }
 }

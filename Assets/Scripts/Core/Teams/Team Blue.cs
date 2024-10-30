@@ -31,7 +31,7 @@ public class TeamBlue : Team
             if (isHomePiece && hasHomePiece) continue;
 
             ParticleEffectManager.Instance.PlayEffect("Splash", p.transform.position);
-            StartCoroutine(LudoPieceManager.Instance.AIMovePiece(p, 1));
+            StartCoroutine(LudoPieceManager.Instance.MovePiece(p, 1));
 
             if (isHomePiece) hasHomePiece = true;
         }
