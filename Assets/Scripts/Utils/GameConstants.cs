@@ -87,18 +87,19 @@ public struct CameraView
 
 public enum TeamState
 {
+    // for every mode
     Player,
     AI_Dumb,
+    // for classic mode
     AI_Peaceful,
-    AI_Aggressive
+    AI_Aggressive,
+    // for crazy mode
+    AI_Orange,
+    AI_Green,
+    AI_Blue,
+    AI_Red
 }
 
-public enum Difficulty
-{
-    Dumb,
-    Peaceful,
-    Aggressive
-}
 public enum GameMode
 {
     Classic,

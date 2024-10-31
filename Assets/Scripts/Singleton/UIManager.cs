@@ -242,10 +242,10 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region Team State Management
-
     private void CycleTeamState(Team team)
     {
-        team.CycleState();
+        GameMode currentMode = GameManager.Instance.CurrentGameMode;
+        team.CycleState(currentMode, team);
         UpdateStateText(team);
     }
 
@@ -287,17 +287,31 @@ public class UIManager : MonoBehaviour
 
     public void OnClassicButtonClicked()
     {
-        GameManager.Instance.CurrentGameMode = GameMode.Classic;
-        CameraManager.Instance.MoveCameraTo(SettingView, 3f);
         canvas.SetActive(false);
+        CameraManager.Instance.MoveCameraTo(SettingView, 3f);
+
+        GameManager.Instance.CurrentGameMode = GameMode.Classic;
+        foreach (var team in AllTeams)
+        {
+            team.SetTeamStateDefaultClassic();
+            UpdateStateText(team);
+        }
+
     }
 
     public void OnCrazyButtonClicked()
     {
-        GameManager.Instance.CurrentGameMode = GameMode.Crazy;
-        CameraManager.Instance.MoveCameraTo(SettingView, 3f);
         canvas.SetActive(false);
+        CameraManager.Instance.MoveCameraTo(SettingView, 3f);
+
+        GameManager.Instance.CurrentGameMode = GameMode.Crazy;
+        foreach (var team in AllTeams)
+        {
+            team.SetTeamStateDefaultCrazy();
+            UpdateStateText(team);
+        }
     }
+
 
     public void SetUpTurnFlag()
     {
@@ -330,14 +344,3 @@ public class UIManager : MonoBehaviour
 
     #endregion
 }
-
-
-
-// private TextMeshPro GetStateTextForTeam(Team team)
-// {
-//     if (team == Team.Orange) return orangeStateText;
-//     if (team == Team.Green) return greenStateText;
-//     if (team == Team.Blue) return blueStateText;
-//     if (team == Team.Red) return redStateText;
-//     return null;
-// }

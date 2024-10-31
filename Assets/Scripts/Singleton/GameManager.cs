@@ -143,7 +143,6 @@ public class GameManager : MonoBehaviour
 
         if (availablePieces.Count == 0)
         {
-            //如果大家都在家就可以刷3次6
             if (isTripleThrowScenario(allPieces) && RollCount < 2)
             {
                 RollCount++;
@@ -161,6 +160,7 @@ public class GameManager : MonoBehaviour
         // select one of all movable pieces
         LudoPiece selectedPiece;
         selectedPiece = LudoPieceManager.Instance.SelectPiece(TurnToTeam(CurrentPlayerTurn).GetStrategy(), availablePieces);
+
 
         // move that piece
         if (selectedPiece != null)

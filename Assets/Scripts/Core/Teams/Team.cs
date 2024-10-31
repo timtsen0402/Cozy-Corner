@@ -5,8 +5,7 @@ using static GameConstants;
 
 public abstract class Team : MonoBehaviour
 {
-    public TeamState CurrentState { get; protected set; } = TeamState.AI_Peaceful;
-    public Difficulty Difficulty { get; protected set; } = Difficulty.Peaceful;
+    public TeamState CurrentState { get; protected set; } = TeamState.Player;
 
     public string Name { get; protected set; }
     public string HexCode { get; protected set; }
@@ -36,11 +35,6 @@ public abstract class Team : MonoBehaviour
         }
     }
 
-    protected virtual void Start()
-    {
-        Difficulty = Difficulty.Peaceful;
-    }
-
     protected virtual void InitializeTeam(TeamData data)
     {
         Name = data.teamName;
@@ -60,28 +54,60 @@ public abstract class Team : MonoBehaviour
         }
     }
 
-    public virtual void CycleState()
+    // public virtual void CycleState()
+    // {
+    //     CurrentState = (TeamState)(((int)CurrentState + 1) % 4);
+    // }
+    public void CycleState(GameMode gameMode, Team team)
     {
-        CurrentState = (TeamState)(((int)CurrentState + 1) % 4);
-        UpdateAIDifficulty();
-    }
-
-    protected virtual void UpdateAIDifficulty()
-    {
-        switch (CurrentState)
+        if (gameMode == GameMode.Classic)
         {
-            case TeamState.AI_Dumb:
-                Difficulty = Difficulty.Dumb;
-                break;
-            case TeamState.AI_Peaceful:
-                Difficulty = Difficulty.Peaceful;
-                break;
-            case TeamState.AI_Aggressive:
-                Difficulty = Difficulty.Aggressive;
-                break;
-            default:
-                Difficulty = Difficulty.Peaceful;
-                break;
+            // Classic 模式下只顯示基本 AI
+            switch (CurrentState)
+            {
+                case TeamState.Player:
+                    CurrentState = TeamState.AI_Dumb;
+                    break;
+                case TeamState.AI_Dumb:
+                    CurrentState = TeamState.AI_Peaceful;
+                    break;
+                case TeamState.AI_Peaceful:
+                    CurrentState = TeamState.AI_Aggressive;
+                    break;
+                default:
+                    CurrentState = TeamState.Player;
+                    break;
+            }
+        }
+        else // Crazy 模式
+        {
+            // 根據顏色決定可用的 AI
+            switch (CurrentState)
+            {
+                case TeamState.Player:
+                    CurrentState = TeamState.AI_Dumb;
+                    break;
+                case TeamState.AI_Dumb:
+                    switch (team)
+                    {
+                        case TeamOrange:
+                            CurrentState = TeamState.AI_Orange;
+                            break;
+                        case TeamGreen:
+                            CurrentState = TeamState.AI_Green;
+                            break;
+                        case TeamBlue:
+                            CurrentState = TeamState.AI_Blue;
+                            break;
+                        case TeamRed:
+                            CurrentState = TeamState.AI_Red;
+                            break;
+                    }
+                    break;
+                default:
+                    CurrentState = TeamState.Player;
+                    break;
+            }
         }
     }
 
@@ -112,9 +138,9 @@ public abstract class Team : MonoBehaviour
             piece.CurrentSpace.gameObject.IsInEndLayer());
     }
 
-    public virtual Difficulty GetStrategy()
+    public virtual TeamState GetStrategy()
     {
-        return Difficulty;
+        return CurrentState;
     }
 
     public virtual int GetKillCount()
@@ -133,8 +159,10 @@ public abstract class Team : MonoBehaviour
     }
     #endregion Reset
 
-
-
     // customized special function
     public abstract void ActivateSpecialFunction(LudoPiece piece);
+
+
+    public abstract void SetTeamStateDefaultClassic();
+    public abstract void SetTeamStateDefaultCrazy();
 }

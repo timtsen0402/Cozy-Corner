@@ -13,7 +13,7 @@ public class LudoPieceManager : MonoBehaviour
     public static Quaternion PieceRotation = Quaternion.Euler(new Vector3(270f, 0f, 0f));
     public List<Team> UnfinishedTeams { get; set; }
     public List<Team> FinishedTeams { get; set; }
-    // 使用字典來按顏色存儲棋子
+
     private Dictionary<Team, List<LudoPiece>> piecesByTeam;
 
 
@@ -49,9 +49,9 @@ public class LudoPieceManager : MonoBehaviour
 
     #region Get
 
-    public LudoPiece SelectPiece(Difficulty difficulty, List<LudoPiece> availablePieces)
+    public LudoPiece SelectPiece(TeamState teamState, List<LudoPiece> availablePieces)
     {
-        var strategy = AIStrategies.GetStrategy(difficulty);
+        var strategy = AIStrategies.GetStrategy(teamState);
         return strategy(availablePieces);
     }
 

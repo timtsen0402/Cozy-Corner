@@ -29,6 +29,7 @@ public class TeamOrange : Team
     protected override void InitializeTeam(TeamData data)
     {
         base.InitializeTeam(data);
+        CurrentState = TeamState.Player;
 
         spaces.Add(end4);
         spaces.Add(end3);
@@ -71,5 +72,13 @@ public class TeamOrange : Team
 
         space.CurrentPiece.ResetToHome();
         return 1;
+    }
+    public override void SetTeamStateDefaultClassic()
+    {
+        CurrentState = TeamState.Player;
+    }
+    public override void SetTeamStateDefaultCrazy()
+    {
+        CurrentState = TeamState.Player;
     }
 }

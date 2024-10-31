@@ -33,4 +33,12 @@ public class TeamRed : Team
             ExtraSteps += 1;
         }
     }
+    public override void SetTeamStateDefaultClassic()
+    {
+        CurrentState = TeamState.AI_Aggressive;
+    }
+    public override void SetTeamStateDefaultCrazy()
+    {
+        CurrentState = TeamState.AI_Red;
+    }
 }

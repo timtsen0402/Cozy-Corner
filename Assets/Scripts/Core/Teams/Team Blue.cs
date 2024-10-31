@@ -36,4 +36,12 @@ public class TeamBlue : Team
             if (isHomePiece) hasHomePiece = true;
         }
     }
+    public override void SetTeamStateDefaultClassic()
+    {
+        CurrentState = TeamState.AI_Aggressive;
+    }
+    public override void SetTeamStateDefaultCrazy()
+    {
+        CurrentState = TeamState.AI_Blue;
+    }
 }
