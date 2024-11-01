@@ -1,29 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using System.Linq;
-using DG.Tweening;
 using static Tool;
 using static GameConstants;
-// using System;
 
 public class GameManager : MonoBehaviour
 {
-
     public static GameManager Instance { get; private set; }
 
-    public int CurrentPlayerTurn { get; private set; } = 1;
-
-    public int HumanPlayers { get; private set; } = 0;
-    public int AIPlayers { get; private set; } = 4;
-
     public bool IsDiceThrown { get; set; } = false;
-    public int RollCount { get; set; }
-
     public GameMode CurrentGameMode { get; set; }
+    public LudoPiece ChosenPiece { get; set; }
 
-    public LudoPiece ChosenPiece;
+    public int CurrentPlayerTurn { get; private set; } = 1;
+    public int HumanPlayers { get; private set; }
+
+    private int RollCount;
+
+    Light[] allLights;
+    Light[] pointLights;
+
 
     private void Awake()
     {
@@ -36,11 +33,16 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
 
+        allLights = FindObjectsOfType<Light>();
+        pointLights = allLights.Where(light => light.type == LightType.Point).ToArray();
+
+        // Debug.Log(pointLights.Length);
+
     }
 
     private void Start()
     {
-        AudioManager.Instance.PlayBgmRandomly();
+        StartCoroutine(AudioManager.Instance.PlayBgmRandomly());
         CameraManager.Instance.SetInitialCameraPosition(TitleView);
 
         Time.timeScale = 3f;
@@ -56,10 +58,8 @@ public class GameManager : MonoBehaviour
         yield return null;
         while (!isGameOver() && UIManager.Instance.gameStarted)
         {
-            // hasn't already end
             if (!TurnToTeam(CurrentPlayerTurn).isFinished())
             {
-                yield return null;
                 yield return StartCoroutine(PlayerTurn(CurrentPlayerTurn));
             }
             ChangeTurn();
@@ -79,7 +79,7 @@ public class GameManager : MonoBehaviour
 
         List<LudoPiece> allPieces = TurnToTeam(CurrentPlayerTurn).GetAllPieces();
 
-        Debug.Log("Please press the dice");
+        // Debug.Log("Please press the dice");
 
         // wait until player roll the dice
         yield return new WaitUntil(() => IsDiceThrown && !DiceManager.Instance.IsAnyDiceMoving);
@@ -105,20 +105,19 @@ public class GameManager : MonoBehaviour
             yield break;
         }
 
-        Debug.Log("Please move the piece");
+        // Debug.Log("Please move the piece");
 
         // wait until player move the piece
         yield return new WaitUntil(() => allPieces.All(piece => !piece.IsClickable));
 
         yield return new WaitForSeconds(1f);
 
-        if (TurnToTeam(CurrentPlayerTurn) == TeamRed.Instance && isMovePossible(ChosenPiece, TeamRed.Instance.ExtraSteps))
+        if (CurrentPlayerTurn == RedNumber && isMovePossible(ChosenPiece, TeamRed.Instance.ExtraSteps))
         {
             yield return new WaitForSeconds(1f);
             StartCoroutine(LudoPieceManager.Instance.MovePiece(ChosenPiece, TeamRed.Instance.ExtraSteps));
         }
 
-        //若骰6則可以再一次
         if (DiceManager.Instance.GetCurrentDiceResult() == 6)
             yield return StartCoroutine(HumanPlayerTurn());
     }
@@ -131,7 +130,6 @@ public class GameManager : MonoBehaviour
 
         // AI roll the dice
         yield return StartCoroutine(DiceManager.Instance.AIRollDice(DiceManager.Instance.GetCurrentDice()));
-        // DiceManager.Instance.AIRollDice2(DiceManager.Instance.GetCurrentDice());
 
         // wait until AI roll the dice
         yield return new WaitUntil(() => !DiceManager.Instance.IsAnyDiceMoving);
@@ -167,7 +165,7 @@ public class GameManager : MonoBehaviour
         {
             yield return StartCoroutine(LudoPieceManager.Instance.MovePiece(selectedPiece, DiceManager.Instance.GetCurrentDiceResult()));
 
-            if (TurnToTeam(CurrentPlayerTurn) == TeamRed.Instance && isMovePossible(selectedPiece, TeamRed.Instance.ExtraSteps))
+            if (CurrentPlayerTurn == RedNumber && isMovePossible(selectedPiece, TeamRed.Instance.ExtraSteps))
             {
                 yield return new WaitForSeconds(1f);
                 StartCoroutine(LudoPieceManager.Instance.MovePiece(selectedPiece, TeamRed.Instance.ExtraSteps));
@@ -189,18 +187,15 @@ public class GameManager : MonoBehaviour
 
         if (CurrentGameMode == GameMode.Classic) return;
 
-        // Reset dices for Crazy Mode
+        // Reset dice for Crazy Mode
         if (CurrentPlayerTurn == 1) DiceManager.Instance.ResetDice(4);
         else DiceManager.Instance.ResetDice(CurrentPlayerTurn - 1);
     }
 
-
-    // 有3隊都達到終點時才算遊戲結束
     bool isGameOver()
     {
         List<Team> teamsToMove = new List<Team>();
 
-        // 首先，找出所有已完成的隊伍
         foreach (Team team in LudoPieceManager.Instance.UnfinishedTeams)
         {
             if (team.isFinished())
@@ -209,7 +204,6 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        // 然後，在單獨的循環中移動這些隊伍
         foreach (Team team in teamsToMove)
         {
             LudoPieceManager.Instance.FinishedTeams.Add(team);
@@ -221,6 +215,10 @@ public class GameManager : MonoBehaviour
 
         if (LudoPieceManager.Instance.FinishedTeams.Count >= 3)
         {
+            foreach (Light pl in pointLights)
+            {
+                pl.enabled = false;
+            }
             CurrentPlayerTurn = 0;
             return true;
         }
@@ -229,7 +227,7 @@ public class GameManager : MonoBehaviour
     int GetHumanPlayers()
     {
         int count = 0;
-        foreach (var team in AllTeams)
+        foreach (var team in LudoPieceManager.Instance.AllTeams)
         {
             string str = team.GetStateString();
             if (str == "Player") count++;

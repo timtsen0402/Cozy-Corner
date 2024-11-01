@@ -5,43 +5,23 @@ using static GameConstants;
 
 public abstract class Team : MonoBehaviour
 {
+    // default state
     public TeamState CurrentState { get; protected set; } = TeamState.Player;
 
+
+    [field: SerializeField] public Space StartSpace { get; protected set; }
     public string Name { get; protected set; }
     public string HexCode { get; protected set; }
-
-    [Header("Basic Info")]
-    [SerializeField] protected TeamData teamData;
-    [field: SerializeField] public Space StartSpace { get; protected set; }
 
     protected List<LudoPiece> pieces = new List<LudoPiece>();
 
 
     protected virtual void Awake()
     {
-        if (teamData != null)
-        {
-            InitializeTeam(teamData);
-            CreatePieces();
-        }
-        else
-        {
-            Debug.LogError($"TeamData is not set for {gameObject.name}");
-        }
-
-        if (!AllTeams.Contains(this))
-        {
-            AllTeams.Add(this);
-        }
+        CreatePieces();
     }
 
-    protected virtual void InitializeTeam(TeamData data)
-    {
-        Name = data.teamName;
-        HexCode = data.teamHexCode;
-    }
-
-    protected virtual void CreatePieces()
+    private void CreatePieces()
     {
         pieces = GetComponentsInChildren<LudoPiece>().ToList();
     }
@@ -54,15 +34,11 @@ public abstract class Team : MonoBehaviour
         }
     }
 
-    // public virtual void CycleState()
-    // {
-    //     CurrentState = (TeamState)(((int)CurrentState + 1) % 4);
-    // }
     public void CycleState(GameMode gameMode, Team team)
     {
         if (gameMode == GameMode.Classic)
         {
-            // Classic 模式下只顯示基本 AI
+
             switch (CurrentState)
             {
                 case TeamState.Player:
@@ -79,9 +55,8 @@ public abstract class Team : MonoBehaviour
                     break;
             }
         }
-        else // Crazy 模式
+        else // Crazy Mode
         {
-            // 根據顏色決定可用的 AI
             switch (CurrentState)
             {
                 case TeamState.Player:
@@ -149,20 +124,16 @@ public abstract class Team : MonoBehaviour
     }
     #endregion Get
 
-    #region Reset
-    public virtual void ResetPieces()
-    {
-        foreach (var piece in pieces)
-        {
-            piece.ResetToHome();
-        }
-    }
-    #endregion Reset
-
+    #region Abstract
     // customized special function
     public abstract void ActivateSpecialFunction(LudoPiece piece);
 
-
+    // customized default state
     public abstract void SetTeamStateDefaultClassic();
     public abstract void SetTeamStateDefaultCrazy();
+
+    // set singleton
+    protected abstract void SetSingleton();
+    #endregion Abstract
+
 }

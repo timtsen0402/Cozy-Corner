@@ -13,7 +13,7 @@ public class DiceManager : MonoBehaviour
     private List<GameObject> allDiceObjects = new List<GameObject>();
     private List<Dice> diceScripts = new List<Dice>();
 
-    public Vector3 RotatingSpeed;
+    [HideInInspector] public Vector3 RotatingSpeed;
 
     private void Awake()
     {
@@ -46,16 +46,7 @@ public class DiceManager : MonoBehaviour
         return false;
     }
 
-    public bool CheckDiceMoving(Dice dice)
-    {
-        if (!dice.isStop())
-        {
-            return true;
-        }
-        return false;
-    }
-
-    public void SetAllDices()
+    private void SetAllDices()
     {
         for (int i = 0; i < allDiceObjects.Count; i++)
         {
@@ -108,10 +99,7 @@ public class DiceManager : MonoBehaviour
             dice.transform.eulerAngles = DiceRotation;
         }
     }
-
     #endregion Reset
-
-
 
     #region Roll
 
@@ -119,9 +107,9 @@ public class DiceManager : MonoBehaviour
     {
         RotatingSpeed = new Vector3
         (
-        Random.Range(4f, 7f) * (Random.value < 0.5f ? 1 : -1),
-        Random.Range(4f, 7f) * (Random.value < 0.5f ? 1 : -1),
-        Random.Range(4f, 7f) * (Random.value < 0.5f ? 1 : -1)
+        Random.Range(RotatingThreshold1, RotatingThreshold2) * (Random.value < 0.5f ? 1 : -1),
+        Random.Range(RotatingThreshold1, RotatingThreshold2) * (Random.value < 0.5f ? 1 : -1),
+        Random.Range(RotatingThreshold1, RotatingThreshold2) * (Random.value < 0.5f ? 1 : -1)
         );
 
         float elapsedTime = 0f;

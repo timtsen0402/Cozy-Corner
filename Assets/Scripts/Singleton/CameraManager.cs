@@ -66,7 +66,7 @@ public class CameraManager : MonoBehaviour
     private void CamControl()
     {
         MainCamera.transform.position = Target.transform.position + offset;
-        MainCamera.transform.LookAt(new Vector3(Target.transform.position.x, Target.transform.position.y + 6f, Target.transform.position.z));
+        MainCamera.transform.LookAt(Target.transform.position);
         offset = Scrollview(offset, scrollSpeed, minDistance, maxDistance);
         Rotateview(Target);
     }

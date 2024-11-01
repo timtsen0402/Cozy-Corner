@@ -12,6 +12,13 @@ public class TeamRed : Team
     protected override void Awake()
     {
         base.Awake();
+        SetSingleton();
+
+        Name = "Red";
+        HexCode = GameConstants.RED_HEX_CODE;
+    }
+    protected override void SetSingleton()
+    {
         if (Instance == null)
         {
             Instance = this;

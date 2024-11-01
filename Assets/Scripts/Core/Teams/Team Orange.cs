@@ -16,6 +16,14 @@ public class TeamOrange : Team
     protected override void Awake()
     {
         base.Awake();
+        SetSingleton();
+        AddAllEndSpaces();
+
+        Name = "Orange";
+        HexCode = GameConstants.ORANGE_HEX_CODE;
+    }
+    protected override void SetSingleton()
+    {
         if (Instance == null)
         {
             Instance = this;
@@ -25,12 +33,8 @@ public class TeamOrange : Team
             Destroy(gameObject);
         }
     }
-
-    protected override void InitializeTeam(TeamData data)
+    private void AddAllEndSpaces()
     {
-        base.InitializeTeam(data);
-        CurrentState = TeamState.Player;
-
         spaces.Add(end4);
         spaces.Add(end3);
         spaces.Add(end2);

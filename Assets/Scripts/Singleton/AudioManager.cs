@@ -19,9 +19,9 @@ public class AudioManager : MonoBehaviour
 
     public Sound[] bgmSounds;
     public Sound[] sfxSounds;
+
     [field: SerializeField]
     public float fadeSecondsBGM { get; private set; }
-
 
     private AudioSource bgmSource;
     private AudioSource sfxSource;
@@ -55,24 +55,6 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void PlayBGM(string name)
-    {
-        if (soundDictionary.TryGetValue(name, out Sound s))
-        {
-            bgmSource.clip = s.clip;
-            bgmSource.volume = s.volume;
-            bgmSource.loop = true;
-            bgmSource.Play();
-        }
-        else
-        {
-            Debug.LogWarning("BGM: " + name + " not found!");
-        }
-    }
-    public void StopBGM()
-    {
-        bgmSource.Stop();
-    }
     public void PlaySFX(string name)
     {
         if (soundDictionary.TryGetValue(name, out Sound s))
@@ -84,9 +66,9 @@ public class AudioManager : MonoBehaviour
             Debug.LogWarning("SFX: " + name + " not found!");
         }
     }
-    public void PlayBgmRandomly()
+    public IEnumerator PlayBgmRandomly()
     {
-        if (bgmSounds.Length == 0) return;
+        if (bgmSounds.Length == 0) yield break;
 
         if (playedBgmIndices.Count == bgmSounds.Length)
         {
@@ -108,23 +90,9 @@ public class AudioManager : MonoBehaviour
         bgmSource.Play();
         FadeBGM(fadeSecondsBGM, 1f);
 
-        StartCoroutine(WaitForMusicEnd());
-    }
-
-    private IEnumerator WaitForMusicEnd()
-    {
         yield return new WaitUntil(() => !bgmSource.isPlaying);
         FadeBGM(fadeSecondsBGM, 0f);
-        PlayBgmRandomly();
-    }
-    public List<string> GetAllBGMNames()
-    {
-        return bgmSounds.Select(s => s.name).ToList();
-    }
-
-    public List<string> GetAllSFXNames()
-    {
-        return sfxSounds.Select(s => s.name).ToList();
+        StartCoroutine(PlayBgmRandomly());
     }
 
     public float BgmVolume()

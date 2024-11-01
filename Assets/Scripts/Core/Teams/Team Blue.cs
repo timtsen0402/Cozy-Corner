@@ -7,6 +7,13 @@ public class TeamBlue : Team
     protected override void Awake()
     {
         base.Awake();
+        SetSingleton();
+
+        Name = "Blue";
+        HexCode = GameConstants.BLUE_HEX_CODE;
+    }
+    protected override void SetSingleton()
+    {
         if (Instance == null)
         {
             Instance = this;

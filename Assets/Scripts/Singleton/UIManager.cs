@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using TMPro;
 using UnityEngine.SceneManagement;
-using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Collections;
 using static GameConstants;
@@ -49,7 +48,6 @@ public class UIManager : MonoBehaviour
     private void Awake()
     {
         InitializeSingleton();
-        InitializeReferences();
         InitializeRankingVariables();
     }
 
@@ -78,11 +76,6 @@ public class UIManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-    }
-
-    private void InitializeReferences()
-    {
-        mainCamera = Camera.main;
     }
 
     private void InitializeRankingVariables()
@@ -124,6 +117,7 @@ public class UIManager : MonoBehaviour
 
     private void UpdateRankingData()
     {
+        //show first, second and third place
         Gold = LudoPieceManager.Instance.FinishedTeams.Count > 0 ? LudoPieceManager.Instance.FinishedTeams[0].name.Replace("Team ", "") : string.Empty;
         Silver = LudoPieceManager.Instance.FinishedTeams.Count > 1 ? LudoPieceManager.Instance.FinishedTeams[1].name.Replace("Team ", "") : string.Empty;
         Bronze = LudoPieceManager.Instance.FinishedTeams.Count > 2 ? LudoPieceManager.Instance.FinishedTeams[2].name.Replace("Team ", "") : string.Empty;
@@ -140,23 +134,15 @@ public class UIManager : MonoBehaviour
 
     private void UpdateKillerData()
     {
-        List<Team> teams = new List<Team>
-        {
-            TeamOrange.Instance,
-            TeamGreen.Instance,
-            TeamBlue.Instance,
-            TeamRed.Instance
-        };
-
-        var sortedTeams = teams.OrderByDescending(t => t.GetKillCount()).ToList();
+        var sortedTeams = LudoPieceManager.Instance.AllTeams.OrderByDescending(t => t.GetKillCount()).ToList();
 
         StringBuilder sb = new StringBuilder();
         sb.AppendLine("<align=center><size=150%><color=#FF0000><b>Top Killer</b></color></size></align>");
 
-        foreach (var teamInfo in sortedTeams)
+        foreach (var team in sortedTeams)
         {
-            int killCount = teamInfo.GetKillCount();
-            sb.AppendLine($"<align=left><color={teamInfo.HexCode}>{teamInfo.Name}: {killCount}</color></align>");
+            int killCount = team.GetKillCount();
+            sb.AppendLine($"<align=left><color={team.HexCode}>{team.Name}: {killCount}</color></align>");
         }
 
         KillerTMP.text = sb.ToString();
@@ -252,7 +238,10 @@ public class UIManager : MonoBehaviour
     private void UpdateStateText(Team team)
     {
         TextMeshPro stateText = GetStateTextForTeam(team);
-        stateText.text = team.GetStateString();
+        if (stateText != null)
+        {
+            stateText.text = team.GetStateString();
+        }
     }
 
     private TextMeshPro GetStateTextForTeam(Team team)
@@ -291,7 +280,7 @@ public class UIManager : MonoBehaviour
         CameraManager.Instance.MoveCameraTo(SettingView, 3f);
 
         GameManager.Instance.CurrentGameMode = GameMode.Classic;
-        foreach (var team in AllTeams)
+        foreach (var team in LudoPieceManager.Instance.AllTeams)
         {
             team.SetTeamStateDefaultClassic();
             UpdateStateText(team);
@@ -305,7 +294,7 @@ public class UIManager : MonoBehaviour
         CameraManager.Instance.MoveCameraTo(SettingView, 3f);
 
         GameManager.Instance.CurrentGameMode = GameMode.Crazy;
-        foreach (var team in AllTeams)
+        foreach (var team in LudoPieceManager.Instance.AllTeams)
         {
             team.SetTeamStateDefaultCrazy();
             UpdateStateText(team);

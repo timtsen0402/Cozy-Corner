@@ -1,22 +1,21 @@
 using UnityEngine;
+using static GameConstants;
 
 public class LudoPiece : MonoBehaviour
 {
-
-    public Team myTeam { get; private set; }
-
     [field: SerializeField]
     public Space homeSpace { get; private set; }
     public Space startSpace { get; private set; }
-
     public Space CurrentSpace { get; private set; }
-    public int killCount;
-    public bool IsClickable { get; set; }
-    public bool IsMoving { get; set; } = false;
 
-    Rigidbody rb;
-    Renderer rend;
-    Color originalColor;
+    [HideInInspector] public int killCount;
+    [HideInInspector] public bool IsClickable;
+    [HideInInspector] public bool IsMoving = false;
+
+    private Team myTeam;
+    private Rigidbody rb;
+    private Renderer rend;
+    private Color originalColor;
 
     void Awake()
     {
@@ -43,6 +42,13 @@ public class LudoPiece : MonoBehaviour
         if (CurrentSpace == null) ResetToHome();
     }
 
+    public void ResetToHome()
+    {
+        transform.position = homeSpace.ActualPosition;
+        transform.rotation = PieceRotation;
+        if (!rb.isKinematic) rb.velocity = Vector3.zero;
+    }
+
     //  for killing other pieces
     void OnCollisionEnter(Collision collision)
     {
@@ -58,14 +64,7 @@ public class LudoPiece : MonoBehaviour
         }
     }
 
-    public void ResetToHome()
-    {
-        transform.position = homeSpace.ActualPosition;
-        transform.rotation = LudoPieceManager.PieceRotation;
-        if (!rb.isKinematic) rb.velocity = Vector3.zero;
-    }
-
-
+    #region Get
     public Space GetCurrentSpace()
     {
         return Physics.Raycast(transform.position, Vector3.down, out var hit)
@@ -87,8 +86,10 @@ public class LudoPiece : MonoBehaviour
         }
         return count;
     }
+    #endregion Get
 
     #region  OnMouse
+    // for moving piece
     public void OnClick()
     {
         if (Input.GetMouseButtonDown(0))
@@ -105,6 +106,7 @@ public class LudoPiece : MonoBehaviour
             }
         }
     }
+    // effect
     void OnMouseEnter()
     {
         if (IsClickable)

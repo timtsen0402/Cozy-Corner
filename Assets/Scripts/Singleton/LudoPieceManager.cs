@@ -4,50 +4,34 @@ using UnityEngine;
 using System.Linq;
 using DG.Tweening;
 using static Tool;
-using Unity.VisualScripting;
 using static GameConstants;
 
 public class LudoPieceManager : MonoBehaviour
 {
     public static LudoPieceManager Instance { get; private set; }
-    public static Quaternion PieceRotation = Quaternion.Euler(new Vector3(270f, 0f, 0f));
+
+    [field: SerializeField]
+    public List<Team> AllTeams { get; private set; } = new List<Team>();
+
     public List<Team> UnfinishedTeams { get; set; }
     public List<Team> FinishedTeams { get; set; }
-
-    private Dictionary<Team, List<LudoPiece>> piecesByTeam;
-
 
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-            InitializePieceDictionary();
         }
         else
         {
             Destroy(gameObject);
         }
-
-
     }
     private void Start()
     {
         UnfinishedTeams = new List<Team>(AllTeams);
         FinishedTeams = new List<Team>();
-
     }
-
-    private void InitializePieceDictionary()
-    {
-        piecesByTeam = new Dictionary<Team, List<LudoPiece>>();
-        foreach (Team team in AllTeams)
-        {
-            piecesByTeam[team] = new List<LudoPiece>();
-        }
-    }
-
-    #region Get
 
     public LudoPiece SelectPiece(TeamState teamState, List<LudoPiece> availablePieces)
     {
@@ -55,6 +39,7 @@ public class LudoPieceManager : MonoBehaviour
         return strategy(availablePieces);
     }
 
+    #region Get
     public List<LudoPiece> GetNearestPiecesToFinish(List<LudoPiece> pieces)
     {
         return pieces
@@ -62,10 +47,6 @@ public class LudoPieceManager : MonoBehaviour
            .ToList();
     }
 
-    public string GetHexCode(Team team)
-    {
-        return team.HexCode;
-    }
     public List<Team> GetFinishedTeam()
     {
         List<Team> teams = new List<Team>();

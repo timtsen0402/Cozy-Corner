@@ -7,27 +7,27 @@ using static Tool;
 
 public abstract class Dice : MonoBehaviour
 {
-    public bool isCheckingForSettle { get; protected set; }
-    public bool hasSettled { get; protected set; }
-    public bool isRollFinished { get; protected set; }
-    public int diceResult { get; protected set; }
-    public Rigidbody rb { get; protected set; }
+    private bool isManuallyRotating;
+    private bool isRollFinished;
+    private bool isCheckingForSettle;
+    private bool hasSettled;
 
-    private bool isManuallyRotating = false;
+    private int diceResult;
+    private Rigidbody rb;
 
-    protected virtual void Awake()
+    private void Awake()
     {
         rb = gameObject.GetComponent<Rigidbody>();
     }
 
-    protected virtual void FixedUpdate()
+    private void FixedUpdate()
     {
         ResetIfDrop();
         CheckIsSettled();
     }
     private void ResetIfDrop()
     {
-        if (gameObject.transform.position.y < -10f)
+        if (gameObject.transform.position.y < HeightThreshold)
         {
             transform.position = DiceRotatingPos;
         }
@@ -41,14 +41,14 @@ public abstract class Dice : MonoBehaviour
     }
 
     // is dice moving or not
-    protected virtual bool IsDiceSettled()
+    private bool IsDiceSettled()
     {
         if (isManuallyRotating) return false;
         return rb.velocity.magnitude < VelocityThreshold &&
                rb.angularVelocity.magnitude < AngularVelocityThreshold;
     }
 
-    protected virtual IEnumerator CheckForSettle()
+    private IEnumerator CheckForSettle()
     {
         isCheckingForSettle = true;
         float elapsedTime = 0f;
@@ -118,9 +118,9 @@ public abstract class Dice : MonoBehaviour
     {
         DiceManager.Instance.RotatingSpeed = new Vector3
         (
-        Random.Range(4f, 7f) * (Random.value < 0.5f ? 1 : -1),
-        Random.Range(4f, 7f) * (Random.value < 0.5f ? 1 : -1),
-        Random.Range(4f, 7f) * (Random.value < 0.5f ? 1 : -1)
+        Random.Range(RotatingThreshold1, RotatingThreshold2) * (Random.value < 0.5f ? 1 : -1),
+        Random.Range(RotatingThreshold1, RotatingThreshold2) * (Random.value < 0.5f ? 1 : -1),
+        Random.Range(RotatingThreshold1, RotatingThreshold2) * (Random.value < 0.5f ? 1 : -1)
         );
     }
     protected virtual void OnMouseDrag()

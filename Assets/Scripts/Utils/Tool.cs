@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
 
 public static class Tool
@@ -56,25 +54,6 @@ public static class Tool
         return GetValidPieces(pieces);
     }
 
-    public static bool isTripleThrowScenario(List<LudoPiece> pieces)
-    {
-        int pieceAtHome = pieces.Count(piece => piece.CurrentSpace.gameObject.IsInHomeLayer());
-        bool pieceAtEnd4 = pieces.Any(piece => piece.CurrentSpace.tag == "End4");
-        bool pieceAtEnd3 = pieces.Any(piece => piece.CurrentSpace.tag == "End3");
-        bool pieceAtEnd2 = pieces.Any(piece => piece.CurrentSpace.tag == "End2");
-        bool pieceAtEnd1 = pieces.Any(piece => piece.CurrentSpace.tag == "End1");
-
-        // 4 situations (vxxx or vvxx or vvvx or vvvv)
-        if (pieces.All(piece => piece.GetComponent<LudoPiece>().GetCurrentSpace().gameObject.IsInHomeLayer()) ||
-        pieceAtHome == 3 && pieceAtEnd4 ||
-        pieceAtHome == 2 && pieceAtEnd4 && pieceAtEnd3 ||
-        pieceAtHome == 1 && pieceAtEnd4 && pieceAtEnd3 && pieceAtEnd2)
-        {
-            return true;
-        }
-        return false;
-    }
-
     private static List<LudoPiece> GetValidPieces(List<LudoPiece> pieces)
     {
         List<LudoPiece> clickablePieces = new List<LudoPiece>();
@@ -107,5 +86,24 @@ public static class Tool
             if (isClickable) clickablePieces.Add(piece);
         }
         return clickablePieces;
+    }
+
+    public static bool isTripleThrowScenario(List<LudoPiece> pieces)
+    {
+        int pieceAtHome = pieces.Count(piece => piece.CurrentSpace.gameObject.IsInHomeLayer());
+        bool pieceAtEnd4 = pieces.Any(piece => piece.CurrentSpace.tag == "End4");
+        bool pieceAtEnd3 = pieces.Any(piece => piece.CurrentSpace.tag == "End3");
+        bool pieceAtEnd2 = pieces.Any(piece => piece.CurrentSpace.tag == "End2");
+        bool pieceAtEnd1 = pieces.Any(piece => piece.CurrentSpace.tag == "End1");
+
+        // 4 situations (vxxx or vvxx or vvvx or vvvv)
+        if (pieces.All(piece => piece.GetComponent<LudoPiece>().GetCurrentSpace().gameObject.IsInHomeLayer()) ||
+        pieceAtHome == 3 && pieceAtEnd4 ||
+        pieceAtHome == 2 && pieceAtEnd4 && pieceAtEnd3 ||
+        pieceAtHome == 1 && pieceAtEnd4 && pieceAtEnd3 && pieceAtEnd2)
+        {
+            return true;
+        }
+        return false;
     }
 }
