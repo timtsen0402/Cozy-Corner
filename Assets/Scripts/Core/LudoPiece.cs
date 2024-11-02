@@ -3,6 +3,8 @@ using static GameConstants;
 
 public class LudoPiece : MonoBehaviour
 {
+    public Team myTeam { get; private set; }
+
     [field: SerializeField]
     public Space homeSpace { get; private set; }
     public Space startSpace { get; private set; }
@@ -12,7 +14,6 @@ public class LudoPiece : MonoBehaviour
     [HideInInspector] public bool IsClickable;
     [HideInInspector] public bool IsMoving = false;
 
-    private Team myTeam;
     private Rigidbody rb;
     private Renderer rend;
     private Color originalColor;
@@ -54,17 +55,19 @@ public class LudoPiece : MonoBehaviour
     {
         if (!IsMoving) return;
 
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Tree"))
-        {
-            Destroy(collision.gameObject);
-        }
-
         LudoPiece collisionPiece = collision.gameObject.GetComponent<LudoPiece>();
         if (collisionPiece != null && !myTeam.GetAllPieces().Contains(collisionPiece))
         {
             collisionPiece.ResetToHome();
             AudioManager.Instance.PlaySFX("Kick");
             killCount++;
+        }
+    }
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Tree") && myTeam != TeamGreen.Instance)
+        {
+            Destroy(other.gameObject);
         }
     }
 

@@ -34,7 +34,7 @@ public class TeamGreen : Team
         ParticleEffectManager.Instance.PlayEffect("Plant", piece.transform.position);
         AudioManager.Instance.PlaySFX("Team Green");
 
-        Instantiate(tree, new Vector3(piece.transform.position.x, 1.22f, piece.transform.position.z), Quaternion.identity);
+        Instantiate(tree, piece.CurrentSpace.ActualPosition, Quaternion.identity);
         StartCoroutine(LudoPieceManager.Instance.MovePiece(piece, 1));
     }
     public override void SetTeamStateDefaultClassic()

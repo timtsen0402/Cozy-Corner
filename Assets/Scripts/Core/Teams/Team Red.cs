@@ -5,6 +5,7 @@ public class TeamRed : Team
     public static TeamRed Instance { get; private set; }
 
     public int ExtraSteps { get; private set; } = 0;
+    private int getExtraStepTriggerCount = -1;
 
     [Header("Only in Team Red")]
     [SerializeField] int ExtraStepLimitation = 3;
@@ -29,15 +30,18 @@ public class TeamRed : Team
         }
     }
 
-    // get extra step(s) after move
+    // get extra steps after move
     public override void ActivateSpecialFunction(LudoPiece piece)
     {
         ParticleEffectManager.Instance.PlayEffect("Zap", piece.transform.position);
         AudioManager.Instance.PlaySFX("Team Red");
+        getExtraStepTriggerCount += 1;
 
-        if (ExtraSteps < ExtraStepLimitation)
+        // get n extra steps after get n times spacial pattern
+        if (ExtraSteps < ExtraStepLimitation && getExtraStepTriggerCount >= ExtraSteps)
         {
             ExtraSteps += 1;
+            getExtraStepTriggerCount = -1;
         }
     }
     public override void SetTeamStateDefaultClassic()

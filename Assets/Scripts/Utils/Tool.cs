@@ -69,7 +69,25 @@ public static class Tool
 
             if (isSpecialPattern)
             {
-                isClickable = !piece.CurrentSpace.gameObject.IsInEndLayer();
+                if (piece.CurrentSpace.gameObject.IsInEndLayer()) continue;
+
+                LudoPiece nextPiece = piece.CurrentSpace.NextSpace.CurrentPiece;
+                switch (piece.myTeam)
+                {
+                    case TeamOrange:
+                        isClickable = true;
+                        break;
+                    case TeamGreen:
+                        isClickable = nextPiece?.myTeam != TeamGreen.Instance;
+                        break;
+                    case TeamBlue:
+                        isClickable = nextPiece?.myTeam != TeamBlue.Instance;
+                        break;
+                    case TeamRed:
+                        isClickable = true;
+                        break;
+                }
+
             }
             else
             {
