@@ -121,14 +121,6 @@ public class LudoPieceManager : MonoBehaviour
             yield return new WaitForSeconds(0.3f);
 
         }
-
-        // after moving
-        if (piece.CurrentSpace.CurrentTree != null)
-        {
-            Destroy(piece.CurrentSpace.CurrentTree);
-            // TODO: SE
-        }
-
         piece.IsMoving = false;
     }
     #endregion Move

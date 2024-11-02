@@ -54,8 +54,12 @@ public class LudoPiece : MonoBehaviour
     {
         if (!IsMoving) return;
 
-        LudoPiece collisionPiece = collision.gameObject.GetComponent<LudoPiece>();
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Tree"))
+        {
+            Destroy(collision.gameObject);
+        }
 
+        LudoPiece collisionPiece = collision.gameObject.GetComponent<LudoPiece>();
         if (collisionPiece != null && !myTeam.GetAllPieces().Contains(collisionPiece))
         {
             collisionPiece.ResetToHome();

@@ -11547,7 +11547,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.2
+  m_Intensity: 0.5
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -13741,6 +13741,7 @@ GameObject:
   - component: {fileID: 801630893}
   - component: {fileID: 801630895}
   - component: {fileID: 801630894}
+  - component: {fileID: 801630896}
   m_Layer: 0
   m_Name: Candle_4
   m_TagString: Untagged
@@ -13813,6 +13814,29 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 801630892}
   m_Mesh: {fileID: 4300000, guid: 07875c0a1c580fb40bd6eed061be6fd3, type: 3}
+--- !u!136 &801630896
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 801630892}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.03590937
+  m_Height: 0.37623724
+  m_Direction: 1
+  m_Center: {x: 0.000004053116, y: 0.18811886, z: 0.000009536743}
 --- !u!4 &801719474 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 533d0aafb6ac59d4d8945a1b69bf468b, type: 3}
@@ -18425,6 +18449,7 @@ GameObject:
   - component: {fileID: 1052452103}
   - component: {fileID: 1052452105}
   - component: {fileID: 1052452104}
+  - component: {fileID: 1052452106}
   m_Layer: 0
   m_Name: Candles_1 (1)
   m_TagString: Untagged
@@ -18505,6 +18530,29 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1052452102}
   m_Mesh: {fileID: 4300000, guid: 07875c0a1c580fb40bd6eed061be6fd3, type: 3}
+--- !u!136 &1052452106
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1052452102}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.03590937
+  m_Height: 0.37623724
+  m_Direction: 1
+  m_Center: {x: 0.000006914139, y: 0.18811834, z: 0.000013828278}
 --- !u!1 &1054082069
 GameObject:
   m_ObjectHideFlags: 0
@@ -32874,6 +32922,7 @@ GameObject:
   - component: {fileID: 1919427852}
   - component: {fileID: 1919427854}
   - component: {fileID: 1919427853}
+  - component: {fileID: 1919427855}
   m_Layer: 0
   m_Name: Candle_3
   m_TagString: Untagged
@@ -32946,6 +32995,29 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1919427851}
   m_Mesh: {fileID: 4300000, guid: efd7b31bc316e014fb44b5ef4089104e, type: 3}
+--- !u!136 &1919427855
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1919427851}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.035909366
+  m_Height: 0.19551615
+  m_Direction: 1
+  m_Center: {x: -0.0000009536743, y: 0.0977583, z: 0.000008583069}
 --- !u!4 &1923620822 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 481616, guid: b2d53ad90721dcf489a412c5f39415eb, type: 3}
@@ -48172,8 +48244,8 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7597286034326203233}
   m_Mesh: {fileID: 4300000, guid: 056a8215673193e4faaa699e64c0a540, type: 3}
---- !u!64 &7597286034329532258
-MeshCollider:
+--- !u!136 &7597286034329532258
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -48190,10 +48262,11 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: 056a8215673193e4faaa699e64c0a540, type: 3}
+  serializedVersion: 2
+  m_Radius: 0.10785896
+  m_Height: 0.3014463
+  m_Direction: 1
+  m_Center: {x: 0.00018743487, y: 0.1293557, z: 0.000003844975}
 --- !u!1 &7610362846137617662
 GameObject:
   m_ObjectHideFlags: 0

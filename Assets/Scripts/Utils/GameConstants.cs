@@ -1,10 +1,7 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public static class GameConstants
 {
-    public static List<Team> AllTeams { get; private set; } = new List<Team>();
-
     // Team
     public const int OrangeNumber = 1;
     public const int GreenNumber = 2;
